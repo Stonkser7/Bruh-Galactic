@@ -19,24 +19,6 @@ struct Textures {
 	Texture romaBulletTexture;
 
 	Texture gameBackgroundTexture;
-	Texture menuBackgroundTexture;
-	Texture menuItemBackgroundTexture;
-};
-class Game;
-typedef void (Game::* MenuAction)();
-struct MenuItem {
-	Text title;
-	MenuAction action;
-};
-struct Menu {
-	vector <MenuItem> items;
-	int selectedItem;
-	bool isMenuTouched;
-	Text caption;
-	Font menuFont;
-	RectangleShape menuBackground;
-	RectangleShape menuItemBackground;
-	Clock delayBetweenMenuPresses;
 };
 struct GameWindow {
 	RenderWindow window;
@@ -71,6 +53,84 @@ struct Ammunition {
 	Clock ordinaryFireDelay;
 	vector <OrdinaryBullet> ordinaryBullets;
 };
+class Menu {
+	class Game;
+	typedef void (Game::* MenuAction)();
+	struct MenuItem {
+		Text title;
+		MenuAction action;
+	};
+	vector <MenuItem> items;
+	int selectedItem;
+	bool isMenuTouched;
+	Text caption;
+	Font menuFont;
+	Clock delayBetweenMenuPresses;
+
+	RectangleShape menuBackground;
+	RectangleShape menuItemBackground;
+	Texture menuBackgroundTexture;
+	Texture menuItemBackgroundTexture;
+public:
+	void initMenu(GameWindow gwindow) {
+		menuBackgroundTexture.loadFromFile("Textures\\menuBackgroundTexture.jpg");
+		menuItemBackgroundTexture.loadFromFile("Textures\\menuItemBackgroundTexture.png");
+		menuBackground.setTexture(&menuBackgroundTexture);
+		menuBackground.setSize(Vector2f(gwindow.x, gwindow.y));
+		menuBackground.setPosition(Vector2f(0, 0));
+		menuItemBackground.setTexture(&menuItemBackgroundTexture);
+		selectedItem = 0;
+		menuFont.loadFromFile("Fonts\\Hacked Cyr.ttf");
+		caption.setFont(menuFont);
+		caption.setString("BRUH GALACTIC");
+		caption.setFillColor(Color(25, 25, 112));
+		caption.setPosition(Vector2f(gwindow.x / 2.6, gwindow.y / 2.5));
+		caption.setCharacterSize(50);
+		caption.getGlobalBounds().height;
+		caption.getGlobalBounds().width;
+		isMenuTouched = false;
+	}
+	void addMenuItem(string title, MenuAction action) {
+		MenuItem item;
+		item.title.setFont(menuFont);
+		item.title.setString(title);
+		item.title.setFillColor(Color(139, 0, 0));
+		item.title.setCharacterSize(30);
+		item.title.setPosition(Vector2f(caption.findCharacterPos(2 + items.size()).x, caption.getPosition().y + caption.getGlobalBounds().height * 2 + items.size() * item.title.getGlobalBounds().height * 2));
+		item.action = action;
+		items.push_back(item);
+	}
+	void controlMenu() {
+		if (Keyboard::isKeyPressed(Keyboard::Key::W) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
+			/*if (!menu.isMenuTouched) {
+				menu.isMenuTouched = !menu.isMenuTouched;
+			}*/
+			selectedItem--;
+			delayBetweenMenuPresses.restart();
+			if (selectedItem < 0) {
+				selectedItem = items.size() - 1;
+			}
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Key::S) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
+			/*if (!menu.isMenuTouched) {
+				menu.isMenuTouched = !menu.isMenuTouched;
+			}*/
+			selectedItem++;
+			delayBetweenMenuPresses.restart();
+			if (selectedItem > items.size() - 1) {
+				selectedItem = 0;
+			}
+		}
+	}
+	void selectMenuItem(Game *gameClass) {
+		menuItemBackground.setPosition(Vector2f(items[selectedItem].title.getGlobalBounds().left, items[selectedItem].title.getGlobalBounds().top));
+		menuItemBackground.setSize(Vector2f(items[selectedItem].title.getGlobalBounds().width, items[selectedItem].title.getGlobalBounds().height));
+		if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
+			(gameClass->*items[selectedItem].action)();
+			delayBetweenMenuPresses.restart();
+		}
+	}
+};
 class Player {
 private:
 	RectangleShape playerShape;
@@ -88,7 +148,7 @@ private:
 	Texture ordinaryBulletTexture;
 	Texture ordinaryBulletScopeTexture;
 public:
-	void initPlayer(GameWindow window) {
+	void initPlayer(GameWindow &gwindow) {
 		playertexture3HP.loadFromFile("Textures\\playerTexture3HP.jpg");
 		playertexture2HP.loadFromFile("Textures\\playerTexture2HP.jpg");
 		playertexture1HP.loadFromFile("Textures\\playerTexture1HP.jpg");
@@ -99,7 +159,7 @@ public:
 		playerShape.setTexture(&playertexture3HP);
 		playerShape.setSize(Vector2f(sizeX, sizeY));
 		playerShape.setRotation(90);
-		playerShape.setPosition(Vector2f(60.f, window.y / 2));
+		playerShape.setPosition(Vector2f(60.f, gwindow.y / 2));
 		HPCount = 3;
 		scope.setSize(Vector2f(55, 7));
 		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
@@ -120,12 +180,12 @@ public:
 			ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
 		}
 	}
-	void controlPlayer(GameWindow window) {
+	void controlPlayer(GameWindow &gwindow) {
 		if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
 			playerShape.move(0, -1.9);
 			scope.move(0, -1.9);
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < window.y) {
+		if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < gwindow.y) {
 			playerShape.move(0, 1.9);
 			scope.move(0, 1.9);
 		}
@@ -166,6 +226,18 @@ public:
 			}
 		}
 	}
+	void moveBullets(GameWindow gwindow) {
+		for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
+			if (ammunition.ordinaryBullets[i].state == BUL_FIRED) {
+				ammunition.ordinaryBullets[i].bulletShape.move(Vector2f(ammunition.ordinaryBullets[i].ordinaryBulletSpeed));
+			}
+			if (ammunition.ordinaryBullets[i].bulletShape.getPosition().x >= gwindow.window.getSize().x ||
+				ammunition.ordinaryBullets[i].bulletShape.getPosition().y >= gwindow.window.getSize().y + ammunition.ordinaryBullets[i].bulletShape.getSize().y ||
+				ammunition.ordinaryBullets[i].bulletShape.getPosition().y <= 0 - ammunition.ordinaryBullets[i].bulletShape.getSize().y) {
+				ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
+			}
+		}
+	}
 	void chekForBulletSwap() {
 		if (Keyboard::isKeyPressed(Keyboard::Num1)) {
 			ActiveBullet = BUL_ORDINARY;
@@ -176,13 +248,12 @@ public:
 		}
 	}
 };
-class Bullet {
-private:
+class Enemy {
 
-public:
 };
 class Game {
 private:
+	GameWindow gameWindow;
 	Menu menu;
 	RectangleShape gameBackground;
 	Player player;
@@ -191,7 +262,6 @@ private:
 	Clock delayBetweenEscapePresses;
 public:
 	Event event;
-	GameWindow gameWindow;
 	GAMESTATE gameState;
 	void initWindow() {
 		gameWindow.x = 1280;
@@ -199,24 +269,6 @@ public:
 		gameWindow.title = "BRUH Galactic";
 		gameWindow.window.create(VideoMode(gameWindow.x, gameWindow.y), gameWindow.title);
 		gameWindow.window.setFramerateLimit(240);
-	}
-	void initMenu() {
-		textures.menuBackgroundTexture.loadFromFile("Textures\\menuBackgroundTexture.jpg");
-		textures.menuItemBackgroundTexture.loadFromFile("Textures\\menuItemBackgroundTexture.png");
-		menu.menuBackground.setTexture(&textures.menuBackgroundTexture);
-		menu.menuBackground.setSize(Vector2f(gameWindow.x, gameWindow.y));
-		menu.menuBackground.setPosition(Vector2f(0, 0));
-		menu.menuItemBackground.setTexture(&textures.menuItemBackgroundTexture);
-		menu.selectedItem = 0;
-		menu.menuFont.loadFromFile("Fonts\\Hacked Cyr.ttf");
-		menu.caption.setFont(menu.menuFont);
-		menu.caption.setString("BRUH GALACTIC");
-		menu.caption.setFillColor(Color(25, 25, 112));
-		menu.caption.setPosition(Vector2f(gameWindow.x / 2.6, gameWindow.y / 2.5));
-		menu.caption.setCharacterSize(50);
-		menu.caption.getGlobalBounds().height;
-		menu.caption.getGlobalBounds().width;
-		menu.isMenuTouched = false;
 	}
 	void initGameBackground() {
 		textures.gameBackgroundTexture.loadFromFile("Textures\\background.jpeg");
@@ -247,46 +299,6 @@ public:
 	}
 	void exitGame() {
 		gameState = GS_EXIT;
-	}
-	void addMenuItem(string title, MenuAction action) {
-		MenuItem item;
-		item.title.setFont(menu.menuFont);
-		item.title.setString(title);
-		item.title.setFillColor(Color(139, 0, 0));
-		item.title.setCharacterSize(30);
-		item.title.setPosition(Vector2f(menu.caption.findCharacterPos(2 + menu.items.size()).x, menu.caption.getPosition().y + menu.caption.getGlobalBounds().height * 2 + menu.items.size() * item.title.getGlobalBounds().height * 2));
-		item.action = action;
-		menu.items.push_back(item);
-	}
-	void controlMenu() {
-		if (Keyboard::isKeyPressed(Keyboard::Key::W) && menu.delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
-			/*if (!menu.isMenuTouched) {
-				menu.isMenuTouched = !menu.isMenuTouched;
-			}*/
-			menu.selectedItem--;
-			menu.delayBetweenMenuPresses.restart();
-			if (menu.selectedItem < 0) {
-				menu.selectedItem = menu.items.size() - 1;
-			}
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Key::S) && menu.delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
-			/*if (!menu.isMenuTouched) {
-				menu.isMenuTouched = !menu.isMenuTouched;
-			}*/
-			menu.selectedItem++;
-			menu.delayBetweenMenuPresses.restart();
-			if (menu.selectedItem > menu.items.size() - 1) {
-				menu.selectedItem = 0;
-			}
-		}
-	}
-	void selectMenuItem() {
-		menu.menuItemBackground.setPosition(Vector2f(menu.items[menu.selectedItem].title.getGlobalBounds().left, menu.items[menu.selectedItem].title.getGlobalBounds().top));
-		menu.menuItemBackground.setSize(Vector2f(menu.items[menu.selectedItem].title.getGlobalBounds().width, menu.items[menu.selectedItem].title.getGlobalBounds().height));
-		if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && menu.delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
-			(this->*menu.items[menu.selectedItem].action)();
-			menu.delayBetweenMenuPresses.restart();
-		}
 	}
 	void moveEnemies() {
 		for (int i = 0; i < enemies.roma.size(); i++) {
@@ -319,18 +331,6 @@ public:
 			enemies.romaBullets[i].bulletShape.move(enemies.romaBulletSpeed);
 			if (enemies.romaBullets[i].bulletShape.getPosition().x + enemies.romaBullets[i].bulletShape.getSize().x < 0) {
 				enemies.romaBullets.erase(enemies.romaBullets.begin() + i);
-			}
-		}
-	}
-	void moveBullets() {
-		for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
-			if (ammunition.ordinaryBullets[i].state == BUL_FIRED) {
-				ammunition.ordinaryBullets[i].bulletShape.move(Vector2f(ammunition.ordinaryBullets[i].ordinaryBulletSpeed));
-			}
-			if (ammunition.ordinaryBullets[i].bulletShape.getPosition().x >= gameWindow.window.getSize().x ||
-				ammunition.ordinaryBullets[i].bulletShape.getPosition().y >= gameWindow.window.getSize().y + ammunition.ordinaryBullets[i].bulletShape.getSize().y ||
-				ammunition.ordinaryBullets[i].bulletShape.getPosition().y <= 0 - ammunition.ordinaryBullets[i].bulletShape.getSize().y) {
-				ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
 			}
 		}
 	}
@@ -422,12 +422,12 @@ public:
 		if (player.HPCount <= 0) {
 			gameState = GS_MENU;
 		}
-		controlPlayer();
+		player.controlPlayer(gameWindow);
 		chekForBulletSwap();
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
 			playerFire();
 		}
-		moveBullets();
+		moveBullets(gameWindow);
 
 		checkForEnemySpawn();
 		moveEnemies();
