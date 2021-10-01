@@ -14,15 +14,9 @@ enum BULLETTYPE { BUL_ORDINARY };
 enum ENEMYACTIVITY { ENEMY_ACTIVE, ENEMY_INACTIVE };
 
 struct Textures {
-	Texture playertexture3HP;
-	Texture playertexture2HP;
-	Texture playertexture1HP;
 
 	Texture romaEnemyTexture;
 	Texture romaBulletTexture;
-
-	Texture ordinaryBulletTexture;
-	Texture ordinaryBulletScopeTexture;
 
 	Texture gameBackgroundTexture;
 	Texture menuBackgroundTexture;
@@ -49,13 +43,6 @@ struct GameWindow {
 	int x;
 	int y;
 	String title;
-};
-struct Player {
-	RectangleShape playerShape;
-	RectangleShape scope;
-	int HPCount;
-	float sizeX;
-	float sizeY;
 };
 struct romaBullet {
 	RectangleShape bulletShape;
@@ -84,13 +71,121 @@ struct Ammunition {
 	Clock ordinaryFireDelay;
 	vector <OrdinaryBullet> ordinaryBullets;
 };
+class Player {
+private:
+	RectangleShape playerShape;
+	RectangleShape scope;
+	int HPCount;
+	float sizeX;
+	float sizeY;
+
+	Ammunition ammunition;
+	BULLETTYPE ActiveBullet;
+
+	Texture playertexture3HP;
+	Texture playertexture2HP;
+	Texture playertexture1HP;
+	Texture ordinaryBulletTexture;
+	Texture ordinaryBulletScopeTexture;
+public:
+	void initPlayer(GameWindow window) {
+		playertexture3HP.loadFromFile("Textures\\playerTexture3HP.jpg");
+		playertexture2HP.loadFromFile("Textures\\playerTexture2HP.jpg");
+		playertexture1HP.loadFromFile("Textures\\playerTexture1HP.jpg");
+		ordinaryBulletScopeTexture.loadFromFile("Textures\\ordinaryBulletScopeTexture.png");
+		sizeX = 75.f;
+		sizeY = 40.f;
+		playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
+		playerShape.setTexture(&playertexture3HP);
+		playerShape.setSize(Vector2f(sizeX, sizeY));
+		playerShape.setRotation(90);
+		playerShape.setPosition(Vector2f(60.f, window.y / 2));
+		HPCount = 3;
+		scope.setSize(Vector2f(55, 7));
+		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
+		scope.setTexture(&ordinaryBulletScopeTexture);
+		scope.setRotation(playerShape.getRotation() - 90);
+	}
+	void initAmmunition() {
+		ActiveBullet = BUL_ORDINARY;
+		ammunition.ordinaryBullets.resize(15);
+		ordinaryBulletTexture.loadFromFile("Textures\\pchel.jpg");
+		ammunition.ordinaryBulletDefaultSpeed.x = 7; ammunition.ordinaryBulletDefaultSpeed.y = 0;
+		ammunition.ordinaryBulletSpeedVariation = ((ammunition.ordinaryBulletDefaultSpeed.x / 100) * 50) / 45;
+		for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
+			ammunition.ordinaryBullets[i].bulletShape.setTexture(&ordinaryBulletTexture);
+			ammunition.ordinaryBullets[i].bulletShape.setSize(Vector2f(30.f, 17.f));
+			ammunition.ordinaryBulletDamage = 10;
+			ammunition.ordinaryBullets[i].ordinaryBulletSpeed = ammunition.ordinaryBulletDefaultSpeed;
+			ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
+		}
+	}
+	void controlPlayer(GameWindow window) {
+		if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
+			playerShape.move(0, -1.9);
+			scope.move(0, -1.9);
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < window.y) {
+			playerShape.move(0, 1.9);
+			scope.move(0, 1.9);
+		}
+
+		if (Keyboard::isKeyPressed(Keyboard::Key::A) && playerShape.getRotation() > 45) {
+			playerShape.rotate(-1);
+			scope.rotate(-1);
+			if (playerShape.getRotation() < 90) {
+				ammunition.ordinaryBulletDefaultSpeed.x -= ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y -= ammunition.ordinaryBulletSpeedVariation;
+			}
+			else {
+				ammunition.ordinaryBulletDefaultSpeed.x += ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y -= ammunition.ordinaryBulletSpeedVariation;
+			}
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Key::D) && playerShape.getRotation() < 135) {
+			playerShape.rotate(1);
+			scope.rotate(1);
+			if (playerShape.getRotation() > 90) {
+				ammunition.ordinaryBulletDefaultSpeed.x -= ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y += ammunition.ordinaryBulletSpeedVariation;
+			}
+			else {
+				ammunition.ordinaryBulletDefaultSpeed.x += ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y += ammunition.ordinaryBulletSpeedVariation;
+			}
+		}
+	}
+	void playerFire() {
+		switch (ActiveBullet) {
+		case BUL_ORDINARY:
+			for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
+				if (ammunition.ordinaryBullets[i].state == BUL_INCARTRIDGE && ammunition.ordinaryFireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
+					ammunition.ordinaryBullets[i].bulletShape.setRotation(playerShape.getRotation() - 90);
+					ammunition.ordinaryBullets[i].bulletShape.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - ammunition.ordinaryBullets[i].bulletShape.getSize().y / 2));
+					ammunition.ordinaryBullets[i].ordinaryBulletSpeed.x = ammunition.ordinaryBulletDefaultSpeed.x; ammunition.ordinaryBullets[i].ordinaryBulletSpeed.y = ammunition.ordinaryBulletDefaultSpeed.y;
+					ammunition.ordinaryBullets[i].state = BUL_FIRED;
+					ammunition.ordinaryFireDelay.restart();
+					return;
+				}
+			}
+		}
+	}
+	void chekForBulletSwap() {
+		if (Keyboard::isKeyPressed(Keyboard::Num1)) {
+			ActiveBullet = BUL_ORDINARY;
+			scope.setSize(Vector2f(55, 7));
+			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
+			scope.setTexture(&ordinaryBulletScopeTexture);
+			scope.setRotation(playerShape.getRotation() - 90);
+		}
+	}
+};
+class Bullet {
+private:
+
+public:
+};
 class Game {
 private:
 	Menu menu;
 	RectangleShape gameBackground;
 	Player player;
-	Ammunition ammunition;
-	BULLETTYPE ActiveBullet;
 	Enemies enemies;
 	Textures textures;
 	Clock delayBetweenEscapePresses;
@@ -128,38 +223,6 @@ public:
 		gameBackground.setTexture(&textures.gameBackgroundTexture);
 		gameBackground.setSize(Vector2f(gameWindow.x, gameWindow.y));
 	}
-	void initPlayer() {
-		textures.playertexture3HP.loadFromFile("Textures\\playerTexture3HP.jpg");
-		textures.playertexture2HP.loadFromFile("Textures\\playerTexture2HP.jpg");
-		textures.playertexture1HP.loadFromFile("Textures\\playerTexture1HP.jpg");
-		textures.ordinaryBulletScopeTexture.loadFromFile("Textures\\ordinaryBulletScopeTexture.png");
-		player.sizeX = 75.f;
-		player.sizeY = 40.f;
-		player.playerShape.setOrigin(Vector2f(player.sizeX / 2, player.sizeY / 2));
-		player.playerShape.setTexture(&textures.playertexture3HP);
-		player.playerShape.setSize(Vector2f(player.sizeX, player.sizeY));
-		player.playerShape.setRotation(90);
-		player.playerShape.setPosition(Vector2f(60.f, gameWindow.y / 2));
-		player.HPCount = 3;
-		player.scope.setSize(Vector2f(55, 7));
-		player.scope.setPosition(Vector2f(player.playerShape.getPosition().x, player.playerShape.getPosition().y - player.scope.getSize().y / 2));
-		player.scope.setTexture(&textures.ordinaryBulletScopeTexture);
-		player.scope.setRotation(player.playerShape.getRotation() - 90);
-	}
-	void initAmmunition() {
-		ActiveBullet = BUL_ORDINARY;
-		ammunition.ordinaryBullets.resize(15);
-		textures.ordinaryBulletTexture.loadFromFile("Textures\\pchel.jpg");
-		ammunition.ordinaryBulletDefaultSpeed.x = 7; ammunition.ordinaryBulletDefaultSpeed.y = 0;
-		ammunition.ordinaryBulletSpeedVariation = ((ammunition.ordinaryBulletDefaultSpeed.x / 100) * 50) / 45;
-		for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
-			ammunition.ordinaryBullets[i].bulletShape.setTexture(&textures.ordinaryBulletTexture);
-			ammunition.ordinaryBullets[i].bulletShape.setSize(Vector2f(30.f, 17.f));
-			ammunition.ordinaryBulletDamage = 10;
-			ammunition.ordinaryBullets[i].ordinaryBulletSpeed = ammunition.ordinaryBulletDefaultSpeed;
-			ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
-		}
-	}
 	void initEnemies() {
 		enemies.romaAcivity = ENEMY_ACTIVE;
 		textures.romaEnemyTexture.loadFromFile("Textures\\roma.jpg");
@@ -178,7 +241,7 @@ public:
 	void initGame() {
 		gameState = GS_PLAY;
 		initGameBackground();
-		initPlayer();
+		player.initPlayer(gameWindow);
 		initAmmunition();
 		initEnemies();
 	}
@@ -256,61 +319,6 @@ public:
 			enemies.romaBullets[i].bulletShape.move(enemies.romaBulletSpeed);
 			if (enemies.romaBullets[i].bulletShape.getPosition().x + enemies.romaBullets[i].bulletShape.getSize().x < 0) {
 				enemies.romaBullets.erase(enemies.romaBullets.begin() + i);
-			}
-		}
-	}
-	void controlPlayer() {
-		if (Keyboard::isKeyPressed(Keyboard::Key::W) && player.playerShape.getPosition().y - player.sizeX / 2 > 0) {
-			player.playerShape.move(0, -1.9);
-			player.scope.move(0, -1.9);
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Key::S) && player.playerShape.getPosition().y + player.sizeX / 2 < gameWindow.y) {
-			player.playerShape.move(0, 1.9);
-			player.scope.move(0, 1.9);
-		}
-
-		if (Keyboard::isKeyPressed(Keyboard::Key::A) && player.playerShape.getRotation() > 45) {
-			player.playerShape.rotate(-1);
-			player.scope.rotate(-1);
-			if (player.playerShape.getRotation() < 90) {
-				ammunition.ordinaryBulletDefaultSpeed.x -= ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y -= ammunition.ordinaryBulletSpeedVariation;
-			}
-			else {
-				ammunition.ordinaryBulletDefaultSpeed.x += ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y -= ammunition.ordinaryBulletSpeedVariation;
-			}
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Key::D) && player.playerShape.getRotation() < 135) {
-			player.playerShape.rotate(1);
-			player.scope.rotate(1);
-			if (player.playerShape.getRotation() > 90) {
-				ammunition.ordinaryBulletDefaultSpeed.x -= ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y += ammunition.ordinaryBulletSpeedVariation;
-			}
-			else {
-				ammunition.ordinaryBulletDefaultSpeed.x += ammunition.ordinaryBulletSpeedVariation; ammunition.ordinaryBulletDefaultSpeed.y += ammunition.ordinaryBulletSpeedVariation;
-			}
-		}
-	}
-	void chekForBulletSwap() {
-		if (Keyboard::isKeyPressed(Keyboard::Num1)) {
-			ActiveBullet = BUL_ORDINARY;
-			player.scope.setSize(Vector2f(55, 7));
-			player.scope.setPosition(Vector2f(player.playerShape.getPosition().x, player.playerShape.getPosition().y - player.scope.getSize().y / 2));
-			player.scope.setTexture(&textures.ordinaryBulletScopeTexture);
-			player.scope.setRotation(player.playerShape.getRotation() - 90);
-		}
-	}
-	void playerFire() {
-		switch (ActiveBullet) {
-		case BUL_ORDINARY:
-			for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
-				if (ammunition.ordinaryBullets[i].state == BUL_INCARTRIDGE && ammunition.ordinaryFireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
-					ammunition.ordinaryBullets[i].bulletShape.setRotation(player.playerShape.getRotation() - 90);
-					ammunition.ordinaryBullets[i].bulletShape.setPosition(Vector2f(player.playerShape.getPosition().x, player.playerShape.getPosition().y - ammunition.ordinaryBullets[i].bulletShape.getSize().y / 2));
-					ammunition.ordinaryBullets[i].ordinaryBulletSpeed.x = ammunition.ordinaryBulletDefaultSpeed.x; ammunition.ordinaryBullets[i].ordinaryBulletSpeed.y = ammunition.ordinaryBulletDefaultSpeed.y;
-					ammunition.ordinaryBullets[i].state = BUL_FIRED;
-					ammunition.ordinaryFireDelay.restart();
-					return;
-				}
 			}
 		}
 	}
