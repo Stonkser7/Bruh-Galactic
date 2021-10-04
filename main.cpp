@@ -232,7 +232,7 @@ public:
 			scope.setRotation(playerShape.getRotation() - 90);
 		}
 	}
-	void setPlayerHP(int hpAmount) {
+	void setHPAmount(int hpAmount) {
 		switch (HPAmount) {
 		case 3:
 			playerShape.setTexture(&playertexture3HP);
@@ -388,7 +388,7 @@ public:
 		for (int i = 0; i < enemies.romaBullets.size(); i++) {
 			if (player.playerShape.getGlobalBounds().intersects(enemies.romaBullets[i].getGlobalBounds())) {
 				player.HPAmount--;
-				player.setPlayerHP(player.HPAmount);
+				player.setHPAmount(player.HPAmount);
 				enemies.romaBullets.erase(enemies.romaBullets.begin() + i);
 			}
 		}
