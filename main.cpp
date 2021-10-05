@@ -36,15 +36,14 @@ struct Ammunition {
 	Clock ordinaryFireDelay;
 	vector <OrdinaryBullet> ordinaryBullets;
 };
+class Game;
+typedef void (Game::* MenuAction)();
 class Menu {
 private:
-	class Game;
-	typedef void (Game::* MenuAction)();
 	struct MenuItem {
 		Text title;
 		MenuAction action;
 	};
-	vector <MenuItem> items;
 	int selectedItem;
 	bool isMenuTouched;
 	Font menuFont;
@@ -56,11 +55,12 @@ public:
 	Text caption;
 	RectangleShape menuBackground;
 	RectangleShape menuItemBackground;
-	void initMenu(GameWindow gwindow) {
+	vector <MenuItem> menuItems;
+	void initMenu(GameWindow *gwindow) {
 		menuBackgroundTexture.loadFromFile("Textures\\menuBackgroundTexture.jpg");
 		menuItemBackgroundTexture.loadFromFile("Textures\\menuItemBackgroundTexture.png");
 		menuBackground.setTexture(&menuBackgroundTexture);
-		menuBackground.setSize(Vector2f(gwindow.x, gwindow.y));
+		menuBackground.setSize(Vector2f(gwindow->x, gwindow->y));
 		menuBackground.setPosition(Vector2f(0, 0));
 		menuItemBackground.setTexture(&menuItemBackgroundTexture);
 		selectedItem = 0;
@@ -68,7 +68,7 @@ public:
 		caption.setFont(menuFont);
 		caption.setString("BRUH GALACTIC");
 		caption.setFillColor(Color(25, 25, 112));
-		caption.setPosition(Vector2f(gwindow.x / 2.6, gwindow.y / 2.5));
+		caption.setPosition(Vector2f(gwindow->x / 2.6, gwindow->y / 2.5));
 		caption.setCharacterSize(50);
 		caption.getGlobalBounds().height;
 		caption.getGlobalBounds().width;
@@ -80,9 +80,9 @@ public:
 		item.title.setString(title);
 		item.title.setFillColor(Color(139, 0, 0));
 		item.title.setCharacterSize(30);
-		item.title.setPosition(Vector2f(caption.findCharacterPos(2 + items.size()).x, caption.getPosition().y + caption.getGlobalBounds().height * 2 + items.size() * item.title.getGlobalBounds().height * 2));
+		item.title.setPosition(Vector2f(caption.findCharacterPos(2 + menuItems.size()).x, caption.getPosition().y + caption.getGlobalBounds().height * 2 + menuItems.size() * item.title.getGlobalBounds().height * 2));
 		item.action = action;
-		items.push_back(item);
+		menuItems.push_back(item);
 	}
 	void controlMenu() {
 		if (Keyboard::isKeyPressed(Keyboard::Key::W) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
@@ -92,7 +92,7 @@ public:
 			selectedItem--;
 			delayBetweenMenuPresses.restart();
 			if (selectedItem < 0) {
-				selectedItem = items.size() - 1;
+				selectedItem = menuItems.size() - 1;
 			}
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Key::S) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
@@ -101,16 +101,16 @@ public:
 			}*/
 			selectedItem++;
 			delayBetweenMenuPresses.restart();
-			if (selectedItem > items.size() - 1) {
+			if (selectedItem > menuItems.size() - 1) {
 				selectedItem = 0;
 			}
 		}
 	}
 	void selectMenuItem(Game *gameClass) {
-		menuItemBackground.setPosition(Vector2f(items[selectedItem].title.getGlobalBounds().left, items[selectedItem].title.getGlobalBounds().top));
-		menuItemBackground.setSize(Vector2f(items[selectedItem].title.getGlobalBounds().width, items[selectedItem].title.getGlobalBounds().height));
+		menuItemBackground.setPosition(Vector2f(menuItems[selectedItem].title.getGlobalBounds().left, menuItems[selectedItem].title.getGlobalBounds().top));
+		menuItemBackground.setSize(Vector2f(menuItems[selectedItem].title.getGlobalBounds().width, menuItems[selectedItem].title.getGlobalBounds().height));
 		if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
-			(gameClass->*items[selectedItem].action)();
+			(gameClass->*menuItems[selectedItem].action)();
 			delayBetweenMenuPresses.restart();
 		}
 	}
@@ -145,7 +145,7 @@ public:
 		playerShape.setSize(Vector2f(sizeX, sizeY));
 		playerShape.setRotation(90);
 		playerShape.setPosition(Vector2f(60.f, gwindow->y / 2));
-		HPCount = 3;
+		HPAmount = 3;
 		scope.setSize(Vector2f(55, 7));
 		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
 		scope.setTexture(&ordinaryBulletScopeTexture);
@@ -327,16 +327,16 @@ public:
 };
 class Game {
 private:
-	GameWindow gameWindow;
-	Menu menu;
 	Player player;
 	Enemies enemies;
 	Texture gameBackgroundTexture;
 	RectangleShape gameBackground;
 	Clock delayBetweenEscapePresses;
 public:
+	GameWindow gameWindow;
 	Event event;
 	GAMESTATE gameState;
+	Menu menu;
 	void initWindow() {
 		gameWindow.x = 1280;
 		gameWindow.y = 720;
@@ -376,7 +376,7 @@ public:
 					}
 				}
 				for (int j = 0; j < enemies.romaBullets.size(); j++) {
-					if (ammunition->ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(enemies.romaBullets[j].bulletShape.getGlobalBounds())) {
+					if (ammunition->ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(enemies.romaBullets[j].getGlobalBounds())) {
 						ammunition->ordinaryBullets[i].state = BUL_INCARTRIDGE;
 						enemies.romaBullets.erase(enemies.romaBullets.begin() + j);
 					}
@@ -394,15 +394,15 @@ public:
 		}
 	}
 
-	void updateMenuFrame() {
+	void updateMenuFrame(Game *gameClass) {
 		menu.controlMenu();
-		menu.selectMenuItem();
+		menu.selectMenuItem(gameClass);
 		gameWindow.window.clear(Color::Black);
 		gameWindow.window.draw(menu.menuBackground);
 		gameWindow.window.draw(menu.caption);
 		gameWindow.window.draw(menu.menuItemBackground);
-		for (int i = 0; i < menu.items.size(); i++) {
-			gameWindow.window.draw(menu.items[i].title);
+		for (int i = 0; i < menu.menuItems.size(); i++) {
+			gameWindow.window.draw(menu.menuItems[i].title);
 		}
 		gameWindow.window.display();
 	}
@@ -455,9 +455,9 @@ public:
 int main() {
 	Game BG;
 	BG.initWindow();
-	BG.initMenu();
-	BG.addMenuItem("PLAY", &Game::initGame);
-	BG.addMenuItem("EXIT", &Game::exitGame);
+	BG.menu.initMenu(&BG.gameWindow);
+	BG.menu.addMenuItem("PLAY", &Game::initGame);
+	BG.menu.addMenuItem("EXIT", &Game::exitGame);
 	BG.gameState = GS_MENU;
 	while (BG.gameWindow.window.isOpen()) {
 		while (BG.gameWindow.window.pollEvent(BG.event)) {
@@ -469,7 +469,7 @@ int main() {
 		}
 		switch (BG.gameState) {
 		case GS_MENU:
-			BG.updateMenuFrame();
+			BG.updateMenuFrame(&BG);
 			break;
 		case GS_PLAY:
 			BG.updateGameFrame();
