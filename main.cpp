@@ -18,11 +18,12 @@ struct GameWindow {
 	int y;
 	String title;
 };
-struct romaEnemy {
-	CircleShape romaShape;
-	ENEMYSTATE state;
+struct romaEnemiesData {
+	bool areRomaEnemiesActive;
+	Texture romaEnemyTexture;
+	Texture romaBulletTexture;
+	Vector2f romaBulletSpeed;
 	int defaultRadius;
-	Clock fireDelay;
 };
 struct OrdinaryBullet {
 	RectangleShape bulletShape;
@@ -34,6 +35,7 @@ struct Ammunition {
 	Vector2f ordinaryBulletDefaultSpeed;
 	float ordinaryBulletSpeedVariation;
 	Clock ordinaryFireDelay;
+	Texture ordinaryBulletTexture;
 	vector <OrdinaryBullet> ordinaryBullets;
 };
 class Game;
@@ -90,20 +92,20 @@ public:
 				menu.isMenuTouched = !menu.isMenuTouched;
 			}*/
 			selectedItem--;
-			delayBetweenMenuPresses.restart();
 			if (selectedItem < 0) {
 				selectedItem = menuItems.size() - 1;
 			}
+			delayBetweenMenuPresses.restart();
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Key::S) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
 			/*if (!menu.isMenuTouched) {
 				menu.isMenuTouched = !menu.isMenuTouched;
 			}*/
 			selectedItem++;
-			delayBetweenMenuPresses.restart();
 			if (selectedItem > menuItems.size() - 1) {
 				selectedItem = 0;
 			}
+			delayBetweenMenuPresses.restart();
 		}
 	}
 	void selectMenuItem(Game *gameClass) {
@@ -120,17 +122,17 @@ private:
 	float sizeX;
 	float sizeY;
 
-	BULLETTYPE ActiveBullet;
+	BULLETTYPE selectedBullet;
+
+	int HPAmount;
 
 	Texture playertexture3HP;
 	Texture playertexture2HP;
 	Texture playertexture1HP;
-	Texture ordinaryBulletTexture;
 	Texture ordinaryBulletScopeTexture;
 public:
 	RectangleShape playerShape;
 	RectangleShape scope;
-	int HPAmount;
 	Ammunition ammunition;
 
 	void initPlayer(GameWindow *gwindow) {
@@ -141,38 +143,55 @@ public:
 		sizeX = 75.f;
 		sizeY = 40.f;
 		playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
-		playerShape.setTexture(&playertexture3HP);
 		playerShape.setSize(Vector2f(sizeX, sizeY));
 		playerShape.setRotation(90);
 		playerShape.setPosition(Vector2f(60.f, gwindow->y / 2));
-		HPAmount = 3;
+		setHP();
 		scope.setSize(Vector2f(55, 7));
 		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
 		scope.setTexture(&ordinaryBulletScopeTexture);
 		scope.setRotation(playerShape.getRotation() - 90);
 	}
 	void initAmmunition() {
-		ActiveBullet = BUL_ORDINARY;
+		selectedBullet = BUL_ORDINARY;
 		ammunition.ordinaryBullets.resize(15);
-		ordinaryBulletTexture.loadFromFile("Textures\\pchel.jpg");
+		ammunition.ordinaryBulletTexture.loadFromFile("Textures\\pchel.jpg");
 		ammunition.ordinaryBulletDefaultSpeed.x = 7; ammunition.ordinaryBulletDefaultSpeed.y = 0;
 		ammunition.ordinaryBulletSpeedVariation = ((ammunition.ordinaryBulletDefaultSpeed.x / 100) * 50) / 45;
 		for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
-			ammunition.ordinaryBullets[i].bulletShape.setTexture(&ordinaryBulletTexture);
+			ammunition.ordinaryBullets[i].bulletShape.setTexture(&ammunition.ordinaryBulletTexture);
 			ammunition.ordinaryBullets[i].bulletShape.setSize(Vector2f(30.f, 17.f));
 			ammunition.ordinaryBulletDamage = 10;
 			ammunition.ordinaryBullets[i].ordinaryBulletSpeed = ammunition.ordinaryBulletDefaultSpeed;
 			ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
 		}
 	}
+	void setHP(int requiredAmount = 3) {
+		HPAmount = requiredAmount;
+		switch (HPAmount) {
+		case 3:
+			playerShape.setTexture(&playertexture3HP);
+			break;
+		case 2:
+			playerShape.setTexture(&playertexture2HP);
+			break;
+		case 1:
+			playerShape.setTexture(&playertexture1HP);
+			break;
+		}
+	}
+	int getHPAmount() {
+		return HPAmount;
+	}
 	void controlPlayer(GameWindow *gwindow) {
+		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
+			fire();
+		}
 		if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
-			playerShape.move(0, -1.9);
-			scope.move(0, -1.9);
+			move(0, -1.9);
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < gwindow->y) {
-			playerShape.move(0, 1.9);
-			scope.move(0, 1.9);
+			move(0, 1.9);
 		}
 
 		if (Keyboard::isKeyPressed(Keyboard::Key::A) && playerShape.getRotation() > 45) {
@@ -196,8 +215,12 @@ public:
 			}
 		}
 	}
+	void move(float offsetX, float offsetY) {
+		playerShape.move(offsetX, offsetY);
+		scope.move(offsetX, offsetY);
+	}
 	void fire() {
-		switch (ActiveBullet) {
+		switch (selectedBullet) {
 		case BUL_ORDINARY:
 			for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
 				if (ammunition.ordinaryBullets[i].state == BUL_INCARTRIDGE && ammunition.ordinaryFireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
@@ -223,104 +246,61 @@ public:
 			}
 		}
 	}
-	void chekForBulletSwap() {
+	void checkForBulletSwap() {
 		if (Keyboard::isKeyPressed(Keyboard::Num1)) {
-			ActiveBullet = BUL_ORDINARY;
+			selectedBullet = BUL_ORDINARY;
 			scope.setSize(Vector2f(55, 7));
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
 			scope.setTexture(&ordinaryBulletScopeTexture);
 			scope.setRotation(playerShape.getRotation() - 90);
 		}
 	}
-	void setHPAmount(int hpAmount) {
-		switch (HPAmount) {
-		case 3:
-			playerShape.setTexture(&playertexture3HP);
-			break;
-		case 2:
-			playerShape.setTexture(&playertexture2HP);
-			break;
-		case 1:
-			playerShape.setTexture(&playertexture1HP);
-			break;
-		}
-	}
 };
-class Enemies {
+class RomaEnemy {
 private:
-	Texture romaEnemyTexture;
-	Texture romaBulletTexture;
-
-	Vector2f romaBulletSpeed;
-	bool isRomaEnemyActive;
+	ENEMYSTATE state;
+	Clock fireDelay;
 public:
-	vector <romaEnemy> romaEnemies;
+	CircleShape shape;
 	vector <RectangleShape> romaBullets;
-	void initEnemies() {
-		isRomaEnemyActive = true;
-		romaEnemyTexture.loadFromFile("Textures\\roma.jpg");
-		romaBulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
-		romaEnemies.resize(10);
-		romaBullets.clear();
-		romaBulletSpeed.x = -1; romaBulletSpeed.y = 0;
-		for (int i = 0; i < romaEnemies.size(); i++) {
-			romaEnemies[i].defaultRadius = 40;
-			romaEnemies[i].romaShape.setRadius(romaEnemies[i].defaultRadius);
-			romaEnemies[i].romaShape.setOrigin(Vector2f(romaEnemies[i].defaultRadius, romaEnemies[i].defaultRadius));
-			romaEnemies[i].romaShape.setTexture(&romaEnemyTexture);
-			romaEnemies[i].state = ENEMY_UNSPAWNED;
+	void setState(string requestedState) {
+		if (requestedState == "ENEMY_SPAWNED") {
+			state = ENEMY_SPAWNED;
+		}
+		if(requestedState == "ENEMY_UNSPAWNED") {
+			state = ENEMY_UNSPAWNED;
 		}
 	}
-	void moveEnemies() {
-		for (int i = 0; i < romaEnemies.size(); i++) {
-			if (romaEnemies[i].state == ENEMY_SPAWNED) {
-				/*if (romaEnemies[i].romaShape.getPosition().y < player.playerShape.getPosition().y) {
-					romaEnemies[i].romaShape.move(Vector2f(0, 0.05));
-				}
-				if (romaEnemies[i].romaShape.getPosition().y > player.playerShape.getPosition().y) {
-					romaEnemies[i].romaShape.move(Vector2f(0, -0.05));
-				}*/
-				// TEST
-				//romaEnemies[i].romaShape.rotate(1);
+	ENEMYSTATE getState() {
+		return state;
+	}
+	void move() {
+		if (state == ENEMY_SPAWNED) {
+			/*if (romaEnemies[i].romaShape.getPosition().y < player.playerShape.getPosition().y) {
+				romaEnemies[i].romaShape.move(Vector2f(0, 0.05));
 			}
+			if (romaEnemies[i].romaShape.getPosition().y > player.playerShape.getPosition().y) {
+				romaEnemies[i].romaShape.move(Vector2f(0, -0.05));
+			}*/
+			// TEST
+			//romaEnemies[i].romaShape.rotate(1);
 		}
 	}
-	void enemiesFire() {
-		for (int i = 0; i < romaEnemies.size(); i++) {
-			if (romaEnemies[i].state == ENEMY_SPAWNED && romaEnemies[i].fireDelay.getElapsedTime().asMilliseconds() >= 2000) {
-				RectangleShape bullet;
-				bullet.setTexture(&romaBulletTexture);
-				bullet.setSize(Vector2f(40, 22));
-				bullet.setPosition(Vector2f(romaEnemies[i].romaShape.getPosition()));
-				romaBullets.push_back(bullet);
-				romaEnemies[i].fireDelay.restart();
-			}
+	void fire(Texture *romaBulletTexture) {
+		if (state == ENEMY_SPAWNED && fireDelay.getElapsedTime().asMilliseconds() >= 2000) {
+			RectangleShape bullet;
+			bullet.setTexture(romaBulletTexture);
+			bullet.setSize(Vector2f(40, 22));
+			bullet.setPosition(Vector2f(shape.getPosition()));
+			romaBullets.push_back(bullet);
+			fireDelay.restart();
 		}
 	}
-	void moveEnemyBullets() {
+	void moveBullets(Vector2f bulletSpeed) {
 		for (int i = 0; i < romaBullets.size(); i++) {
-			romaBullets[i].move(romaBulletSpeed);
+			romaBullets[i].move(bulletSpeed);
 			if (romaBullets[i].getPosition().x + romaBullets[i].getSize().x < 0) {
 				romaBullets.erase(romaBullets.begin() + i);
-			}
-		}
-	}
-	void checkForEnemySpawn(GameWindow *gwindow) {
-		if (isRomaEnemyNeedToSpawn()) {
-			spawnRomaEnemy(gwindow);
-		}
-	}
-	bool isRomaEnemyNeedToSpawn() {
-		return (isRomaEnemyActive && rand() % 300 == 1);
-	}
-	void spawnRomaEnemy(GameWindow *gwindow) {
-		for (int i = 0; i < romaEnemies.size(); i++) {
-			if (romaEnemies[i].state == ENEMY_UNSPAWNED) {
-				romaEnemies[i].romaShape.setRadius(romaEnemies[i].defaultRadius);
-				romaEnemies[i].romaShape.setOrigin(Vector2f(romaEnemies[i].defaultRadius, romaEnemies[i].defaultRadius));
-				romaEnemies[i].romaShape.setPosition(Vector2f(gwindow->x - romaEnemies[i].defaultRadius, rand() % (gwindow->y - romaEnemies[i].defaultRadius * 4) + romaEnemies[i].defaultRadius * 2));
-				romaEnemies[i].state = ENEMY_SPAWNED;
-				return;
 			}
 		}
 	}
@@ -328,15 +308,16 @@ public:
 class Game {
 private:
 	Player player;
-	Enemies enemies;
 	Texture gameBackgroundTexture;
 	RectangleShape gameBackground;
 	Clock delayBetweenEscapePresses;
+	romaEnemiesData romaEnemiesData;
 public:
 	GameWindow gameWindow;
+	Menu menu;
 	Event event;
 	GAMESTATE gameState;
-	Menu menu;
+	vector <RomaEnemy> romaEnemies;
 	void initWindow() {
 		gameWindow.x = 1280;
 		gameWindow.y = 720;
@@ -349,48 +330,88 @@ public:
 		gameBackground.setTexture(&gameBackgroundTexture);
 		gameBackground.setSize(Vector2f(gameWindow.x, gameWindow.y));
 	}
+	void initEnemies() {
+		romaEnemiesData.areRomaEnemiesActive = true;
+		romaEnemiesData.romaEnemyTexture.loadFromFile("Textures\\roma.jpg");
+		romaEnemiesData.romaBulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
+		romaEnemies.clear();
+		romaEnemies.resize(10);
+		/*
+		*
+		*				OR
+		*
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			romaEnemies[i].romaBullets.clear();
+		}
+
+
+		*/
+		romaEnemiesData.romaBulletSpeed.x = -1; romaEnemiesData.romaBulletSpeed.y = 0;
+		romaEnemiesData.defaultRadius = 40;
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			romaEnemies[i].shape.setTexture(&romaEnemiesData.romaEnemyTexture);
+			romaEnemies[i].setState("ENEMY_UNSPAWNED");
+		}
+	}
 	void initGame() {
 		gameState = GS_PLAY;
 		initGameBackground();
 		player.initPlayer(&gameWindow);
 		player.initAmmunition();
-		enemies.initEnemies();
+		initEnemies();
 	}
 	void exitGame() {
 		gameState = GS_EXIT;
 	}
-	void checkForBulletsDamage(Ammunition *ammunition) {
-		for (int i = 0; i < ammunition->ordinaryBullets.size(); i++) {
-			if (ammunition->ordinaryBullets[i].state == BUL_INCARTRIDGE) {
-				continue;
-			}
-			else {
-				for (int j = 0; j < enemies.romaEnemies.size(); j++) {
-					if (ammunition->ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(enemies.romaEnemies[j].romaShape.getGlobalBounds()) && enemies.romaEnemies[j].state == ENEMY_SPAWNED) {
-						ammunition->ordinaryBullets[i].state = BUL_INCARTRIDGE;
-						enemies.romaEnemies[j].romaShape.setRadius(enemies.romaEnemies[j].romaShape.getRadius() - ammunition->ordinaryBulletDamage);
-						enemies.romaEnemies[j].romaShape.setOrigin(Vector2f(enemies.romaEnemies[j].romaShape.getRadius(), enemies.romaEnemies[j].romaShape.getRadius()));
-						if (enemies.romaEnemies[j].romaShape.getRadius() <= 10) {
-							enemies.romaEnemies[j].state = ENEMY_UNSPAWNED;
+	void checkForBulletsDamage() {
+		for (int i = 0; i < player.ammunition.ordinaryBullets.size(); i++) {
+			if (player.ammunition.ordinaryBullets[i].state == BUL_FIRED) {
+				for (int j = 0; j < romaEnemies.size(); j++) {
+					if (player.ammunition.ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds()) && romaEnemies[j].getState() == ENEMY_SPAWNED) {
+						player.ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
+						romaEnemies[j].shape.setRadius(romaEnemies[j].shape.getRadius() - player.ammunition.ordinaryBulletDamage);
+						romaEnemies[j].shape.setOrigin(Vector2f(romaEnemies[j].shape.getRadius(), romaEnemies[j].shape.getRadius()));
+						if (romaEnemies[j].shape.getRadius() <= 10) {
+							romaEnemies[j].setState("ENEMY_UNSPAWNED");
 						}
 					}
-				}
-				for (int j = 0; j < enemies.romaBullets.size(); j++) {
-					if (ammunition->ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(enemies.romaBullets[j].getGlobalBounds())) {
-						ammunition->ordinaryBullets[i].state = BUL_INCARTRIDGE;
-						enemies.romaBullets.erase(enemies.romaBullets.begin() + j);
+					for (int k = 0; k < romaEnemies[j].romaBullets.size(); k++) {
+						if (player.ammunition.ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].romaBullets[k].getGlobalBounds())) {
+							player.ammunition.ordinaryBullets[i].state = BUL_INCARTRIDGE;
+							romaEnemies[j].romaBullets.erase(romaEnemies[j].romaBullets.begin() + k);
+						}
 					}
 				}
 			}
 		}
 	}
 	void checkForPlayerCollisions() {
-		for (int i = 0; i < enemies.romaBullets.size(); i++) {
-			if (player.playerShape.getGlobalBounds().intersects(enemies.romaBullets[i].getGlobalBounds())) {
-				player.HPAmount--;
-				player.setHPAmount(player.HPAmount);
-				enemies.romaBullets.erase(enemies.romaBullets.begin() + i);
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			for (int j = 0; j < romaEnemies[i].romaBullets.size(); j++) {
+				if (player.playerShape.getGlobalBounds().intersects(romaEnemies[i].romaBullets[j].getGlobalBounds())) {
+					player.setHP(player.getHPAmount() - 1);
+					romaEnemies[i].romaBullets.erase(romaEnemies[i].romaBullets.begin() + j);
+				}
 			}
+		}
+	}
+	bool isRomaEnemyNeedToSpawn() {
+		return (romaEnemiesData.areRomaEnemiesActive == true && rand() % 300 == 1);
+	}
+	void spawnRomaEnemy() {
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			if (romaEnemies[i].getState() == ENEMY_UNSPAWNED) {
+				romaEnemies[i].shape.setRadius(romaEnemiesData.defaultRadius);
+				romaEnemies[i].shape.setOrigin(Vector2f(romaEnemiesData.defaultRadius, romaEnemiesData.defaultRadius));
+				romaEnemies[i].shape.setPosition(Vector2f(gameWindow.x - romaEnemiesData.defaultRadius, rand() % (gameWindow.y - romaEnemiesData.defaultRadius * 4) + romaEnemiesData.defaultRadius * 2));
+				romaEnemies[i].setState("ENEMY_SPAWNED");
+				return;
+			}
+		}
+	}
+	void checkForEnemiesSpawn() {
+		if (isRomaEnemyNeedToSpawn()) {
+			spawnRomaEnemy();
 		}
 	}
 
@@ -415,23 +436,21 @@ public:
 			}
 		}
 
-		if (player.HPAmount <= 0) {
+		if (player.getHPAmount() <= 0) {
 			gameState = GS_MENU;
 		}
 		player.controlPlayer(&gameWindow);
-		player.chekForBulletSwap();
-		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
-			player.fire();
-		}
+		player.checkForBulletSwap();
 		player.moveBullets(&gameWindow);
 
-		enemies.checkForEnemySpawn(&gameWindow);
-		enemies.moveEnemies();
-		enemies.enemiesFire();
-		enemies.moveEnemyBullets();
+		checkForEnemiesSpawn();
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			romaEnemies[i].fire(&romaEnemiesData.romaBulletTexture);
+			romaEnemies[i].moveBullets(romaEnemiesData.romaBulletSpeed);
+		}
 
 		checkForPlayerCollisions();
-		checkForBulletsDamage(&player.ammunition);
+		checkForBulletsDamage();
 		gameWindow.window.clear();
 		gameWindow.window.draw(gameBackground);
 		for (int i = 0; i < player.ammunition.ordinaryBullets.size(); i++) {
@@ -439,14 +458,14 @@ public:
 				gameWindow.window.draw(player.ammunition.ordinaryBullets[i].bulletShape);
 			}
 		}
-		for (int i = 0; i < enemies.romaBullets.size(); i++) {
-			gameWindow.window.draw(enemies.romaBullets[i]);
-		}
 		gameWindow.window.draw(player.scope);
 		gameWindow.window.draw(player.playerShape);
-		for (int i = 0; i < enemies.romaEnemies.size(); i++) {
-			if (enemies.romaEnemies[i].state == ENEMY_SPAWNED) {
-				gameWindow.window.draw(enemies.romaEnemies[i].romaShape);
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			if (romaEnemies[i].getState() == ENEMY_SPAWNED) {
+				gameWindow.window.draw(romaEnemies[i].shape);
+			}
+			for (int j = 0; j < romaEnemies[i].romaBullets.size(); j++) {
+				gameWindow.window.draw(romaEnemies[i].romaBullets[j]);
 			}
 		}
 		gameWindow.window.display();
