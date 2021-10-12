@@ -146,7 +146,7 @@ public:
 		playerShape.setRotation(90);
 		playerShape.setPosition(Vector2f(60.f, gwindow->y / 2));
 		setHP();
-		scope.setSize(Vector2f(55, 7));
+		scope.setSize(Vector2f(55, 15));
 		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - scope.getSize().y / 2));
 		scope.setTexture(&ordinaryBulletScopeTexture);
 		scope.setRotation(playerShape.getRotation() - 90);
