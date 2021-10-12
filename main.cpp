@@ -1,6 +1,5 @@
 ﻿#include <SFML/Graphics.hpp>
 #include <iostream>
-#include <conio.h>
 #include <vector>
 #include <string>
 #include <cmath>
@@ -224,8 +223,9 @@ public:
 		case BUL_ORDINARY:
 			for (int i = 0; i < ammunition.ordinaryBullets.size(); i++) {
 				if (ammunition.ordinaryBullets[i].state == BUL_INCARTRIDGE && ammunition.ordinaryFireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
+					int x = ceilf(sizeX);
 					ammunition.ordinaryBullets[i].bulletShape.setRotation(playerShape.getRotation() - 90);
-					ammunition.ordinaryBullets[i].bulletShape.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y - ammunition.ordinaryBullets[i].bulletShape.getSize().y / 2));
+					ammunition.ordinaryBullets[i].bulletShape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % x) + playerShape.getPosition().y - playerShape.getOrigin().x - ammunition.ordinaryBullets[i].bulletShape.getSize().y / 2));
 					ammunition.ordinaryBullets[i].ordinaryBulletSpeed.x = ammunition.ordinaryBulletDefaultSpeed.x; ammunition.ordinaryBullets[i].ordinaryBulletSpeed.y = ammunition.ordinaryBulletDefaultSpeed.y;
 					ammunition.ordinaryBullets[i].state = BUL_FIRED;
 					ammunition.ordinaryFireDelay.restart();
@@ -346,7 +346,7 @@ public:
 
 
 		*/
-		romaEnemiesData.romaBulletSpeed.x = -1; romaEnemiesData.romaBulletSpeed.y = 0;
+		romaEnemiesData.romaBulletSpeed.x = -1.5; romaEnemiesData.romaBulletSpeed.y = 0;
 		romaEnemiesData.defaultRadius = 40;
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			romaEnemies[i].shape.setTexture(&romaEnemiesData.romaEnemyTexture);
@@ -461,11 +461,11 @@ public:
 		gameWindow.window.draw(player.scope);
 		gameWindow.window.draw(player.playerShape);
 		for (int i = 0; i < romaEnemies.size(); i++) {
-			if (romaEnemies[i].getState() == ENEMY_SPAWNED) {
-				gameWindow.window.draw(romaEnemies[i].shape);
-			}
 			for (int j = 0; j < romaEnemies[i].romaBullets.size(); j++) {
 				gameWindow.window.draw(romaEnemies[i].romaBullets[j]);
+			}
+			if (romaEnemies[i].getState() == ENEMY_SPAWNED) {
+				gameWindow.window.draw(romaEnemies[i].shape);
 			}
 		}
 		gameWindow.window.display();
