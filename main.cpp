@@ -870,7 +870,6 @@ int main() {
 				break;
 			}
 		}
-		int num = 1;
 		switch (BG.gameState) {
 		case GS_MENU:
 			BG.updateMenuFrame(&BG);
