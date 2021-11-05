@@ -185,7 +185,7 @@ public:
 	}
 	void initAmmunition() {
 		selectedBullet = BULT_ORDINARY;
-		ammo.ordinaryBullets.resize(10);
+		ammo.ordinaryBullets.resize(1);
 		ammo.ordinaryBulletData.texture.loadFromFile("Textures\\pchel.jpg");
 		ammo.ordinaryBulletData.damage = 10;
 		ammo.ordinaryBulletData.defaultSpeed.x = 7; ammo.ordinaryBulletData.defaultSpeed.y = 0;
@@ -195,10 +195,10 @@ public:
 			ammo.ordinaryBullets[i].bulletShape.setSize(Vector2f(30.f, 17.f));
 			ammo.ordinaryBullets[i].state = BULS_INCARTRIDGE;
 		}
-		ammo.splittingBullets.resize(5);
+		ammo.splittingBullets.resize(1);
 		ammo.splittingBulletData.texture.loadFromFile("Textures\\splittingBulletTexture.png");
-		ammo.splittingBulletData.defaultDamage = 26;
-		ammo.splittingBulletData.defaultRadius = 26;
+		ammo.splittingBulletData.defaultDamage = 25;
+		ammo.splittingBulletData.defaultRadius = 25;
 		ammo.splittingBulletData.defaultSpeed.x = 3; ammo.splittingBulletData.defaultSpeed.y = 0;
 		ammo.splittingBulletData.speedVariation = ((ammo.splittingBulletData.defaultSpeed.x / 100) * 50) / 45;
 		for(int i = 0; i < ammo.splittingBullets.size(); i++) {
@@ -500,11 +500,11 @@ public:
 			//romaEnemies[i].romaShape.rotate(1);
 		}
 	}
-	bool needToShoot() {
+	bool isNeedToShoot() {
 		return state == ES_SPAWNED && fireDelay.getElapsedTime().asMilliseconds() >= 1500;
 	}
 	void fire(Texture *romaBulletTexture) {
-		if (needToShoot()) {
+		if (isNeedToShoot()) {
 			RectangleShape bullet;
 			bullet.setTexture(romaBulletTexture);
 			bullet.setSize(Vector2f(40, 22));
@@ -524,6 +524,9 @@ public:
 	void takeDamage(int damage) {
 		shape.setRadius(shape.getRadius() - damage);
 		shape.setOrigin(Vector2f(shape.getRadius(), shape.getRadius()));
+	}
+	void die() {
+		state = ES_UNSPAWNED;
 	}
 };
 class Game {
@@ -584,70 +587,6 @@ public:
 	void exitGame() {
 		gameState = GS_EXIT;
 	}
-	bool isBulletTouchEnemy(BULLETTYPE bulletType, ENEMYTYPE enemyType, int bulletIndex, int enemyIndex) {
-		switch (bulletType) {
-		case BULT_ORDINARY:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.ordinaryBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].shape.getGlobalBounds());
-				break;
-			}
-			break;
-		case BULT_SPLITTING:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.splittingBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].shape.getGlobalBounds());
-				break;
-			}
-			break;
-		case BULT_SPLITTED:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.splittedBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].shape.getGlobalBounds());
-				break;
-			}
-			break;
-		case BULT_TWICESPLITTED:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.twiceSplittedBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].shape.getGlobalBounds());
-				break;
-			}
-			break;
-		}
-	}
-	bool isBulletTouchEnemyBullet(BULLETTYPE bulletType, ENEMYTYPE enemyType, int bulletIndex, int enemyIndex, int enemyBulletIndex) {
-		switch (bulletType) {
-		case BULT_ORDINARY:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.ordinaryBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].romaBullets[enemyBulletIndex].getGlobalBounds());
-				break;
-			}
-			break;
-		case BULT_SPLITTING:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.splittingBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].romaBullets[enemyBulletIndex].getGlobalBounds());
-				break;
-			}
-			break;
-		case BULT_SPLITTED:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.splittedBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].romaBullets[enemyBulletIndex].getGlobalBounds());
-				break;
-			}
-			break;
-		case BULT_TWICESPLITTED:
-			switch (enemyType) {
-			case ET_ROMA:
-				return player.ammo.twiceSplittedBullets[bulletIndex].bulletShape.getGlobalBounds().intersects(romaEnemies[enemyIndex].romaBullets[enemyBulletIndex].getGlobalBounds());
-				break;
-			}
-			break;
-		}
-	}
 	bool isEnemyDead(ENEMYTYPE enemyType, int enemyIndex) {
 		switch (enemyType) {
 		case ET_ROMA:
@@ -655,46 +594,48 @@ public:
 			break;
 		}
 	}
-	void checkForBulletsDamage() {
-		//ORDINARY BULLETS
+	void checkForOrdinaryBulletCollisions() {
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			if (player.ammo.ordinaryBullets[i].state == BULS_FIRED) {
 				for (int j = 0; j < romaEnemies.size(); j++) {
 					if (romaEnemies[j].getState() == ES_SPAWNED) {
-						if (isBulletTouchEnemy(BULT_ORDINARY, ET_ROMA, i, j)) {
+						if (player.ammo.ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 							player.ammo.ordinaryBullets[i].state = BULS_INCARTRIDGE;
 							romaEnemies[j].takeDamage(player.ammo.ordinaryBulletData.damage);
 							if (isEnemyDead(ET_ROMA, j)) {
-								romaEnemies[j].setState("ENEMY_UNSPAWNED");
+								romaEnemies[j].die();
 							}
 						}
 					}
-					for (int k = 0; k < romaEnemies[j].romaBullets.size(); k++) {
-						if (isBulletTouchEnemyBullet(BULT_ORDINARY, ET_ROMA, i, j, k)) {
-							player.ammo.ordinaryBullets[i].state = BULS_INCARTRIDGE;
-							romaEnemies[j].romaBullets.erase(romaEnemies[j].romaBullets.begin() + k);
+					if (player.ammo.ordinaryBullets[i].state == BULS_FIRED) {
+						for (int k = 0; k < romaEnemies[j].romaBullets.size(); k++) {
+							if (player.ammo.ordinaryBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].romaBullets[k].getGlobalBounds())) {
+								player.ammo.ordinaryBullets[i].state = BULS_INCARTRIDGE;
+								romaEnemies[j].romaBullets.erase(romaEnemies[j].romaBullets.begin() + k);
+							}
 						}
 					}
 				}
 			}
 		}
-		//SPLITTING BULLETS
+	}
+	void checkForSplittingBulletCollisions() {
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			if (player.ammo.splittingBullets[i].state == BULS_FIRED) {
 				for (int j = 0; j < romaEnemies.size(); j++) {
 					if (romaEnemies[j].getState() == ES_SPAWNED) {
-						if (isBulletTouchEnemy(BULT_SPLITTING, ET_ROMA, i, j)) {
+						if (player.ammo.splittingBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 							romaEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 							player.splitBullet(&player.ammo.splittingBullets[i]);
 							player.ammo.splittingBullets[i].state = BULS_INCARTRIDGE;
 							if (isEnemyDead(ET_ROMA, j)) {
-								romaEnemies[j].setState("ENEMY_UNSPAWNED");
+								romaEnemies[j].die();
 							}
 						}
 					}
 					if (player.ammo.splittingBullets[i].state == BULS_FIRED) {
 						for (int k = 0; k < romaEnemies[j].romaBullets.size(); k++) {
-							if (isBulletTouchEnemyBullet(BULT_SPLITTING, ET_ROMA, i, j, k)) {
+							if (player.ammo.splittingBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].romaBullets[k].getGlobalBounds())) {
 								player.ammo.splittingBullets[i].state = BULS_INCARTRIDGE;
 								player.splitBullet(&player.ammo.splittingBullets[i]);
 								romaEnemies[j].romaBullets.erase(romaEnemies[j].romaBullets.begin() + k);
@@ -704,22 +645,23 @@ public:
 				}
 			}
 		}
-		//SPLITTED BULLETS
+	}
+	void checkForSplittedBulletCollisions() {
 		for (int j = 0; j < romaEnemies.size(); j++) {
 			for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 				if (romaEnemies[j].getState() == ES_SPAWNED) {
-					if (isBulletTouchEnemy(BULT_SPLITTED, ET_ROMA, i, j)) {
+					if (player.ammo.splittedBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 						romaEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 						player.splitBullet(&player.ammo.splittedBullets[i]);
 						player.ammo.splittedBullets.erase(player.ammo.splittedBullets.begin() + i);
 						if (isEnemyDead(ET_ROMA, j)) {
-							romaEnemies[j].setState("ENEMY_UNSPAWNED");
+							romaEnemies[j].die();
 						}
 						continue;
 					}
 				}
 				for (int k = 0; k < romaEnemies[j].romaBullets.size(); k++) {
-					if (isBulletTouchEnemyBullet(BULT_SPLITTED, ET_ROMA, i, j, k)) {
+					if (player.ammo.splittedBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].romaBullets[k].getGlobalBounds())) {
 						player.splitBullet(&player.ammo.splittedBullets[i]);
 						player.ammo.splittedBullets.erase(player.ammo.splittedBullets.begin() + i);
 						romaEnemies[j].romaBullets.erase(romaEnemies[j].romaBullets.begin() + k);
@@ -728,21 +670,22 @@ public:
 				}
 			}
 		}
-		//TWICE SPLITTED BULLETS
+	}
+	void checkForTwiceSplittedBulletCollisions() {
 		for (int j = 0; j < romaEnemies.size(); j++) {
 			for (int i = 0; i < player.ammo.twiceSplittedBullets.size(); i++) {
 				if (romaEnemies[j].getState() == ES_SPAWNED) {
-					if (isBulletTouchEnemy(BULT_TWICESPLITTED, ET_ROMA, i, j)) {
+					if (player.ammo.twiceSplittedBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 						romaEnemies[j].takeDamage(player.ammo.twiceSplittedBullets[i].damage);
 						player.ammo.twiceSplittedBullets.erase(player.ammo.twiceSplittedBullets.begin() + i);
 						if (isEnemyDead(ET_ROMA, j)) {
-							romaEnemies[j].setState("ENEMY_UNSPAWNED");
+							romaEnemies[j].die();
 						}
 						continue;
 					}
 				}
 				for (int k = 0; k < romaEnemies[j].romaBullets.size(); k++) {
-					if (isBulletTouchEnemyBullet(BULT_TWICESPLITTED, ET_ROMA, i, j, k)) {
+					if (player.ammo.twiceSplittedBullets[i].bulletShape.getGlobalBounds().intersects(romaEnemies[j].romaBullets[k].getGlobalBounds())) {
 						player.ammo.twiceSplittedBullets.erase(player.ammo.twiceSplittedBullets.begin() + i);
 						romaEnemies[j].romaBullets.erase(romaEnemies[j].romaBullets.begin() + k);
 						break;
@@ -750,6 +693,12 @@ public:
 				}
 			}
 		}
+	}
+	void checkForBulletsCollisions() {
+		checkForOrdinaryBulletCollisions();
+		checkForSplittingBulletCollisions();
+		checkForSplittedBulletCollisions();
+		checkForTwiceSplittedBulletCollisions();
 	}
 	void checkForPlayerCollisions() {
 		for (int i = 0; i < romaEnemies.size(); i++) {
@@ -816,7 +765,7 @@ public:
 		}
 
 		checkForPlayerCollisions();
-		checkForBulletsDamage();
+		checkForBulletsCollisions();
 		gameWindow.window.clear();
 		gameWindow.window.draw(gameBackground);
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
