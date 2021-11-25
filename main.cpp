@@ -13,9 +13,10 @@ using namespace sf;
 using namespace std;
 
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
-enum ENEMYSTATE { ES_MOVING, ES_UNSPAWNED, ES_SPAWN_ANIM };
+enum ENEMYSTATE { ES_MOVING, ES_UNSPAWNED, ES_SPAWN_ANIM, ES_STANDING };
 enum ENEMYTYPE { ET_ROMA };
 enum BULLETTYPE { BULT_ORDINARY, BULT_SPLITTING, BULT_SPLITTED};
+enum ROCKENEMYSIDE {S_UP, S_DOWN};
 
 struct GameWindow {
 	RenderWindow window;
@@ -23,6 +24,10 @@ struct GameWindow {
 	int y;
 	String title;
 };
+
+//////////////
+//ENEMIES DATA
+//////////////
 struct RomaEnemiesData {
 	bool areRomaEnemiesActive;
 	Texture romaEnemyTexture;
@@ -30,6 +35,16 @@ struct RomaEnemiesData {
 	Vector2f romaBulletSpeed;
 	int defaultRadius;
 };
+struct RockEnemyData {
+	bool areRockEnemiesActive;
+	Texture rockEnemyTexture;
+	Texture rockBulletTexture;
+	int defaultRadius;
+};
+
+/////////////////////
+//PLAYER BULLETS DATA
+/////////////////////
 struct OrdinaryBulletData {
 	int damage;
 	Vector2f defaultSpeed;
@@ -46,7 +61,9 @@ struct SplittingBulletData {
 	Texture texture;
 };
 
-
+////////////////////////
+//PLAYER BULLETS CLASSES
+////////////////////////
 class OrdinaryBullet {
 public:
 	RectangleShape shape;
@@ -463,6 +480,9 @@ public:
 		if (state == "ES_SPAWN_ANIM") {
 			this->state = ES_SPAWN_ANIM;
 		}
+		if (state == "ES_STANDING") {
+			this->state = ES_STANDING;
+		}
 	}
 	ENEMYSTATE getState() {
 		return state;
@@ -481,6 +501,10 @@ public:
 		state = ES_UNSPAWNED;
 	}
 };
+
+///////////////
+//ENEMY CLASSES
+///////////////
 class RomaEnemy : public Enemy{
 public:
 	int spawnCoordX;
@@ -523,6 +547,55 @@ public:
 		}
 	}
 };
+class RockEnemy : public Enemy {
+public:
+	ROCKENEMYSIDE side;
+	int spawnCoordY;
+	vector <CircleShape> bullets;
+	void fire(Texture *rockBullettexture) {
+		CircleShape bullet;
+		bullet.setTexture(rockBullettexture);
+		bullet.setRadius(10);
+		bullet.setPosition(Vector2f(shape.getPosition()));
+		bullet.setOrigin(bullet.getRadius(), bullet.getRadius());
+		bullets.push_back(bullet);
+		fireClock.restart();
+	}
+	void moveBullets(Vector2f *bulletSpeed, GameWindow *gwindow) {
+		for (int i = 0; i < bullets.size(); i++) {
+			bullets[i].move(*bulletSpeed);
+			if (bullets[i].getPosition().x + bullets[i].getRadius() < 0 ||
+				bullets[i].getPosition().y + bullets[i].getRadius() < 0 ||
+				bullets[i].getPosition().y + bullets[i].getRadius() > gwindow->y) {
+				bullets.erase(bullets.begin() + i);
+			}
+		}
+	}
+	void spawnAnimation() {
+		switch (side) {
+		case S_UP:
+			if (shape.getPosition().y != spawnCoordY) {
+				shape.move(-1, 1);
+			}
+			else {
+				setState("ES_STANDING");
+				fireClock.restart();
+			}
+			break;
+		case S_DOWN:
+			if (shape.getPosition().y != spawnCoordY) {
+				shape.move(-1, -1);
+			}
+			else {
+				setState("ES_STANDING");
+				fireClock.restart();
+			}
+			break;
+		}
+	}
+};
+
+
 class Game {
 private:
 	Player player;
@@ -542,7 +615,7 @@ public:
 	void debugging() {
 		//cout << endl << player.ammo.ordinaryBullets.size() << setw(5) << player.ammo.splittingBullets.size() << setw(5) << player.ammo.splittedBullets.size();
 		//cout << endl << setw(10) << player.playerShape.getRotation();
-		cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
+		//cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
 	}
 	void initWindow() {
 		gameWindow.x = 1280;
@@ -552,13 +625,13 @@ public:
 		gameWindow.window.setFramerateLimit(240);
 	}
 	void initGameBackground() {
-		gameBackgroundTexture.loadFromFile("Textures\\background.jpg");
+		gameBackgroundTexture.loadFromFile("Textures\\background.png");
 		gameBackground.setTexture(&gameBackgroundTexture);
 		gameBackground.setSize(Vector2f(gameWindow.x, gameWindow.y));
 	}
 	void initEnemies() {
 		romaEnemiesData.areRomaEnemiesActive = true;
-		romaEnemiesData.romaEnemyTexture.loadFromFile("Textures\\roma.jpg");
+		romaEnemiesData.romaEnemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
 		romaEnemiesData.romaBulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
 		romaEnemiesData.romaBulletSpeed = { -1, 0 };
 		romaEnemiesData.defaultRadius = 40;
