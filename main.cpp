@@ -6,7 +6,6 @@
 #include <iomanip>
 #include <windows.h>
 #include <cassert>
-#include <thread>
 #include <cstdlib>
 #include <ctime>
 using namespace sf;
@@ -211,7 +210,7 @@ private:
 public:
 	RectangleShape playerShape;
 	RectangleShape scope;
-	Ammunition ammo;
+	Ammunition ammo;									//ammo contains bulletsData and bullets themselves
 
 	void initPlayer(GameWindow *gwindow) {
 		playertexture3HP.loadFromFile("Textures\\playerTexture3HP.jpg");
@@ -221,9 +220,8 @@ public:
 		splittingBulletScopeTexture.loadFromFile("Textures\\splittingBulletScopeTexture.png");
 		sizeX = 75;
 		sizeY = 40;
-		playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
 		playerShape.setSize(Vector2f(sizeX, sizeY));
-		playerShape.setRotation(90);
+		playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
 		playerShape.setPosition(Vector2f(60.f, gwindow->y / 2));
 		setHP();
 		scope.setSize(Vector2f(55, 15));
@@ -231,20 +229,19 @@ public:
 		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 		scope.setTextureRect(IntRect(0, 0, 55, 15));
 		scope.setTexture(&ordinaryBulletScopeTexture);
-		scope.setRotation(playerShape.getRotation() - 90);
 	}
 	void initAmmunition() {
 		selectedBullet = BULT_ORDINARY;
 		ammo.ordinaryBulletData.texture.loadFromFile("Textures\\pchel.jpg");
 		ammo.ordinaryBulletData.damage = 10;
 		ammo.ordinaryBulletData.defaultSpeed = { 7, 0 };
-		ammo.ordinaryBulletData.speedVariation = ((ammo.ordinaryBulletData.defaultSpeed.x / 100) * 70) / 63;
+		ammo.ordinaryBulletData.speedVariation = ammo.ordinaryBulletData.defaultSpeed.x / 90;
 
 		ammo.splittingBulletData.texture.loadFromFile("Textures\\splittingBulletTexture.png");
 		ammo.splittingBulletData.defaultDamage = 25;
 		ammo.splittingBulletData.defaultRadius = 25;
 		ammo.splittingBulletData.defaultSpeed = { 5, 0 };
-		ammo.splittingBulletData.speedVariation = ((ammo.splittingBulletData.defaultSpeed.x / 100) * 70) / 63;
+		ammo.splittingBulletData.speedVariation = ammo.splittingBulletData.defaultSpeed.x / 90;
 
 		ammo.ordinaryBullets.clear();
 		ammo.splittingBullets.clear();
@@ -267,69 +264,69 @@ public:
 	int getHPAmount() {
 		return HPAmount;
 	}
-	void controlPlayer(GameWindow *gwindow) {
+	void rotateToMouse(Vector2f coords) {
+		playerShape.setRotation((atan2(playerShape.getPosition().y - coords.y, playerShape.getPosition().x - coords.x)) * 180 / 3.14159265 - 90);
+		scope.setRotation(playerShape.getRotation() - 90);
+		rotateGun();
+	}
+	void controlPlayer(GameWindow *gwindow, Vector2f coords) {
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
-			fire();
+			fire(coords);
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
-			move(0, -1.7);
+			move({ 0, -1.7 });
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < gwindow->y) {
-			move(0, 1.7);
+			move({ 0, 1.7 });
 		}
 
-		if (Keyboard::isKeyPressed(Keyboard::Key::A) && playerShape.getRotation() > 63) {
-			rotateGun("left");
-			rotatePlayer(-1);
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Key::D) && playerShape.getRotation() < 117) {
-			rotateGun("right");
-			rotatePlayer(1);
-		}
+		rotateToMouse(coords);
 	}
-	void move(float offsetX, float offsetY) {
-		playerShape.move(offsetX, offsetY);
-		scope.move(offsetX, offsetY);
+	void move(Vector2f offset) {
+		playerShape.move(offset);
+		scope.move(offset);
 	}
-	void rotatePlayer(float angle) {
-		playerShape.rotate(angle);
-		scope.rotate(angle);
-	}
-	void rotateGun(string direction) {
-		if (direction == "left") {
-			if (playerShape.getRotation() <= 90) {
-				ammo.ordinaryBulletData.defaultSpeed.x -= ammo.ordinaryBulletData.speedVariation;
-				ammo.splittingBulletData.defaultSpeed.x -= ammo.splittingBulletData.speedVariation;
-			}
-			else {
-				ammo.ordinaryBulletData.defaultSpeed.x += ammo.ordinaryBulletData.speedVariation;
-				ammo.splittingBulletData.defaultSpeed.x += ammo.splittingBulletData.speedVariation;
-			}
-			ammo.ordinaryBulletData.defaultSpeed.y -= ammo.ordinaryBulletData.speedVariation;
-			ammo.splittingBulletData.defaultSpeed.y -= ammo.splittingBulletData.speedVariation;
+	void rotateGun() {
+		float rotation = playerShape.getRotation();
+		if (rotation >= 0 && rotation <= 90) {
+			ammo.ordinaryBulletData.defaultSpeed.x = rotation * ammo.ordinaryBulletData.speedVariation;
+			ammo.ordinaryBulletData.defaultSpeed.y = (90 - rotation) * -ammo.ordinaryBulletData.speedVariation;
+
+			ammo.splittingBulletData.defaultSpeed.x = rotation * ammo.splittingBulletData.speedVariation;
+			ammo.splittingBulletData.defaultSpeed.y = (90 - rotation) * -ammo.splittingBulletData.speedVariation;
 		}
-		if (direction == "right") {
-			if (playerShape.getRotation() >= 90) {
-				ammo.ordinaryBulletData.defaultSpeed.x -= ammo.ordinaryBulletData.speedVariation;
-				ammo.splittingBulletData.defaultSpeed.x -= ammo.splittingBulletData.speedVariation;
-			}
-			else {
-				ammo.ordinaryBulletData.defaultSpeed.x += ammo.ordinaryBulletData.speedVariation;
-				ammo.splittingBulletData.defaultSpeed.x += ammo.splittingBulletData.speedVariation;
-			}
-			ammo.ordinaryBulletData.defaultSpeed.y += ammo.ordinaryBulletData.speedVariation;
-			ammo.splittingBulletData.defaultSpeed.y += ammo.splittingBulletData.speedVariation;
+		if (rotation > 90 && rotation <= 180) {
+			ammo.ordinaryBulletData.defaultSpeed.x = (180 - rotation) * ammo.ordinaryBulletData.speedVariation;
+			ammo.ordinaryBulletData.defaultSpeed.y = (rotation - 90) * ammo.ordinaryBulletData.speedVariation;
+
+			ammo.splittingBulletData.defaultSpeed.x = (180 - rotation) * ammo.splittingBulletData.speedVariation;
+			ammo.splittingBulletData.defaultSpeed.y = (rotation - 90) * ammo.splittingBulletData.speedVariation;
+		}
+		if (rotation > 180 && rotation <= 270) {
+			ammo.ordinaryBulletData.defaultSpeed.x = (rotation - 180) * -ammo.ordinaryBulletData.speedVariation;
+			ammo.ordinaryBulletData.defaultSpeed.y = (270 - rotation) * ammo.ordinaryBulletData.speedVariation;
+
+			ammo.splittingBulletData.defaultSpeed.x = (rotation - 180) * -ammo.splittingBulletData.speedVariation;
+			ammo.splittingBulletData.defaultSpeed.y = (270 - rotation) * ammo.splittingBulletData.speedVariation;
+		}
+		if (rotation > 270 && rotation < 360) {
+			ammo.ordinaryBulletData.defaultSpeed.x = (360 - rotation) * -ammo.ordinaryBulletData.speedVariation;
+			ammo.ordinaryBulletData.defaultSpeed.y = (rotation - 270) * -ammo.ordinaryBulletData.speedVariation;
+
+			ammo.splittingBulletData.defaultSpeed.x = (360 - rotation) * -ammo.splittingBulletData.speedVariation;
+			ammo.splittingBulletData.defaultSpeed.y = (rotation - 270) * -ammo.splittingBulletData.speedVariation;
 		}
 	}
-	void fire() {
+	void fire(Vector2f coords) {
 		switch (selectedBullet) {
 		case BULT_ORDINARY:
-			if (ammo.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
+			if (ammo.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 200 /*Delay between shots*/) {
 				OrdinaryBullet bullet;
 				bullet.shape.setSize(Vector2f(30.f, 17.f));
 				bullet.shape.setTexture(&ammo.ordinaryBulletData.texture);
+				bullet.shape.setOrigin(Vector2f(bullet.shape.getSize().x / 2.f, bullet.shape.getSize().y / 2.f));
+				bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % sizeX) + playerShape.getPosition().y - playerShape.getOrigin().x));
 				bullet.shape.setRotation(playerShape.getRotation() - 90);
-				bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % sizeX) + playerShape.getPosition().y - playerShape.getOrigin().x - bullet.shape.getSize().y / 2));
 				bullet.speed = ammo.ordinaryBulletData.defaultSpeed;
 				ammo.ordinaryBullets.push_back(bullet);
 				ammo.ordinaryBulletData.fireDelay.restart();
@@ -337,13 +334,13 @@ public:
 			}
 			break;
 		case BULT_SPLITTING:
-			if (ammo.splittingBulletData.fireDelay.getElapsedTime().asMilliseconds() > 300) {
+			if (ammo.splittingBulletData.fireDelay.getElapsedTime().asMilliseconds() > 400 /*Delay between shots*/) {
 				SplittingBullet bullet;
 				bullet.shape.setRadius(ammo.splittingBulletData.defaultRadius);
 				bullet.shape.setTexture(&ammo.splittingBulletData.texture);
 				bullet.shape.setOrigin(Vector2f(ammo.splittingBulletData.defaultRadius, ammo.splittingBulletData.defaultRadius));
-				bullet.shape.setRotation(playerShape.getRotation());
 				bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
+				bullet.shape.setRotation(playerShape.getRotation());
 				bullet.damage = ammo.splittingBulletData.defaultDamage;
 				bullet.speed = ammo.splittingBulletData.defaultSpeed;
 				ammo.splittingBullets.push_back(bullet);
@@ -392,7 +389,7 @@ public:
 
 		ammo.splittedBullets.push_back(splittedBullet);
 	}
-	void splitBullet(SplittedBullet* splittedBullet) {
+	void splitBullet(SplittedBullet *splittedBullet) {
 		if (splittedBullet->levelOfSplit < 2) {
 			SplittedBullet twiceSplittedBullet;
 			twiceSplittedBullet.shape.setTexture(&ammo.splittingBulletData.texture);
@@ -454,7 +451,6 @@ public:
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			scope.setTextureRect(IntRect(0, 0, 55, 15));
 			scope.setTexture(&ordinaryBulletScopeTexture);
-			scope.setRotation(playerShape.getRotation() - 90);
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Num2)) {
 			selectedBullet = BULT_SPLITTING;
@@ -463,7 +459,6 @@ public:
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			scope.setTextureRect(IntRect(0, 0, 55, 29));
 			scope.setTexture(&splittingBulletScopeTexture);
-			scope.setRotation(playerShape.getRotation() - 90);
 		}
 	}
 };
@@ -566,7 +561,6 @@ public:
 	Texture* bulletTxtrPtr;
 	Vector2f defaultBulletSpeed;
 	float bulletSpeedVariation;
-	RectangleShape gunsight;
 	bool isNeedToShoot() {
 		return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
 	}
@@ -581,16 +575,7 @@ public:
 		fireClock.restart();
 	}
 	void takeTarget(Vector2f coords) {
-		while (!gunsight.getGlobalBounds().contains(coords)) {
-			if (gunsight.getRotation() <= 270 && gunsight.getRotation() >= 180) {
-				defaultBulletSpeed.x += bulletSpeedVariation;
-			}
-			else if(gunsight.getRotation() <= 359){
-				defaultBulletSpeed.x -= bulletSpeedVariation;
-			}
-			shape.rotate(1);
-			gunsight.rotate(1);
-		}
+		shape.setRotation((atan2(shape.getPosition().y - coords.y, shape.getPosition().x - coords.x)) * 180 / 3.14159265);
 	}
 	void moveBullets(GameWindow *gwindow) {
 		for (int i = 0; i < bullets.size(); i++) {
@@ -607,7 +592,6 @@ public:
 		case S_UP:
 			if (static_cast<int>(shape.getPosition().y) != destinationCoordY) {
 				shape.move(-0.5, 1);
-				gunsight.move(-0.5, 1);
 			}
 			else {
 				setState("ES_STANDING");
@@ -617,7 +601,6 @@ public:
 		case S_DOWN:
 			if (static_cast<int>(shape.getPosition().y) != destinationCoordY) {
 				shape.move(-0.5, -1);
-				gunsight.move(-0.5, -1);
 			}
 			else {
 				setState("ES_STANDING");
@@ -648,10 +631,10 @@ public:
 		initWindow();
 	}
 	void debugging() {
-		cout << rockEnemies[0].shape.getRotation() << "\n";
-		//cout << endl << player.ammo.ordinaryBullets.size() << setw(5) << player.ammo.splittingBullets.size() << setw(5) << player.ammo.splittedBullets.size();
-		//cout << endl << setw(10) << player.playerShape.getRotation();
+		//cout << rockEnemies[0].shape.getRotation() << "\n";
+		cout << setw(10) << player.playerShape.getRotation();
 		//cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
+		cout << "\n" << player.ammo.splittingBulletData.defaultSpeed.y;
 	}
 	void initWindow() {
 		gameWindow.x = 1280;
@@ -693,11 +676,9 @@ public:
 		for (int i = 0; i < rockEnemies.size(); i++) {
 			rockEnemies[i].shape.setTexture(&rockEnemiesData.enemyTexture);
 			rockEnemies[i].bulletTxtrPtr = &rockEnemiesData.bulletTexture;
-			rockEnemies[i].fireDelayAsMilliseconds = 500;
+			rockEnemies[i].fireDelayAsMilliseconds = 1000;
 			rockEnemies[i].minRadius = 7;
 			rockEnemies[i].shape.setRotation(0);
-			rockEnemies[i].gunsight.setSize(Vector2f(gameWindow.x, 1));
-			rockEnemies[i].gunsight.setOrigin(Vector2f(gameWindow.x, 0.5));
 			rockEnemies[i].defaultBulletSpeed = { -1, 0 };
 			rockEnemies[i].bulletSpeedVariation = rockEnemies[i].defaultBulletSpeed.x / 90;
 			rockEnemies[i].setState("ES_UNSPAWNED");
@@ -834,7 +815,6 @@ public:
 					rockEnemies[i].destinationCoordY = 0 + rockEnemies[i].shape.getRadius();
 					break;
 				}
-				rockEnemies[i].gunsight.setPosition(rockEnemies[i].shape.getPosition());
 				rockEnemies[i].setState("ES_MOVING");
 				return;
 			}
@@ -842,7 +822,7 @@ public:
 	}
 	void checkForEnemiesSpawn() {
 		if (isRomaEnemyNeedToSpawn()) {
-			spawnRomaEnemy();
+			//spawnRomaEnemy();
 		}
 		if (isRockEnemyNeedToSpawn()) {
 			spawnRockEnemy();
@@ -853,7 +833,7 @@ public:
 		if (player.getHPAmount() <= 0) {
 			gameState = GS_MENU;
 		}
-		player.controlPlayer(&gameWindow);
+		player.controlPlayer(&gameWindow, static_cast<Vector2f>(Mouse::getPosition(gameWindow.window)));
 		player.checkForBulletSwap();
 	}
 	void updatePlayerBullets() {
@@ -884,6 +864,7 @@ public:
 	}
 	void updateEnemies() {
 		checkForEnemiesSpawn();
+		//ROMA ENEMIES
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			if (romaEnemies[i].isNeedToShoot()) {
 				romaEnemies[i].fire();
@@ -896,13 +877,16 @@ public:
 			}
 			romaEnemies[i].moveBullets(&romaEnemiesData.bulletSpeed);
 		}
+		//ROCK ENEMIES
 		for (int i = 0; i < rockEnemies.size(); i++) {
-			rockEnemies[i].takeTarget(player.playerShape.getPosition());
 			if (rockEnemies[i].isNeedToShoot()) {
-				rockEnemies[i].fire();
+				//rockEnemies[i].fire();
 			}
 			if (rockEnemies[i].getState() == ES_MOVING) {
 				rockEnemies[i].move();
+			}
+			if (rockEnemies[i].getState() != ES_UNSPAWNED) {
+				rockEnemies[i].takeTarget(player.playerShape.getPosition());
 			}
 			rockEnemies[i].moveBullets(&gameWindow);
 		}
@@ -961,14 +945,16 @@ public:
 			}
 		}
 
-		debugging();
-
 		updatePlayer();
 		updatePlayerBullets();
 		updateEnemies();
 		checkForPlayerCollisions();
 		checkForBulletsCollisions();
 		drawNewFrame();
+
+		debugging();
+
+
 	}
 };
 int main() {
