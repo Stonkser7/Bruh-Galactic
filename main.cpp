@@ -695,7 +695,8 @@ public:
 	void debugging() {
 		//cout << rockEnemies[0].shape.getRotation() << "\n";
 		//cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
-		cout << "\n" << "ordinary speed X : " << player.ammoData.ordinaryBulletData.defaultSpeed.x << "  Y : " << player.ammoData.ordinaryBulletData.defaultSpeed.y << "     " << "splitting speed X : " << player.ammoData.splittingBulletData.defaultSpeed.x << "  Y : " << player.ammoData.splittingBulletData.defaultSpeed.y;
+		//cout << "\n" << player.playerShape.getRotation();
+		//cout << "\n" << "ordinary speed X : " << player.ammoData.ordinaryBulletData.defaultSpeed.x << "  Y : " << player.ammoData.ordinaryBulletData.defaultSpeed.y << "     " << "splitting speed X : " << player.ammoData.splittingBulletData.defaultSpeed.x << "  Y : " << player.ammoData.splittingBulletData.defaultSpeed.y;
 	}
 
 	void initWindow() {
@@ -746,11 +747,12 @@ public:
 	}
 	
 	void checkForOrdinaryBulletCollisions() {
+		vector <bool> bulletsToDelete(player.ammo.ordinaryBullets.size());
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			//ROMA ENEMIES
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
-					player.deleteBullet(BULT_ORDINARY, i);
+					bulletsToDelete[i] = true;
 					romaEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 					if (!romaEnemies[j].isAlive()) {
 						romaEnemies.erase(romaEnemies.begin() + j);
@@ -759,26 +761,32 @@ public:
 				}
 			}
 			//ROMA BULLETS
-			/*for (int k = 0; k < romaBullets.size(); k++) {
+			for (int k = 0; k < romaBullets.size(); k++) {
 				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
-					player.deleteBullet(BULT_ORDINARY, i);
+					bulletsToDelete[i] = true;
 					romaBullets.erase(romaBullets.begin() + k);
-					i--;
+					break;
 				}
-			}*/
-		}
+			}
+			//ROCK ENEMIES
 
-		//ROCK ENEMIES
+		}
+		for (int i = 0; i < bulletsToDelete.size(); i++) {
+			if (bulletsToDelete[i] == true) {
+				player.deleteBullet(BULT_ORDINARY, i);
+			}
+		}
 	}
 	
 	void checkForSplittingBulletCollisions() {
+		vector <bool> bulletsToDelete(player.ammo.splittingBullets.size());
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			//ROMA ENEMIES
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					romaEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 					player.splitBullet(&player.ammo.splittingBullets[i]);
-					player.deleteBullet(BULT_SPLITTING, i);
+					bulletsToDelete[i] = true;
 					if (!romaEnemies[j].isAlive()) {
 						romaEnemies.erase(romaEnemies.begin() + j);
 					}
@@ -786,39 +794,54 @@ public:
 				}
 			}
 			//ROMA BULLETS
-			/*for (int k = 0; k < romaBullets.size(); k++) {
+			for (int k = 0; k < romaBullets.size(); k++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittingBullets[i]);
-					player.deleteBullet(BULT_SPLITTING, i);
+					bulletsToDelete[i] = true;
 					romaBullets.erase(romaBullets.begin() + k);
-					i--;
+					break;
 				}
-			}*/
+			}
+			//ROCK ENEMY
+
+		}
+		for (int i = 0; i < bulletsToDelete.size(); i++) {
+			if (bulletsToDelete[i] == true) {
+				player.deleteBullet(BULT_SPLITTING, i);
+			}
 		}
 	}
 	
 	void checkForSplittedBulletCollisions() {
+		vector <bool> bulletsToDelete(player.ammo.splittedBullets.size());						/////////////////////////////////////////////////					ДОДЕЛЫВАЙ, ИНАЧЕ НЕ ПОЕШЬ(надо оптимизацию коллизии кщё сделать потом)
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			//ROMA ENEMIES
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					romaEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 					player.splitBullet(&player.ammo.splittedBullets[i]);
-					player.deleteBullet(BULT_SPLITTED, i);
+					bulletsToDelete[i] = true;
 					if (!romaEnemies[j].isAlive()) {
 						romaEnemies.erase(romaEnemies.begin() + j);
 					}
 					break;
 				}
-				//RPMA BULLETS
-				/*for (int k = 0; k < romaBullets.size(); k++) {
-					if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
-						player.splitBullet(&player.ammo.splittedBullets[i]);
-						player.deleteBullet(BULT_SPLITTED, i);
-						romaBullets.erase(romaBullets.begin() + k);
-						i--;
-					}
-				}*/
+			}
+			//ROMA BULLETS
+			for (int k = 0; k < romaBullets.size(); k++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
+					player.splitBullet(&player.ammo.splittedBullets[i]);
+					bulletsToDelete[i] = true;
+					romaBullets.erase(romaBullets.begin() + k);
+					break;
+				}
+			}
+			//ROCK ENEMY
+
+		}
+		for (int i = 0; i < bulletsToDelete.size(); i++) {
+			if (bulletsToDelete[i] == true) {
+				player.deleteBullet(BULT_SPLITTED, i);
 			}
 		}
 	}
