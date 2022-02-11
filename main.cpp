@@ -6,7 +6,6 @@
 #include <iomanip>
 #include <windows.h>
 #include <cassert>
-#include <cstdlib>
 #include <ctime>
 using namespace sf;
 using namespace std;
@@ -204,8 +203,8 @@ public:
 };
 class Player {
 private:
-	int sizeX;
-	int sizeY;
+	float sizeX;
+	float sizeY;
 
 	BULLETTYPE selectedBullet;
 
@@ -353,12 +352,12 @@ public:
 		rotateGun();							//rotation only when player is shooting(optimization reason)
 		switch (selectedBullet) {
 		case BULT_ORDINARY:
-			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 50 /*Delay between shots*/) {
+			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 70 /*Delay between shots*/) {
 				OrdinaryBullet bullet;
 				bullet.shape.setSize(Vector2f(30.f, 17.f));
 				bullet.shape.setTexture(&ammoData.ordinaryBulletData.texture);
 				bullet.shape.setOrigin(Vector2f(bullet.shape.getSize().x / 2.f, bullet.shape.getSize().y / 2.f));
-				bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % sizeX) + playerShape.getPosition().y - playerShape.getOrigin().x));
+				bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % static_cast<int>(sizeX)) + playerShape.getPosition().y - playerShape.getOrigin().x));
 				bullet.shape.setRotation(playerShape.getRotation() - 90);
 				bullet.speed = ammoData.ordinaryBulletData.defaultSpeed;
 				ammo.ordinaryBullets.push_back(bullet);
@@ -536,7 +535,7 @@ public:
 ///////////////
 //ENEMY CLASSES
 ///////////////
-class Enemy {
+class CircleEnemy {
 private:
 	ENEMYSTATE state;
 public:
@@ -571,7 +570,7 @@ public:
 	}
 
 };
-class RomaEnemy : public Enemy{
+class RomaEnemy : public CircleEnemy {
 public:
 	int spawnCoordX;
 	int destinationCoordY;
@@ -595,7 +594,7 @@ public:
 		}
 	}
 	
-	bool isNeedToShoot() {
+	bool isNeedToFire() {
 		return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
 	}
 	
@@ -618,7 +617,7 @@ public:
 		}
 	}
 };
-class RockEnemy : public Enemy {
+class RockEnemy : public CircleEnemy {
 public:
 	ROCKENEMYSIDE side;
 	int destinationCoordY;					//defining when spawnRockEnemy() invoking
@@ -626,7 +625,7 @@ public:
 	Vector2f defaultBulletSpeed;
 	float bulletSpeedVariation;
 	
-	bool isNeedToShoot() {
+	bool isNeedToFire() {
 		return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
 	}
 	
@@ -637,6 +636,11 @@ public:
 		bullet.shape.setPosition(Vector2f(shape.getPosition()));
 		bullet.shape.setOrigin(bullet.shape.getRadius(), bullet.shape.getRadius());
 		bullet.speed = defaultBulletSpeed;
+
+
+		//need to set up rockBullet speed here
+
+
 		fireClock.restart();
 		return bullet;
 	}
@@ -720,7 +724,7 @@ public:
 		romaData.enemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
 		romaData.bulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
 		romaData.bulletSpeed = { -0.7, 0 };
-		romaData.defaultRadius = 40;
+		romaData.defaultRadius = 50;
 		romaEnemies.clear();
 		romaBullets.clear();
 
@@ -729,7 +733,7 @@ public:
 		rockData.maxAmount = 10;
 		rockData.enemyTexture.loadFromFile("Textures\\rockEnemy.png");
 		rockData.bulletTexture.loadFromFile("Textures\\rockEnemyBulletTexture.png");
-		rockData.defaultRadius = 30;
+		rockData.defaultRadius = 40;
 		rockEnemies.clear();
 		rockBullets.clear();
 	}
@@ -768,7 +772,28 @@ public:
 					break;
 				}
 			}
+
+
+
 			//ROCK ENEMIES
+			for (int j = 0; j < rockEnemies.size(); j++) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
+					bulletsToDelete[i] = true;
+					rockEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
+					if (!rockEnemies[j].isAlive()) {
+						rockEnemies.erase(rockEnemies.begin() + j);
+					}
+					break;
+				}
+			}
+			//ROCK BULLETS
+			for (int k = 0; k < rockBullets.size(); k++) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockBullets[k].shape.getGlobalBounds())) {
+					bulletsToDelete[i] = true;
+					rockBullets.erase(rockBullets.begin() + k);
+					break;
+				}
+			}
 
 		}
 		for (int i = 0; i < bulletsToDelete.size(); i++) {
@@ -802,7 +827,32 @@ public:
 					break;
 				}
 			}
+
+
+
 			//ROCK ENEMY
+			for (int j = 0; j < rockEnemies.size(); j++) {
+				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
+					rockEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
+					player.splitBullet(&player.ammo.splittingBullets[i]);
+					bulletsToDelete[i] = true;
+					if (!rockEnemies[j].isAlive()) {
+						rockEnemies.erase(rockEnemies.begin() + j);
+					}
+					break;
+				}
+			}
+			//ROCK BULLETS
+			for (int k = 0; k < rockBullets.size(); k++) {
+				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockBullets[k].shape.getGlobalBounds())) {
+					player.splitBullet(&player.ammo.splittingBullets[i]);
+					bulletsToDelete[i] = true;
+					rockBullets.erase(rockBullets.begin() + k);
+					break;
+				}
+			}
+
+
 
 		}
 		for (int i = 0; i < bulletsToDelete.size(); i++) {
@@ -836,7 +886,32 @@ public:
 					break;
 				}
 			}
+
+
+
 			//ROCK ENEMY
+			for (int j = 0; j < rockEnemies.size(); j++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
+					rockEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
+					player.splitBullet(&player.ammo.splittedBullets[i]);
+					bulletsToDelete[i] = true;
+					if (!rockEnemies[j].isAlive()) {
+						rockEnemies.erase(rockEnemies.begin() + j);
+					}
+					break;
+				}
+			}
+			//ROCK BULLETS
+			for (int k = 0; k < rockBullets.size(); k++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockBullets[k].shape.getGlobalBounds())) {
+					player.splitBullet(&player.ammo.splittedBullets[i]);
+					bulletsToDelete[i] = true;
+					rockBullets.erase(rockBullets.begin() + k);
+					break;
+				}
+			}
+
+
 
 		}
 		for (int i = 0; i < bulletsToDelete.size(); i++) {
@@ -888,8 +963,8 @@ public:
 		RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
-		rock.fireDelayAsMilliseconds = 1000;
-		rock.minRadius = 7;
+		rock.fireDelayAsMilliseconds = 700;
+		rock.minRadius = 15;
 		rock.shape.setRotation(0);
 		rock.defaultBulletSpeed = { -1, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
@@ -912,29 +987,10 @@ public:
 	
 	void checkForEnemiesSpawn() {
 		if (isRomaEnemyNeedToSpawn()) {
-			spawnRomaEnemy();
+			//spawnRomaEnemy();
 		}
 		if (isRockEnemyNeedToSpawn()) {
-			//spawnRockEnemy();
-		}
-	}
-
-	void moveEnemyBullets() {
-		//ROMA BULLETS
-		for (int i = 0; i < romaBullets.size(); i++) {
-			romaBullets[i].move(romaData.bulletSpeed);
-			if (romaBullets[i].getPosition().x + romaBullets[i].getSize().x < 0) {
-				romaBullets.erase(romaBullets.begin() + i);
-			}
-		}
-		//ROCK BULLETS
-		for (int i = 0; i < rockBullets.size(); i++) {
-			rockBullets[i].shape.move(rockBullets[i].speed);
-			if (rockBullets[i].shape.getPosition().x + rockBullets[i].shape.getRadius() < 0 ||
-				rockBullets[i].shape.getPosition().y + rockBullets[i].shape.getRadius() < 0 ||
-				rockBullets[i].shape.getPosition().y + rockBullets[i].shape.getRadius() > gameWindow.y) {
-				rockBullets.erase(rockBullets.begin() + i);
-			}
+			spawnRockEnemy();
 		}
 	}
 
@@ -975,7 +1031,7 @@ public:
 		checkForEnemiesSpawn();
 		//ROMA ENEMIES
 		for (int i = 0; i < romaEnemies.size(); i++) {
-			if (romaEnemies[i].isNeedToShoot()) {
+			if (romaEnemies[i].isNeedToFire()) {
 				romaBullets.push_back(romaEnemies[i].fire());
 			}
 			if (romaEnemies[i].getState() == ES_SPAWN_ANIM) {
@@ -987,13 +1043,31 @@ public:
 		}
 		//ROCK ENEMIES
 		for (int i = 0; i < rockEnemies.size(); i++) {
-			if (rockEnemies[i].isNeedToShoot()) {
-				//rockBullets.push_back(rockEnemies[i].fire());
+			if (rockEnemies[i].isNeedToFire()) {
+				rockBullets.push_back(rockEnemies[i].fire());
 			}
 			if (rockEnemies[i].getState() == ES_MOVING) {
 				rockEnemies[i].move();
 			}
 			rockEnemies[i].takeTarget(player.playerShape.getPosition());
+		}
+	}
+	void moveEnemyBullets() {
+		//ROMA BULLETS
+		for (int i = 0; i < romaBullets.size(); i++) {
+			romaBullets[i].move(romaData.bulletSpeed);
+			if (romaBullets[i].getPosition().x + romaBullets[i].getSize().x < 0) {
+				romaBullets.erase(romaBullets.begin() + i);
+			}
+		}
+		//ROCK BULLETS
+		for (int i = 0; i < rockBullets.size(); i++) {
+			rockBullets[i].shape.move(rockBullets[i].speed);
+			if (rockBullets[i].shape.getPosition().x + rockBullets[i].shape.getRadius() < 0 ||
+				rockBullets[i].shape.getPosition().y + rockBullets[i].shape.getRadius() < 0 ||
+				rockBullets[i].shape.getPosition().y + rockBullets[i].shape.getRadius() > gameWindow.y) {
+				rockBullets.erase(rockBullets.begin() + i);
+			}
 		}
 	}
 	void drawNewFrame() {
