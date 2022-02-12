@@ -18,8 +18,8 @@ enum ROCKENEMYSIDE {S_UP, S_DOWN};
 
 struct GameWindow {
 	RenderWindow window;
-	int x;
-	int y;
+	unsigned short int x;
+	unsigned short int y;
 	String title;
 };
 
@@ -257,6 +257,10 @@ public:
 		ammo.ordinaryBullets.clear();
 		ammo.splittingBullets.clear();
 		ammo.splittedBullets.clear();
+
+		ammo.ordinaryBullets.shrink_to_fit();
+		ammo.splittingBullets.shrink_to_fit();
+		ammo.splittedBullets.shrink_to_fit();
 	}
 	
 	void setHP(int requiredAmount = 3) {
@@ -727,6 +731,8 @@ public:
 		romaData.defaultRadius = 50;
 		romaEnemies.clear();
 		romaBullets.clear();
+		romaEnemies.shrink_to_fit();
+		romaBullets.shrink_to_fit();
 
 		//INITIALIZATION ROCK ENEMY
 		rockData.areActive = true;
@@ -736,6 +742,8 @@ public:
 		rockData.defaultRadius = 40;
 		rockEnemies.clear();
 		rockBullets.clear();
+		rockEnemies.shrink_to_fit();
+		rockBullets.shrink_to_fit();
 	}
 
 	void initGame() {
@@ -749,14 +757,14 @@ public:
 	void exitGame() {
 		gameState = GS_EXIT;
 	}
-	
-	void checkForOrdinaryBulletCollisions() {
-		vector <bool> bulletsToDelete(player.ammo.ordinaryBullets.size());
-		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+
+	/////////////////////////////////////////////////					ДОДЕЛЫВАЙ, ИНАЧЕ НЕ ПОЕШЬ(надо оптимизацию коллизии кщё сделать потом)
+	void checkForOrdinaryBulletsCollision() {
 			//ROMA ENEMIES
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
-					bulletsToDelete[i] = true;
+					player.deleteBullet(BULT_ORDINARY, i);
 					romaEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 					if (!romaEnemies[j].isAlive()) {
 						romaEnemies.erase(romaEnemies.begin() + j);
@@ -764,21 +772,25 @@ public:
 					break;
 				}
 			}
+		}
 			//ROMA BULLETS
-			for (int k = 0; k < romaBullets.size(); k++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
-					bulletsToDelete[i] = true;
-					romaBullets.erase(romaBullets.begin() + k);
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+			for (int j = 0; j < romaBullets.size(); j++) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
+					player.deleteBullet(BULT_ORDINARY, i);
+					romaBullets.erase(romaBullets.begin() + j);
 					break;
 				}
 			}
+		}
 
 
 
 			//ROCK ENEMIES
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
 				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
-					bulletsToDelete[i] = true;
+					player.deleteBullet(BULT_ORDINARY, i);
 					rockEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 					if (!rockEnemies[j].isAlive()) {
 						rockEnemies.erase(rockEnemies.begin() + j);
@@ -786,145 +798,136 @@ public:
 					break;
 				}
 			}
+		}
 			//ROCK BULLETS
-			for (int k = 0; k < rockBullets.size(); k++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockBullets[k].shape.getGlobalBounds())) {
-					bulletsToDelete[i] = true;
-					rockBullets.erase(rockBullets.begin() + k);
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+			for (int j = 0; j < rockBullets.size(); j++) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
+					player.deleteBullet(BULT_ORDINARY, i);
+					rockBullets.erase(rockBullets.begin() + j);
 					break;
 				}
-			}
-
-		}
-		for (int i = 0; i < bulletsToDelete.size(); i++) {
-			if (bulletsToDelete[i] == true) {
-				player.deleteBullet(BULT_ORDINARY, i);
 			}
 		}
 	}
 	
-	void checkForSplittingBulletCollisions() {
-		vector <bool> bulletsToDelete(player.ammo.splittingBullets.size());
-		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+	void checkForSplittingBulletsCollision() {
 			//ROMA ENEMIES
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					romaEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 					player.splitBullet(&player.ammo.splittingBullets[i]);
-					bulletsToDelete[i] = true;
+					player.deleteBullet(BULT_SPLITTING, i);
 					if (!romaEnemies[j].isAlive()) {
 						romaEnemies.erase(romaEnemies.begin() + j);
 					}
 					break;
 				}
 			}
+		}
 			//ROMA BULLETS
-			for (int k = 0; k < romaBullets.size(); k++) {
-				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+			for (int j = 0; j < romaBullets.size(); j++) {
+				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittingBullets[i]);
-					bulletsToDelete[i] = true;
-					romaBullets.erase(romaBullets.begin() + k);
+					player.deleteBullet(BULT_SPLITTING, i);
+					romaBullets.erase(romaBullets.begin() + j);
 					break;
 				}
 			}
+		}
 
 
 
 			//ROCK ENEMY
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
 					rockEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 					player.splitBullet(&player.ammo.splittingBullets[i]);
-					bulletsToDelete[i] = true;
+					player.deleteBullet(BULT_SPLITTING, i);
 					if (!rockEnemies[j].isAlive()) {
 						rockEnemies.erase(rockEnemies.begin() + j);
 					}
 					break;
 				}
 			}
+		}
 			//ROCK BULLETS
-			for (int k = 0; k < rockBullets.size(); k++) {
-				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockBullets[k].shape.getGlobalBounds())) {
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+			for (int j = 0; j < rockBullets.size(); j++) {
+				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittingBullets[i]);
-					bulletsToDelete[i] = true;
-					rockBullets.erase(rockBullets.begin() + k);
+					player.deleteBullet(BULT_SPLITTING, i);
+					rockBullets.erase(rockBullets.begin() + j);
 					break;
 				}
-			}
-
-
-
-		}
-		for (int i = 0; i < bulletsToDelete.size(); i++) {
-			if (bulletsToDelete[i] == true) {
-				player.deleteBullet(BULT_SPLITTING, i);
 			}
 		}
 	}
 	
-	void checkForSplittedBulletCollisions() {
-		vector <bool> bulletsToDelete(player.ammo.splittedBullets.size());						/////////////////////////////////////////////////					ДОДЕЛЫВАЙ, ИНАЧЕ НЕ ПОЕШЬ(надо оптимизацию коллизии кщё сделать потом)
-		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+	void checkForSplittedBulletsCollision() {			
 			//ROMA ENEMIES
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					romaEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 					player.splitBullet(&player.ammo.splittedBullets[i]);
-					bulletsToDelete[i] = true;
+					player.deleteBullet(BULT_SPLITTED, i);
 					if (!romaEnemies[j].isAlive()) {
 						romaEnemies.erase(romaEnemies.begin() + j);
 					}
 					break;
 				}
 			}
+		}
 			//ROMA BULLETS
-			for (int k = 0; k < romaBullets.size(); k++) {
-				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaBullets[k].getGlobalBounds())) {
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			for (int j = 0; j < romaBullets.size(); j++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittedBullets[i]);
-					bulletsToDelete[i] = true;
-					romaBullets.erase(romaBullets.begin() + k);
+					player.deleteBullet(BULT_SPLITTED, i);
+					romaBullets.erase(romaBullets.begin() + j);
 					break;
 				}
 			}
+		}
 
 
 
 			//ROCK ENEMY
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
 					rockEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 					player.splitBullet(&player.ammo.splittedBullets[i]);
-					bulletsToDelete[i] = true;
+					player.deleteBullet(BULT_SPLITTED, i);
 					if (!rockEnemies[j].isAlive()) {
 						rockEnemies.erase(rockEnemies.begin() + j);
 					}
 					break;
 				}
 			}
+		}
 			//ROCK BULLETS
-			for (int k = 0; k < rockBullets.size(); k++) {
-				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockBullets[k].shape.getGlobalBounds())) {
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			for (int j = 0; j < rockBullets.size(); j++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittedBullets[i]);
-					bulletsToDelete[i] = true;
-					rockBullets.erase(rockBullets.begin() + k);
+					player.deleteBullet(BULT_SPLITTED, i);
+					rockBullets.erase(rockBullets.begin() + j);
 					break;
 				}
 			}
-
-
-
-		}
-		for (int i = 0; i < bulletsToDelete.size(); i++) {
-			if (bulletsToDelete[i] == true) {
-				player.deleteBullet(BULT_SPLITTED, i);
-			}
 		}
 	}
-	
+
+
 	void checkForBulletsCollisions() {
-		checkForOrdinaryBulletCollisions();
-		checkForSplittingBulletCollisions();
-		checkForSplittedBulletCollisions();
+		checkForOrdinaryBulletsCollision();
+		checkForSplittingBulletsCollision();
+		checkForSplittedBulletsCollision();
 	}
 	
 	void checkForPlayerCollisions() {
