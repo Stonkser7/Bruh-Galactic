@@ -4,7 +4,6 @@
 #include <string>
 #include <cmath>
 #include <iomanip>
-#include <windows.h>
 #include <cassert>
 #include <ctime>
 using namespace sf;
@@ -254,13 +253,9 @@ public:
 		ammoData.splittingBulletData.defaultSpeed = { 5, 0 };
 		ammoData.splittingBulletData.speedVariation = ammoData.splittingBulletData.defaultSpeed.x / 90;
 
-		ammo.ordinaryBullets.clear();
-		ammo.splittingBullets.clear();
-		ammo.splittedBullets.clear();
-
-		ammo.ordinaryBullets.shrink_to_fit();
-		ammo.splittingBullets.shrink_to_fit();
-		ammo.splittedBullets.shrink_to_fit();
+		ammo.ordinaryBullets.clear();	ammo.ordinaryBullets.shrink_to_fit();
+		ammo.splittingBullets.clear();	ammo.splittingBullets.shrink_to_fit();
+		ammo.splittedBullets.clear();	ammo.splittedBullets.shrink_to_fit();
 	}
 	
 	void setHP(int requiredAmount = 3) {
@@ -370,7 +365,7 @@ public:
 			}
 			break;
 		case BULT_SPLITTING:
-			if (ammoData.splittingBulletData.fireDelay.getElapsedTime().asMilliseconds() > 100 /*Delay between shots*/) {
+			if (ammoData.splittingBulletData.fireDelay.getElapsedTime().asMilliseconds() > 200 /*Delay between shots*/) {
 				SplittingBullet bullet;
 				bullet.shape.setRadius(ammoData.splittingBulletData.defaultRadius);
 				bullet.shape.setTexture(&ammoData.splittingBulletData.texture);
@@ -442,7 +437,6 @@ public:
 
 		ammo.splittedBullets.push_back(splittedBullet);
 	}
-	
 	void splitBullet(SplittedBullet *splittedBullet) {
 		if (splittedBullet->levelOfSplit < 2) {
 			SplittedBullet twiceSplittedBullet;
@@ -632,6 +626,27 @@ public:
 	bool isNeedToFire() {
 		return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
 	}
+
+	void rotateGun() {
+		shape.rotate(-90);
+		float rotation = shape.getRotation();
+		if (rotation >= 0 && rotation <= 90) {
+			defaultBulletSpeed.x = rotation * bulletSpeedVariation;
+			defaultBulletSpeed.y = (90 - rotation) * -bulletSpeedVariation;
+		}
+		if (rotation > 90 && rotation <= 180) {
+			defaultBulletSpeed.x = (180 - rotation) * bulletSpeedVariation;
+			defaultBulletSpeed.y = (rotation - 90) * bulletSpeedVariation;
+		}
+		if (rotation > 180 && rotation <= 270) {
+			defaultBulletSpeed.x = (rotation - 180) * -bulletSpeedVariation;
+			defaultBulletSpeed.y = (270 - rotation) * bulletSpeedVariation;
+		}
+		if (rotation > 270 && rotation < 360) {
+			defaultBulletSpeed.x = (360 - rotation) * -bulletSpeedVariation;
+			defaultBulletSpeed.y = (rotation - 270) * -bulletSpeedVariation;
+		}
+	}
 	
 	RockEnemyBullet fire() {
 		RockEnemyBullet bullet;
@@ -639,12 +654,8 @@ public:
 		bullet.shape.setRadius(15);
 		bullet.shape.setPosition(Vector2f(shape.getPosition()));
 		bullet.shape.setOrigin(bullet.shape.getRadius(), bullet.shape.getRadius());
+		rotateGun();
 		bullet.speed = defaultBulletSpeed;
-
-
-		//need to set up rockBullet speed here
-
-
 		fireClock.restart();
 		return bullet;
 	}
@@ -657,7 +668,7 @@ public:
 		switch (side) {
 		case S_UP:
 			if (static_cast<int>(shape.getPosition().y) != destinationCoordY) {
-				shape.move(-0.3, 0.4);
+				shape.move(-0.3, 0.5);
 			}
 			else {
 				setState("ES_STANDING");
@@ -666,7 +677,7 @@ public:
 			break;
 		case S_DOWN:
 			if (static_cast<int>(shape.getPosition().y) != destinationCoordY) {
-				shape.move(-0.3, -0.4);
+				shape.move(-0.3, -0.5);
 			}
 			else {
 				setState("ES_STANDING");
@@ -705,6 +716,13 @@ public:
 		//cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
 		//cout << "\n" << player.playerShape.getRotation();
 		//cout << "\n" << "ordinary speed X : " << player.ammoData.ordinaryBulletData.defaultSpeed.x << "  Y : " << player.ammoData.ordinaryBulletData.defaultSpeed.y << "     " << "splitting speed X : " << player.ammoData.splittingBulletData.defaultSpeed.x << "  Y : " << player.ammoData.splittingBulletData.defaultSpeed.y;
+		/*if (!rockBullets.empty()) {
+			cout << endl << "speed.x : " << rockBullets[0].speed.x << "   " << "speed.y : " << rockBullets[0].speed.y;
+		}*/
+		/*if (!rockEnemies.empty()) {
+			cout << endl << rockEnemies[0].shape.getRotation();
+		}*/
+		cout << endl << rockBullets.size();
 	}
 
 	void initWindow() {
@@ -724,15 +742,13 @@ public:
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
 		romaData.areActive = true;
-		romaData.maxAmount = 1;
+		romaData.maxAmount = 10;
 		romaData.enemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
 		romaData.bulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
-		romaData.bulletSpeed = { -0.7, 0 };
+		romaData.bulletSpeed = { -1, 0 };
 		romaData.defaultRadius = 50;
-		romaEnemies.clear();
-		romaBullets.clear();
-		romaEnemies.shrink_to_fit();
-		romaBullets.shrink_to_fit();
+		romaEnemies.clear();	romaEnemies.shrink_to_fit();
+		romaBullets.clear();	romaBullets.shrink_to_fit();
 
 		//INITIALIZATION ROCK ENEMY
 		rockData.areActive = true;
@@ -740,10 +756,8 @@ public:
 		rockData.enemyTexture.loadFromFile("Textures\\rockEnemy.png");
 		rockData.bulletTexture.loadFromFile("Textures\\rockEnemyBulletTexture.png");
 		rockData.defaultRadius = 40;
-		rockEnemies.clear();
-		rockBullets.clear();
-		rockEnemies.shrink_to_fit();
-		rockBullets.shrink_to_fit();
+		rockEnemies.clear();	rockEnemies.shrink_to_fit();
+		rockBullets.clear();	rockBullets.shrink_to_fit();
 	}
 
 	void initGame() {
@@ -931,10 +945,18 @@ public:
 	}
 	
 	void checkForPlayerCollisions() {
+		//ROMA BULLETS
 		for (int i = 0; i < romaBullets.size(); i++) {
 			if (player.playerShape.getGlobalBounds().intersects(romaBullets[i].getGlobalBounds())) {
 				player.setHP(player.getHPAmount() - 1);
 				romaBullets.erase(romaBullets.begin() + i);
+			}
+		}
+		//ROCK BULLETS
+		for (int i = 0; i < rockBullets.size(); i++) {
+			if (player.playerShape.getGlobalBounds().intersects(rockBullets[i].shape.getGlobalBounds())) {
+				player.setHP(player.getHPAmount() - 1);
+				rockBullets.erase(rockBullets.begin() + i);
 			}
 		}
 	}
@@ -947,7 +969,7 @@ public:
 		RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 1000;
+		roma.fireDelayAsMilliseconds = 1600;
 		roma.minRadius = 10;
 		roma.spawnCoordX = gameWindow.x - romaData.defaultRadius;
 		roma.generateDestinationY(&gameWindow);
@@ -966,10 +988,10 @@ public:
 		RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
-		rock.fireDelayAsMilliseconds = 700;
+		rock.fireDelayAsMilliseconds = 2300;
 		rock.minRadius = 15;
 		rock.shape.setRotation(0);
-		rock.defaultBulletSpeed = { -1, 0 };
+		rock.defaultBulletSpeed = { 1.7, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
 		rock.shape.setRadius(rockData.defaultRadius);
 		rock.shape.setOrigin(rockData.defaultRadius, rockData.defaultRadius);
