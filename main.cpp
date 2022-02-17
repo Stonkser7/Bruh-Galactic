@@ -879,9 +879,6 @@ public:
 				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					rockEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
-					if (!rockEnemies[j].isAlive()) {
-						rockEnemies.erase(rockEnemies.begin() + j);
-					}
 					break;
 				}
 			}
@@ -892,6 +889,16 @@ public:
 				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					rockBullets.erase(rockBullets.begin() + j);
+					break;
+				}
+			}
+		}
+			//ELECTRO ENEMIES
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+			for (int j = 0; j < electroEnemies.size(); j++) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+					player.deleteBullet(BULT_ORDINARY, i);
+					electroEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 					break;
 				}
 			}
@@ -946,6 +953,16 @@ public:
 				}
 			}
 		}
+		//ELECTRO ENEMIES
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+			for (int j = 0; j < electroEnemies.size(); j++) {
+				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+					electroEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
+					player.deleteBullet(BULT_SPLITTING, i);
+					break;
+				}
+			}
+		}
 	}
 	
 	void checkForSplittedBulletsCollision() {			
@@ -992,6 +1009,16 @@ public:
 					player.splitBullet(&player.ammo.splittedBullets[i]);
 					player.deleteBullet(BULT_SPLITTED, i);
 					rockBullets.erase(rockBullets.begin() + j);
+					break;
+				}
+			}
+		}
+		//ELECTRO ENEMIES
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			for (int j = 0; j < electroEnemies.size(); j++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+					electroEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
+					player.deleteBullet(BULT_SPLITTED, i);
 					break;
 				}
 			}
@@ -1136,7 +1163,7 @@ public:
 		//ROMA ENEMIES
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			if (romaEnemies[i].isNeedToFire()) {
-				//romaBullets.push_back(romaEnemies[i].fire());
+				romaBullets.push_back(romaEnemies[i].fire());
 			}
 			if (romaEnemies[i].getState() == ES_SPAWN_ANIM) {
 				romaEnemies[i].spawnAnimation();
