@@ -420,7 +420,6 @@ public:
 			splittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
 			splittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
 		}
-
 		ammo.splittedBullets.push_back(splittedBullet);
 
 		splittedBullet.speed = splittingBullet->speed;
@@ -443,7 +442,6 @@ public:
 			splittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
 			splittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
 		}
-
 		ammo.splittedBullets.push_back(splittedBullet);
 	}
 	void splitBullet(SplittedBullet *splittedBullet) {
@@ -476,7 +474,6 @@ public:
 				twiceSplittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
 				twiceSplittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
 			}
-
 			ammo.splittedBullets.push_back(twiceSplittedBullet);
 
 			twiceSplittedBullet.speed = splittedBullet->speed;
@@ -499,7 +496,6 @@ public:
 				twiceSplittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
 				twiceSplittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
 			}
-
 			ammo.splittedBullets.push_back(twiceSplittedBullet);
 		}
 	}
@@ -546,10 +542,12 @@ class CircleEnemy {
 private:
 	ENEMYSTATE state;
 public:
+	CircleEnemy() {
+		shape.setOutlineColor(Color(139, 0, 0, 180));
+	}
 	CircleShape shape;
 	Clock fireClock;
 	int fireDelayAsMilliseconds;
-	int minRadius;							//if shape.getRadius <= minRadius then enemy will die;
 
 	void setState(string state) {
 		if (state == "ES_MOVING") {
@@ -568,12 +566,11 @@ public:
 	}
 
 	void takeDamage(int damage) {
-		shape.setRadius(shape.getRadius() - damage);
-		shape.setOrigin(Vector2f(shape.getRadius(), shape.getRadius()));
+		shape.setOutlineThickness(shape.getOutlineThickness() - damage);
 	}
 
 	bool isAlive() {
-		return shape.getRadius() > minRadius;
+		return shape.getRadius() > abs(shape.getOutlineThickness());
 	}
 
 };
@@ -698,7 +695,6 @@ public:
 	}
 };
 class ElectroEnemy : public CircleEnemy {
-private:
 public:
 	ElectroEnemy() {
 		visible = true;
@@ -782,7 +778,6 @@ public:
 		//cout << rockEnemies[0].shape.getRotation() << "\n";
 		//cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
 		//cout << "\n" << player.playerShape.getRotation();
-		//cout << "\n" << "ordinary speed X : " << player.ammoData.ordinaryBulletData.defaultSpeed.x << "  Y : " << player.ammoData.ordinaryBulletData.defaultSpeed.y << "     " << "splitting speed X : " << player.ammoData.splittingBulletData.defaultSpeed.x << "  Y : " << player.ammoData.splittingBulletData.defaultSpeed.y;
 		/*if (!rockBullets.empty()) {
 			cout << endl << "speed.x : " << rockBullets[0].speed.x << "   " << "speed.y : " << rockBullets[0].speed.y;
 		}*/
@@ -790,7 +785,10 @@ public:
 			cout << endl << rockEnemies[0].shape.getRotation();
 		}*/
 		//cout << endl << rockBullets.size();
-		cout << endl << electroEnemies.size();
+		//cout << endl << electroEnemies.size();
+		/*if (romaEnemies.size() > 0) {
+			cout << endl << romaEnemies[0].shape.getOutlineThickness();
+		}*/
 	}
 
 	void initWindow() {
@@ -810,7 +808,7 @@ public:
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
 		romaData.areActive = true;
-		romaData.maxAmount = 10;
+		romaData.maxAmount = 1;
 		romaData.enemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
 		romaData.bulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
 		romaData.bulletSpeed = { -1.5, 0 };
@@ -820,7 +818,7 @@ public:
 
 		//INITIALIZATION ROCK ENEMY
 		rockData.areActive = true;
-		rockData.maxAmount = 10;
+		rockData.maxAmount = 1;
 		rockData.enemyTexture.loadFromFile("Textures\\rockEnemy.png");
 		rockData.bulletTexture.loadFromFile("Textures\\rockEnemyBulletTexture.png");
 		rockData.spawnRadius = 40;
@@ -828,8 +826,8 @@ public:
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
-		electroData.areActive = false;
-		electroData.maxAmount = 10;
+		electroData.areActive = true;
+		electroData.maxAmount = 1;
 		electroData.enemyTexture.loadFromFile("Textures\\ElectroEnemy.jpg");
 		electroData.lightningTexture.loadFromFile("Textures\\lightningTexture1.png");
 		electroData.spawnRadius = 30;
@@ -1025,15 +1023,15 @@ public:
 	}
 	
 	bool isRomaEnemyNeedToSpawn() {
-		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 400 == 1);
+		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 600 == 1);
 	}
 
 	bool isRockEnemyNeedToSpawn() {
-		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 500 == 1);
+		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 800 == 1);
 	}
 
 	bool isElectroEnemyNeedToSpawn() {
-		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1000 == 1);
+		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1300 == 1);
 	}
 
 	void spawnRomaEnemy() {
@@ -1041,7 +1039,6 @@ public:
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
 		roma.fireDelayAsMilliseconds = 2000;
-		roma.minRadius = 20;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
 		roma.generateDestinationY(&gameWindow);
 		roma.shape.setRadius(romaData.spawnRadius);
@@ -1056,7 +1053,6 @@ public:
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
 		rock.fireDelayAsMilliseconds = 2500;
-		rock.minRadius = 15;
 		rock.shape.setRotation(0);
 		rock.defaultBulletSpeed = { 3, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
@@ -1082,7 +1078,6 @@ public:
 		electro.shape.setTexture(&electroData.enemyTexture);
 		electro.lightningTxtrPtr = &electroData.lightningTexture;
 		electro.fireDelayAsMilliseconds = 2000;
-		electro.minRadius = 15;
 		electro.shape.setRotation(270);
 		electro.shape.setRadius(electroData.spawnRadius);
 		electro.shape.setOrigin(electroData.spawnRadius, electroData.spawnRadius);
@@ -1141,7 +1136,7 @@ public:
 		//ROMA ENEMIES
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			if (romaEnemies[i].isNeedToFire()) {
-				romaBullets.push_back(romaEnemies[i].fire());
+				//romaBullets.push_back(romaEnemies[i].fire());
 			}
 			if (romaEnemies[i].getState() == ES_SPAWN_ANIM) {
 				romaEnemies[i].spawnAnimation();
