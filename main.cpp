@@ -56,6 +56,10 @@ struct RockEnemyBullet {
 	CircleShape shape;
 	Vector2f speed;
 };
+struct ElectroEnemyLightning {
+	RectangleShape shape;
+	Clock visible_lightningClock;
+};
 
 
 /////////////
@@ -360,7 +364,7 @@ public:
 		rotateGun();							//rotation only when player is shooting(optimization reason)
 		switch (selectedBullet) {
 		case BULT_ORDINARY:
-			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 120 /*Delay between shots*/) {
+			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 170 /*Delay between shots*/) {
 				OrdinaryBullet bullet;
 				bullet.shape.setSize(Vector2f(30.f, 17.f));
 				bullet.shape.setTexture(&ammoData.ordinaryBulletData.texture);
@@ -698,15 +702,11 @@ class ElectroEnemy : public CircleEnemy {
 public:
 	ElectroEnemy() {
 		visible = true;
-		visible_lightning = false;
 	}
-	RectangleShape lightning;
 	Texture* lightningTxtrPtr;
 	float destinationCoordX;
 	Clock visibleClock;
-	Clock visible_lightningClock;
 	bool visible;
-	bool visible_lightning;
 
 	void toggleVisible() {
 		visible = !visible;
@@ -721,14 +721,16 @@ public:
 		shape.setPosition(Vector2f(shape.getPosition().x, rand() % static_cast<int>((gwindow->y - shape.getRadius() * 4)) + shape.getRadius() * 2));
 	}
 
-	void fire(Vector2f coords) {
-		lightning.setSize(Vector2f(sqrt(pow(shape.getPosition().x - coords.x, 2) + pow(abs(shape.getPosition().y - coords.y), 2)), shape.getRadius()));
-		lightning.setOrigin(lightning.getSize().x, lightning.getSize().y / 2);
-		lightning.setRotation((atan2(lightning.getPosition().y - coords.y, lightning.getPosition().x - coords.x)) * 180 / 3.14159265);
-		lightning.setTexture(lightningTxtrPtr);
-		visible_lightning = true;
+	ElectroEnemyLightning fire(Vector2f coords) {
+		ElectroEnemyLightning lightning;
+		lightning.shape.setPosition(shape.getPosition());
+		lightning.shape.setSize(Vector2f(sqrt(pow(shape.getPosition().x - coords.x, 2) + pow(abs(shape.getPosition().y - coords.y), 2)), shape.getRadius()));
+		lightning.shape.setOrigin(lightning.shape.getSize().x, lightning.shape.getSize().y / 2);
+		lightning.shape.setRotation((atan2(lightning.shape.getPosition().y - coords.y, lightning.shape.getPosition().x - coords.x)) * 180 / 3.14159265);
+		lightning.shape.setTexture(lightningTxtrPtr);
 		fireClock.restart();
-		visible_lightningClock.restart();
+		lightning.visible_lightningClock.restart();
+		return lightning;
 	}
 
 	void takeTarget(Vector2f coords) {
@@ -738,12 +740,11 @@ public:
 
 	void move() {
 		if (shape.getPosition().x >= destinationCoordX) {
-			shape.move(-0.3, 0);
+			shape.move(-0.7, 0);
 		}
 		else {
 			setState("ES_STANDING");
 			visible = true;
-			lightning.setPosition(shape.getPosition());
 			fireClock.restart();
 		}
 	}
@@ -771,6 +772,7 @@ public:
 	//enemy bullets
 	vector <RectangleShape> romaBullets;
 	vector <RockEnemyBullet> rockBullets;
+	vector <ElectroEnemyLightning> electroLightnings;
 	Game() {
 		initWindow();
 	}
@@ -785,7 +787,7 @@ public:
 			cout << endl << rockEnemies[0].shape.getRotation();
 		}*/
 		//cout << endl << rockBullets.size();
-		//cout << endl << electroEnemies.size();
+		cout << endl << electroLightnings.size();
 		/*if (romaEnemies.size() > 0) {
 			cout << endl << romaEnemies[0].shape.getOutlineThickness();
 		}*/
@@ -807,33 +809,34 @@ public:
 
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
-		romaData.areActive = true;
-		romaData.maxAmount = 1;
+		romaData.areActive = false;
+		romaData.maxAmount = 10;
 		romaData.enemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
 		romaData.bulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
 		romaData.bulletSpeed = { -1.5, 0 };
-		romaData.spawnRadius = 50;
+		romaData.spawnRadius = 40;
 		romaEnemies.clear();
 		romaBullets.clear();
 
 		//INITIALIZATION ROCK ENEMY
-		rockData.areActive = true;
-		rockData.maxAmount = 1;
+		rockData.areActive = false;
+		rockData.maxAmount = 7;
 		rockData.enemyTexture.loadFromFile("Textures\\rockEnemy.png");
 		rockData.bulletTexture.loadFromFile("Textures\\rockEnemyBulletTexture.png");
-		rockData.spawnRadius = 40;
+		rockData.spawnRadius = 50;
 		rockEnemies.clear();
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
 		electroData.areActive = true;
-		electroData.maxAmount = 1;
+		electroData.maxAmount = 13;
 		electroData.enemyTexture.loadFromFile("Textures\\ElectroEnemy.jpg");
 		electroData.lightningTexture.loadFromFile("Textures\\lightningTexture1.png");
-		electroData.spawnRadius = 30;
-		electroData.visibleDelayAsMilliseconds = 1500;
+		electroData.spawnRadius = 35;
+		electroData.visibleDelayAsMilliseconds = 1000;
 		electroData.visible_lightningDelayAsMilliseconds = 300;
 		electroEnemies.clear();
+		electroLightnings.clear();
 	}
 
 	void initGame() {
@@ -896,10 +899,12 @@ public:
 			//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
-					player.deleteBullet(BULT_ORDINARY, i);
-					electroEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
-					break;
+				if (electroEnemies[j].visible) {
+					if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+						player.deleteBullet(BULT_ORDINARY, i);
+						electroEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
+						break;
+					}
 				}
 			}
 		}
@@ -956,10 +961,12 @@ public:
 		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
-				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
-					electroEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
-					player.deleteBullet(BULT_SPLITTING, i);
-					break;
+				if (electroEnemies[j].visible) {
+					if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+						electroEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
+						player.deleteBullet(BULT_SPLITTING, i);
+						break;
+					}
 				}
 			}
 		}
@@ -1016,10 +1023,12 @@ public:
 		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
-				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
-					electroEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
-					player.deleteBullet(BULT_SPLITTED, i);
-					break;
+				if (electroEnemies[j].visible) {
+					if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+						electroEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
+						player.deleteBullet(BULT_SPLITTED, i);
+						break;
+					}
 				}
 			}
 		}
@@ -1050,7 +1059,7 @@ public:
 	}
 	
 	bool isRomaEnemyNeedToSpawn() {
-		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 600 == 1);
+		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 500 == 1);
 	}
 
 	bool isRockEnemyNeedToSpawn() {
@@ -1058,14 +1067,14 @@ public:
 	}
 
 	bool isElectroEnemyNeedToSpawn() {
-		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1300 == 1);
+		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1100 == 1);
 	}
 
 	void spawnRomaEnemy() {
 		RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 2000;
+		roma.fireDelayAsMilliseconds = 2100;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
 		roma.generateDestinationY(&gameWindow);
 		roma.shape.setRadius(romaData.spawnRadius);
@@ -1081,7 +1090,7 @@ public:
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
 		rock.fireDelayAsMilliseconds = 2500;
 		rock.shape.setRotation(0);
-		rock.defaultBulletSpeed = { 3, 0 };
+		rock.defaultBulletSpeed = { 2.5, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
 		rock.shape.setRadius(rockData.spawnRadius);
 		rock.shape.setOrigin(rockData.spawnRadius, rockData.spawnRadius);
@@ -1194,7 +1203,7 @@ public:
 		//ELECTRO EMEMIES
 		for (int i = 0; i < electroEnemies.size(); i++) {
 			if (electroEnemies[i].isNeedToFire()) {
-				electroEnemies[i].fire(player.playerShape.getPosition());
+				electroLightnings.push_back(electroEnemies[i].fire(player.playerShape.getPosition()));
 				player.setHPAmount(player.getHPAmount() - 1);
 			}
 			if (electroEnemies[i].getState() == ES_MOVING) {
@@ -1206,16 +1215,13 @@ public:
 			}
 			if (electroEnemies[i].getState() == ES_STANDING) {
 				electroEnemies[i].takeTarget(player.playerShape.getPosition());
-				if (electroEnemies[i].visible_lightningClock.getElapsedTime().asMilliseconds() >= electroData.visible_lightningDelayAsMilliseconds) {
-					electroEnemies[i].visible_lightning = false;
-				}
 			}
 			if (!electroEnemies[i].isAlive()) {
 				electroEnemies.erase(electroEnemies.begin() + i);
 			}
 		}
 	}
-	void moveEnemyBullets() {
+	void updateEnemyBullets() {
 		//ROMA BULLETS
 		for (int i = 0; i < romaBullets.size(); i++) {
 			romaBullets[i].move(romaData.bulletSpeed);
@@ -1230,6 +1236,12 @@ public:
 				rockBullets[i].shape.getPosition().y + rockBullets[i].shape.getRadius() < 0 ||
 				rockBullets[i].shape.getPosition().y + rockBullets[i].shape.getRadius() > gameWindow.y) {
 				rockBullets.erase(rockBullets.begin() + i);
+			}
+		}
+		//ELECTRO LIGHTNINGS
+		for (int i = 0; i < electroLightnings.size(); i++) {
+			if (electroLightnings[i].visible_lightningClock.getElapsedTime().asMilliseconds() >= electroData.visible_lightningDelayAsMilliseconds) {
+				electroLightnings.erase(electroLightnings.begin() + i);
 			}
 		}
 	}
@@ -1258,9 +1270,6 @@ public:
 			if (electroEnemies[i].visible) {
 				gameWindow.window.draw(electroEnemies[i].shape);
 			}
-			if (electroEnemies[i].visible_lightning) {
-				gameWindow.window.draw(electroEnemies[i].lightning);
-			}
 		}
 
 		for (int i = 0; i < romaBullets.size(); i++) {
@@ -1268,6 +1277,9 @@ public:
 		}
 		for (int i = 0; i < rockBullets.size(); i++) {
 			gameWindow.window.draw(rockBullets[i].shape);
+		}
+		for (int i = 0; i < electroLightnings.size(); i++) {
+			gameWindow.window.draw(electroLightnings[i].shape);
 		}
 		gameWindow.window.display();
 	}
@@ -1295,7 +1307,7 @@ public:
 		updatePlayer();
 		updatePlayerBullets();
 		updateEnemies();
-		moveEnemyBullets();
+		updateEnemyBullets();
 		checkForPlayerCollisions();
 		checkForBulletsCollisions();
 		drawNewFrame();
