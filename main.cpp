@@ -240,16 +240,16 @@ public:
 		playertexture1HP.loadFromFile("Textures\\playerTexture1HP.jpg");
 		ordinaryBulletScopeTexture.loadFromFile("Textures\\ordinaryBulletScopeTexture.png");
 		splittingBulletScopeTexture.loadFromFile("Textures\\splittingBulletScopeTexture.png");
-		sizeX = 75;
-		sizeY = 40;
+		sizeX = 90;
+		sizeY = 50;
 		playerShape.setSize(Vector2f(sizeX, sizeY));
 		playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
 		playerShape.setPosition(Vector2f(gwindow->x / 100 * 5, gwindow->y / 2));
 		setHPAmount();
-		scope.setSize(Vector2f(55, 15));
+		scope.setSize(Vector2f(70, 26));
 		scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 		scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
-		scope.setTextureRect(IntRect(0, 0, 55, 15));
+		scope.setTextureRect(IntRect(0, 0, 70, 26));
 		scope.setTexture(&ordinaryBulletScopeTexture);
 	}
 	
@@ -257,13 +257,13 @@ public:
 		selectedBullet = BULT_ORDINARY;
 		ammoData.ordinaryBulletData.texture.loadFromFile("Textures\\pchel.jpg");
 		ammoData.ordinaryBulletData.damage = 10;
-		ammoData.ordinaryBulletData.defaultSpeed = { 8, 0 };
+		ammoData.ordinaryBulletData.defaultSpeed = { 10, 0 };
 		ammoData.ordinaryBulletData.speedVariation = ammoData.ordinaryBulletData.defaultSpeed.x / 90;
 
 		ammoData.splittingBulletData.texture.loadFromFile("Textures\\splittingBulletTexture.png");
-		ammoData.splittingBulletData.defaultDamage = 25;
+		ammoData.splittingBulletData.defaultDamage = 30;
 		ammoData.splittingBulletData.defaultRadius = 25;
-		ammoData.splittingBulletData.defaultSpeed = { 4, 0 };
+		ammoData.splittingBulletData.defaultSpeed = { 6, 0 };
 		ammoData.splittingBulletData.speedVariation = ammoData.splittingBulletData.defaultSpeed.x / 90;
 
 		ammo.ordinaryBullets.clear();
@@ -361,12 +361,12 @@ public:
 	}
 	
 	void fire() {
-		rotateGun();							//rotation only when player is shooting(optimization reason)
+		rotateGun();							//rotation only when player is shooting(for optimization)
 		switch (selectedBullet) {
 		case BULT_ORDINARY:
 			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 170 /*Delay between shots*/) {
 				OrdinaryBullet bullet;
-				bullet.shape.setSize(Vector2f(30.f, 17.f));
+				bullet.shape.setSize(Vector2f(32.f, 19.f));
 				bullet.shape.setTexture(&ammoData.ordinaryBulletData.texture);
 				bullet.shape.setOrigin(Vector2f(bullet.shape.getSize().x / 2.f, bullet.shape.getSize().y / 2.f));
 				bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % static_cast<int>(sizeX)) + playerShape.getPosition().y - playerShape.getOrigin().x));
@@ -521,18 +521,18 @@ public:
 	void checkForBulletSwap() {
 		if (Keyboard::isKeyPressed(Keyboard::Num1)) {
 			selectedBullet = BULT_ORDINARY;
-			scope.setSize(Vector2f(55, 15));
+			scope.setSize(Vector2f(70, 26));
 			scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
-			scope.setTextureRect(IntRect(0, 0, 55, 15));
+			scope.setTextureRect(IntRect(0, 0, 70, 26));
 			scope.setTexture(&ordinaryBulletScopeTexture);
 		}
 		if (Keyboard::isKeyPressed(Keyboard::Num2)) {
 			selectedBullet = BULT_SPLITTING;
-			scope.setSize(Vector2f(55, 29));
+			scope.setSize(Vector2f(70, 30));
 			scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
-			scope.setTextureRect(IntRect(0, 0, 55, 29));
+			scope.setTextureRect(IntRect(0, 0, 70, 30));
 			scope.setTexture(&splittingBulletScopeTexture);
 		}
 	}
@@ -581,7 +581,7 @@ public:
 class RomaEnemy : public CircleEnemy {
 public:
 	float spawnCoordX;
-	float destinationCoordY;
+	int destinationCoordY;
 	Texture* bulletTxtrPtr;
 	
 	void generateDestinationY(GameWindow *gwindow) {
@@ -590,12 +590,12 @@ public:
 	}
 	
 	void move(GameWindow *gwindow) {
-		if (shape.getPosition().y != destinationCoordY) {
+		if (static_cast<int>(shape.getPosition().y) != destinationCoordY) {
 			if (shape.getPosition().y < destinationCoordY) {
-				shape.move(0, 0.5);
+				shape.move(0, 0.4);
 			}
 			else {
-				shape.move(0, -0.5);
+				shape.move(0, -0.4);
 			}
 		}
 		else {
@@ -610,7 +610,7 @@ public:
 	RectangleShape fire() {
 		RectangleShape bullet;
 		bullet.setTexture(bulletTxtrPtr);
-		bullet.setSize(Vector2f(40, 22));
+		bullet.setSize(Vector2f(38, 20));
 		bullet.setPosition(Vector2f(shape.getPosition()));
 		fireClock.restart();
 		return bullet;
@@ -678,20 +678,22 @@ public:
 	void move() {
 		switch (side) {
 		case S_UP:
-			if (shape.getPosition().y != destinationCoordY) {
-				shape.move(-0.3, 0.5);
+			if (shape.getPosition().y < destinationCoordY) {
+				shape.move(-0.2, 0.9);
 			}
 			else {
 				setState("ES_STANDING");
+				fireDelayAsMilliseconds = 2700;
 				fireClock.restart();
 			}
 			break;
 		case S_DOWN:
-			if (shape.getPosition().y != destinationCoordY) {
-				shape.move(-0.3, -0.5);
+			if (shape.getPosition().y > destinationCoordY) {
+				shape.move(-0.2, -0.9);
 			}
 			else {
 				setState("ES_STANDING");
+				fireDelayAsMilliseconds = 2700;
 				fireClock.restart();
 			}
 			break;
@@ -740,7 +742,7 @@ public:
 
 	void move() {
 		if (shape.getPosition().x >= destinationCoordX) {
-			shape.move(-0.7, 0);
+			shape.move(-0.9, 0);
 		}
 		else {
 			setState("ES_STANDING");
@@ -794,10 +796,10 @@ public:
 	}
 
 	void initWindow() {
-		gameWindow.x = 1280;
-		gameWindow.y = 720;
+		gameWindow.x = 1920;
+		gameWindow.y = 1080;
 		gameWindow.title = "BRUH Galactic";
-		gameWindow.window.create(VideoMode(gameWindow.x, gameWindow.y), gameWindow.title);
+		gameWindow.window.create(VideoMode(gameWindow.x, gameWindow.y), gameWindow.title, Style::Fullscreen);
 		gameWindow.window.setFramerateLimit(240);
 	}
 
@@ -809,32 +811,32 @@ public:
 
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
-		romaData.areActive = false;
-		romaData.maxAmount = 10;
+		romaData.areActive = true;
+		romaData.maxAmount = 7;
 		romaData.enemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
 		romaData.bulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
-		romaData.bulletSpeed = { -1.5, 0 };
+		romaData.bulletSpeed = { -3.5, 0 };
 		romaData.spawnRadius = 40;
 		romaEnemies.clear();
 		romaBullets.clear();
 
 		//INITIALIZATION ROCK ENEMY
-		rockData.areActive = false;
+		rockData.areActive = true;
 		rockData.maxAmount = 7;
 		rockData.enemyTexture.loadFromFile("Textures\\rockEnemy.png");
 		rockData.bulletTexture.loadFromFile("Textures\\rockEnemyBulletTexture.png");
-		rockData.spawnRadius = 50;
+		rockData.spawnRadius = 45;
 		rockEnemies.clear();
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
 		electroData.areActive = true;
-		electroData.maxAmount = 13;
+		electroData.maxAmount = 3;
 		electroData.enemyTexture.loadFromFile("Textures\\ElectroEnemy.jpg");
 		electroData.lightningTexture.loadFromFile("Textures\\lightningTexture1.png");
 		electroData.spawnRadius = 35;
 		electroData.visibleDelayAsMilliseconds = 1000;
-		electroData.visible_lightningDelayAsMilliseconds = 300;
+		electroData.visible_lightningDelayAsMilliseconds = 400;
 		electroEnemies.clear();
 		electroLightnings.clear();
 	}
@@ -1059,22 +1061,22 @@ public:
 	}
 	
 	bool isRomaEnemyNeedToSpawn() {
-		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 500 == 1);
+		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 700 == 1);
 	}
 
 	bool isRockEnemyNeedToSpawn() {
-		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 800 == 1);
+		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 900 == 1);
 	}
 
 	bool isElectroEnemyNeedToSpawn() {
-		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1100 == 1);
+		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1600 == 1);
 	}
 
 	void spawnRomaEnemy() {
 		RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 2100;
+		roma.fireDelayAsMilliseconds = 5300;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
 		roma.generateDestinationY(&gameWindow);
 		roma.shape.setRadius(romaData.spawnRadius);
@@ -1088,20 +1090,20 @@ public:
 		RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
-		rock.fireDelayAsMilliseconds = 2500;
+		rock.fireDelayAsMilliseconds = 800;
 		rock.shape.setRotation(0);
-		rock.defaultBulletSpeed = { 2.5, 0 };
+		rock.defaultBulletSpeed = { 2.2, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
 		rock.shape.setRadius(rockData.spawnRadius);
 		rock.shape.setOrigin(rockData.spawnRadius, rockData.spawnRadius);
 		rock.side = ROCKENEMYSIDE(rand() % 2);
 		switch (rock.side) {
 		case S_UP:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) * 0.75, 0 - rock.shape.getRadius()));
+			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, 0 - rock.shape.getRadius()));
 			rock.destinationCoordY = gameWindow.y - rock.shape.getRadius();
 			break;
 		case S_DOWN:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) * 0.75, gameWindow.y + rock.shape.getRadius()));
+			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, gameWindow.y + rock.shape.getRadius()));
 			rock.destinationCoordY = 0 + rock.shape.getRadius();
 			break;
 		}
