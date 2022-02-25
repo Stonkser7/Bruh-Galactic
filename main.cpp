@@ -4,7 +4,6 @@
 #include <string>
 #include <cmath>
 #include <iomanip>
-#include <cassert>
 #include <ctime>
 using namespace sf;
 using namespace std;
@@ -12,8 +11,9 @@ using namespace std;
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
 enum ENEMYSTATE { ES_MOVING, ES_SPAWN_ANIM, ES_STANDING };
 enum ENEMYTYPE { ET_ROMA, ET_ROCK, ET_ELECTRO };
-enum BULLETTYPE { BULT_ORDINARY, BULT_SPLITTING, BULT_SPLITTED};
+enum BULLETTYPE { BULT_ORDINARY, BULT_SPLITTING, BULT_SPLITTED, BULT_RAY};
 enum ROCKENEMYSIDE {S_UP, S_DOWN};
+enum RAYBULLETSTATE {BS_FIRING, BS_DISAPPEARING, BS_DELETE};
 
 struct GameWindow {
 	RenderWindow window;
@@ -80,6 +80,12 @@ struct SplittingBulletData {
 	Clock fireDelay;
 	Texture texture;
 };
+struct RayBulletData {
+	int damage;
+	Clock fireDelay;
+	Texture texture;
+	int delayBeforeDissapearAsMilliseconds;
+};
 ////////////////
 //PLAYER BULLETS
 ////////////////
@@ -119,15 +125,40 @@ public:
 		return shape.getPosition().x >= gwindow->window.getSize().x || shape.getPosition().y >= gwindow->window.getSize().y || shape.getPosition().y <= 0 - shape.getRadius() * 2;
 	}
 };
+class RayBullet {
+public:
+	RAYBULLETSTATE state;
+	RectangleShape shape;
+	Clock delayBeforeDissapear;
+	void fire() {
+		if (shape.getSize().x < 1920) {
+			shape.setSize(Vector2f(shape.getSize().x + 100, shape.getSize().y));
+		}
+		else {
+			state = BS_DISAPPEARING;
+			delayBeforeDissapear.restart();
+		}
+	}
+	void dissapear() {
+		if (shape.getFillColor().a > 0) {
+			shape.setFillColor(Color(shape.getFillColor().r, shape.getFillColor().g, shape.getFillColor().b, shape.getFillColor().a - 1));
+		}
+		else {
+			state = BS_DELETE;
+		}
+	}
+};
 
 struct Ammunition {
 	vector <OrdinaryBullet> ordinaryBullets;
 	vector <SplittingBullet> splittingBullets;
 	vector <SplittedBullet> splittedBullets;
+	vector <RayBullet> rayBullets;
 };
 struct AmmoData {
 	OrdinaryBulletData ordinaryBulletData;
 	SplittingBulletData splittingBulletData;
+	RayBulletData rayBulletData;
 };
 
 class Game;
@@ -227,6 +258,7 @@ private:
 	Texture playertexture1HP;
 	Texture ordinaryBulletScopeTexture;
 	Texture splittingBulletScopeTexture;
+	Texture rayBulletScopeTexture;
 
 public:
 	RectangleShape playerShape;
@@ -240,6 +272,7 @@ public:
 		playertexture1HP.loadFromFile("Textures\\playerTexture1HP.jpg");
 		ordinaryBulletScopeTexture.loadFromFile("Textures\\ordinaryBulletScopeTexture.png");
 		splittingBulletScopeTexture.loadFromFile("Textures\\splittingBulletScopeTexture.png");
+		rayBulletScopeTexture.loadFromFile("Textures\\rayBulletScopeTexture.png");
 		sizeX = 90;
 		sizeY = 50;
 		playerShape.setSize(Vector2f(sizeX, sizeY));
@@ -266,9 +299,15 @@ public:
 		ammoData.splittingBulletData.defaultSpeed = { 6, 0 };
 		ammoData.splittingBulletData.speedVariation = ammoData.splittingBulletData.defaultSpeed.x / 90;
 
+		ammoData.rayBulletData.texture.loadFromFile("Textures\\rayBulletTexture.png");
+		ammoData.rayBulletData.texture.setSmooth(true);
+		ammoData.rayBulletData.damage = 120;
+		ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds = 100;
+
 		ammo.ordinaryBullets.clear();
 		ammo.splittingBullets.clear();
 		ammo.splittedBullets.clear();
+		ammo.rayBullets.clear();
 	}
 	
 	void setHPAmount(int requiredAmount = 3) {
@@ -299,7 +338,7 @@ public:
 		scope.setRotation(playerShape.getRotation() - 90);
 	}
 	
-	void controlPlayer(GameWindow *gwindow, Vector2f coords) {
+	void controlPlayer(GameWindow *gwindow) {
 		if (Mouse::isButtonPressed(Mouse::Button::Left)) {
 			fire();
 		}
@@ -309,8 +348,6 @@ public:
 		if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < gwindow->y) {
 			move({ 0, 1.7 });
 		}
-
-		rotateToMouse(coords);
 	}
 	
 	void move(Vector2f offset) {
@@ -389,6 +426,20 @@ public:
 				bullet.speed = ammoData.splittingBulletData.defaultSpeed;
 				ammo.splittingBullets.push_back(bullet);
 				ammoData.splittingBulletData.fireDelay.restart();
+				return;
+			}
+			break;
+		case BULT_RAY:
+			if (ammoData.rayBulletData.fireDelay.getElapsedTime().asMilliseconds() > 1200 /*Delay between shots*/) {
+				RayBullet bullet;
+				bullet.shape.setSize(Vector2f(0, 20));
+				bullet.shape.setTexture(&ammoData.rayBulletData.texture);
+				bullet.shape.setOrigin(Vector2f(0, bullet.shape.getSize().y / 2));
+				bullet.shape.setRotation(playerShape.getRotation() - 90);
+				bullet.shape.setPosition(Vector2f(playerShape.getPosition()));
+				bullet.state = BS_FIRING;
+				ammo.rayBullets.push_back(bullet);
+				ammoData.rayBulletData.fireDelay.restart();
 				return;
 			}
 			break;
@@ -515,6 +566,9 @@ public:
 		case BULT_SPLITTED:
 			ammo.splittedBullets.erase(ammo.splittedBullets.begin() + index);
 			break;
+		case BULT_RAY:
+			ammo.rayBullets.erase(ammo.rayBullets.begin() + index);
+			break;
 		}
 	}
 	
@@ -534,6 +588,14 @@ public:
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			scope.setTextureRect(IntRect(0, 0, 70, 30));
 			scope.setTexture(&splittingBulletScopeTexture);
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Num3)) {
+			selectedBullet = BULT_RAY;
+			scope.setSize(Vector2f(76, 30));
+			scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
+			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
+			scope.setTextureRect(IntRect(0, 0, 76, 30));
+			scope.setTexture(&rayBulletScopeTexture);
 		}
 	}
 };
@@ -789,7 +851,7 @@ public:
 			cout << endl << rockEnemies[0].shape.getRotation();
 		}*/
 		//cout << endl << rockBullets.size();
-		cout << endl << electroLightnings.size();
+		//cout << endl << electroLightnings.size();
 		/*if (romaEnemies.size() > 0) {
 			cout << endl << romaEnemies[0].shape.getOutlineThickness();
 		}*/
@@ -1036,11 +1098,15 @@ public:
 		}
 	}
 
+	void checkForRayBulletsCollision() {
+
+	}
 
 	void checkForBulletsCollisions() {
 		checkForOrdinaryBulletsCollision();
 		checkForSplittingBulletsCollision();
 		checkForSplittedBulletsCollision();
+		checkForRayBulletsCollision();
 	}
 	
 	void checkForPlayerCollisions() {
@@ -1115,7 +1181,7 @@ public:
 		ElectroEnemy electro;
 		electro.shape.setTexture(&electroData.enemyTexture);
 		electro.lightningTxtrPtr = &electroData.lightningTexture;
-		electro.fireDelayAsMilliseconds = 2000;
+		electro.fireDelayAsMilliseconds = 1700;
 		electro.shape.setRotation(270);
 		electro.shape.setRadius(electroData.spawnRadius);
 		electro.shape.setOrigin(electroData.spawnRadius, electroData.spawnRadius);
@@ -1140,7 +1206,8 @@ public:
 		if (player.getHPAmount() <= 0) {
 			gameState = GS_MENU;
 		}
-		player.controlPlayer(&gameWindow, static_cast<Vector2f>(Mouse::getPosition(gameWindow.window)));
+		player.controlPlayer(&gameWindow);
+		player.rotateToMouse(static_cast<Vector2f>(Mouse::getPosition(gameWindow.window)));
 		player.checkForBulletSwap();
 	}
 	void updatePlayerBullets() {
@@ -1166,6 +1233,22 @@ public:
 			}
 			else {
 				player.ammo.splittedBullets[i].move();
+			}
+		}
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			switch (player.ammo.rayBullets[i].state) {
+			case BS_FIRING:
+				player.ammo.rayBullets[i].fire();
+				break;
+			case BS_DISAPPEARING:
+				if (player.ammo.rayBullets[i].delayBeforeDissapear.getElapsedTime().asMilliseconds() > player.ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds) {
+					player.ammo.rayBullets[i].dissapear();
+				}
+				break;
+			case BS_DELETE:
+				player.deleteBullet(BULT_RAY, i);
+				i--;
+				break;
 			}
 		}
 	}
@@ -1250,18 +1333,7 @@ public:
 	void drawNewFrame() {
 		gameWindow.window.clear();
 		gameWindow.window.draw(gameBackground);
-		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
-			gameWindow.window.draw(player.ammo.ordinaryBullets[i].shape);
-		}
-		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
-			gameWindow.window.draw(player.ammo.splittingBullets[i].shape);
-		}
-		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
-			gameWindow.window.draw(player.ammo.splittedBullets[i].shape);
-		}
 
-		gameWindow.window.draw(player.scope);
-		gameWindow.window.draw(player.playerShape);
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			gameWindow.window.draw(romaEnemies[i].shape);
 		}
@@ -1273,6 +1345,22 @@ public:
 				gameWindow.window.draw(electroEnemies[i].shape);
 			}
 		}
+
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+			gameWindow.window.draw(player.ammo.ordinaryBullets[i].shape);
+		}
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+			gameWindow.window.draw(player.ammo.splittingBullets[i].shape);
+		}
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			gameWindow.window.draw(player.ammo.splittedBullets[i].shape);
+		}
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			gameWindow.window.draw(player.ammo.rayBullets[i].shape);
+		}
+
+		gameWindow.window.draw(player.scope);
+		gameWindow.window.draw(player.playerShape);
 
 		for (int i = 0; i < romaBullets.size(); i++) {
 			gameWindow.window.draw(romaBullets[i]);
