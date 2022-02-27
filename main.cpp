@@ -1,4 +1,5 @@
 ﻿#include <SFML/Graphics.hpp>
+#include "Collision.h"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -160,9 +161,19 @@ struct AmmoData {
 	SplittingBulletData splittingBulletData;
 	RayBulletData rayBulletData;
 };
+struct AdditionalScope {
+	RectangleShape shape;
+	bool isActive;
+	void toggleActive() {
+		isActive = !isActive;
+		if (isActive) {
+			shape.setFillColor(Color(shape.getFillColor().r, shape.getFillColor().g, shape.getFillColor().b, 255));
+		}
+	}
+};
 
 class Game;
-typedef void (Game::* MenuAction)();
+using MenuAction = void(Game::*)();
 class Menu {
 private:
 	struct MenuItem {
@@ -183,8 +194,8 @@ public:
 	vector <MenuItem> menuItems;
 	
 	void initMenu(GameWindow *gwindow) {
-		menuBackgroundTexture.loadFromFile("Textures\\menuBackgroundTexture.jpg");
-		menuItemBackgroundTexture.loadFromFile("Textures\\menuItemBackgroundTexture.png");
+		Collision::CreateTextureAndBitmask(menuBackgroundTexture, "Textures\\menuBackgroundTexture.jpg");
+		Collision::CreateTextureAndBitmask(menuItemBackgroundTexture, "Textures\\menuItemBackgroundTexture.png");
 		menuBackground.setTexture(&menuBackgroundTexture);
 		menuBackground.setSize(Vector2f(gwindow->x, gwindow->y));
 		menuBackground.setPosition(Vector2f(0, 0));
@@ -259,20 +270,23 @@ private:
 	Texture ordinaryBulletScopeTexture;
 	Texture splittingBulletScopeTexture;
 	Texture rayBulletScopeTexture;
+	Texture rayBulletAdditionalScopeTexture;
 
 public:
 	RectangleShape playerShape;
 	RectangleShape scope;
+	AdditionalScope additionalScope;
 	Ammunition ammo;
 	AmmoData ammoData;
 
 	void initPlayer(GameWindow *gwindow) {
-		playertexture3HP.loadFromFile("Textures\\playerTexture3HP.jpg");
-		playertexture2HP.loadFromFile("Textures\\playerTexture2HP.jpg");
-		playertexture1HP.loadFromFile("Textures\\playerTexture1HP.jpg");
+		Collision::CreateTextureAndBitmask(playertexture1HP, "Textures\\playerTexture1HP.jpg");
+		Collision::CreateTextureAndBitmask(playertexture2HP, "Textures\\playerTexture2HP.jpg");
+		Collision::CreateTextureAndBitmask(playertexture3HP, "Textures\\playerTexture3HP.jpg");
 		ordinaryBulletScopeTexture.loadFromFile("Textures\\ordinaryBulletScopeTexture.png");
 		splittingBulletScopeTexture.loadFromFile("Textures\\splittingBulletScopeTexture.png");
 		rayBulletScopeTexture.loadFromFile("Textures\\rayBulletScopeTexture.png");
+		rayBulletAdditionalScopeTexture.loadFromFile("Textures\\rayBulletScopeTexture2.png");
 		sizeX = 90;
 		sizeY = 50;
 		playerShape.setSize(Vector2f(sizeX, sizeY));
@@ -288,18 +302,18 @@ public:
 	
 	void initAmmunition() {
 		selectedBullet = BULT_ORDINARY;
-		ammoData.ordinaryBulletData.texture.loadFromFile("Textures\\pchel.jpg");
+		Collision::CreateTextureAndBitmask(ammoData.ordinaryBulletData.texture, "Textures\\pchel.jpg");
 		ammoData.ordinaryBulletData.damage = 10;
 		ammoData.ordinaryBulletData.defaultSpeed = { 10, 0 };
 		ammoData.ordinaryBulletData.speedVariation = ammoData.ordinaryBulletData.defaultSpeed.x / 90;
 
-		ammoData.splittingBulletData.texture.loadFromFile("Textures\\splittingBulletTexture.png");
+		Collision::CreateTextureAndBitmask(ammoData.splittingBulletData.texture, "Textures\\splittingBulletTexture.png");
 		ammoData.splittingBulletData.defaultDamage = 30;
 		ammoData.splittingBulletData.defaultRadius = 25;
 		ammoData.splittingBulletData.defaultSpeed = { 6, 0 };
 		ammoData.splittingBulletData.speedVariation = ammoData.splittingBulletData.defaultSpeed.x / 90;
 
-		ammoData.rayBulletData.texture.loadFromFile("Textures\\rayBulletTexture.png");
+		Collision::CreateTextureAndBitmask(ammoData.rayBulletData.texture, "Textures\\rayBulletTexture.png");
 		ammoData.rayBulletData.texture.setSmooth(true);
 		ammoData.rayBulletData.damage = 120;
 		ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds = 100;
@@ -336,6 +350,7 @@ public:
 	void rotateToMouse(Vector2f coords) {
 		playerShape.setRotation((atan2(playerShape.getPosition().y - coords.y, playerShape.getPosition().x - coords.x)) * 180 / 3.14159265 - 90);
 		scope.setRotation(playerShape.getRotation() - 90);
+		additionalScope.shape.setRotation(playerShape.getRotation() - 90);
 	}
 	
 	void controlPlayer(GameWindow *gwindow) {
@@ -349,10 +364,26 @@ public:
 			move({ 0, 1.7 });
 		}
 	}
+
+	void updateAdditionalScopePart() {
+		switch (selectedBullet) {
+		case BULT_RAY:
+			if (additionalScope.isActive) {
+				if (additionalScope.shape.getFillColor().a > 0) {
+					additionalScope.shape.setFillColor(Color(additionalScope.shape.getFillColor().r, additionalScope.shape.getFillColor().g, additionalScope.shape.getFillColor().b, additionalScope.shape.getFillColor().a - 1));
+				}
+				else {
+					additionalScope.toggleActive();
+				}
+			}
+			break;
+		}
+	}
 	
 	void move(Vector2f offset) {
 		playerShape.move(offset);
 		scope.move(offset);
+		additionalScope.shape.move(offset);
 	}
 	
 	void rotateGun() {
@@ -438,6 +469,7 @@ public:
 				bullet.shape.setRotation(playerShape.getRotation() - 90);
 				bullet.shape.setPosition(Vector2f(playerShape.getPosition()));
 				bullet.state = BS_FIRING;
+				additionalScope.toggleActive();
 				ammo.rayBullets.push_back(bullet);
 				ammoData.rayBulletData.fireDelay.restart();
 				return;
@@ -573,29 +605,37 @@ public:
 	}
 	
 	void checkForBulletSwap() {
-		if (Keyboard::isKeyPressed(Keyboard::Num1)) {
+		if (Keyboard::isKeyPressed(Keyboard::Num1) && selectedBullet != BULT_ORDINARY) {
 			selectedBullet = BULT_ORDINARY;
 			scope.setSize(Vector2f(70, 26));
 			scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			scope.setTextureRect(IntRect(0, 0, 70, 26));
 			scope.setTexture(&ordinaryBulletScopeTexture);
+			additionalScope.isActive = false;
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Num2)) {
+		if (Keyboard::isKeyPressed(Keyboard::Num2) && selectedBullet != BULT_SPLITTING) {
 			selectedBullet = BULT_SPLITTING;
 			scope.setSize(Vector2f(70, 30));
 			scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			scope.setTextureRect(IntRect(0, 0, 70, 30));
 			scope.setTexture(&splittingBulletScopeTexture);
+			additionalScope.isActive = false;
 		}
-		if (Keyboard::isKeyPressed(Keyboard::Num3)) {
+		if (Keyboard::isKeyPressed(Keyboard::Num3) && selectedBullet != BULT_RAY) {
 			selectedBullet = BULT_RAY;
-			scope.setSize(Vector2f(76, 30));
+			scope.setSize(Vector2f(76, 38));
 			scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
-			scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
-			scope.setTextureRect(IntRect(0, 0, 76, 30));
+			scope.setPosition(playerShape.getPosition());
+			scope.setTextureRect(IntRect(0, 0, 76, 38));
 			scope.setTexture(&rayBulletScopeTexture);
+			additionalScope.shape.setSize(Vector2f(76, 38));
+			additionalScope.shape.setOrigin(Vector2f(0, additionalScope.shape.getSize().y / 2));
+			additionalScope.shape.setPosition(playerShape.getPosition());
+			additionalScope.shape.setTextureRect(IntRect(0, 0, 76, 38));
+			additionalScope.shape.setTexture(&rayBulletAdditionalScopeTexture);
+			additionalScope.isActive = false;
 		}
 	}
 };
@@ -855,6 +895,7 @@ public:
 		/*if (romaEnemies.size() > 0) {
 			cout << endl << romaEnemies[0].shape.getOutlineThickness();
 		}*/
+		//cout << endl << player.ammo.rayBullets.size();
 	}
 
 	void initWindow() {
@@ -866,36 +907,36 @@ public:
 	}
 
 	void initGameBackground() {
-		gameBackgroundTexture.loadFromFile("Textures\\background.png");
-		gameBackground.setTexture(&gameBackgroundTexture);
+		gameBackgroundTexture.loadFromFile("Textures\\background.jpg");
 		gameBackground.setSize(Vector2f(gameWindow.x, gameWindow.y));
+		gameBackground.setTexture(&gameBackgroundTexture);
 	}
 
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
 		romaData.areActive = true;
 		romaData.maxAmount = 7;
-		romaData.enemyTexture.loadFromFile("Textures\\RomaEnemy.jpg");
-		romaData.bulletTexture.loadFromFile("Textures\\romaBulletTexture.jpg");
+		Collision::CreateTextureAndBitmask(romaData.enemyTexture, "Textures\\RomaEnemy.jpg");
+		Collision::CreateTextureAndBitmask(romaData.bulletTexture, "Textures\\romaBulletTexture.jpg");
 		romaData.bulletSpeed = { -3.5, 0 };
 		romaData.spawnRadius = 40;
 		romaEnemies.clear();
 		romaBullets.clear();
 
 		//INITIALIZATION ROCK ENEMY
-		rockData.areActive = true;
+		rockData.areActive = false;
 		rockData.maxAmount = 7;
-		rockData.enemyTexture.loadFromFile("Textures\\rockEnemy.png");
-		rockData.bulletTexture.loadFromFile("Textures\\rockEnemyBulletTexture.png");
+		Collision::CreateTextureAndBitmask(rockData.enemyTexture, "Textures\\rockEnemy.png");
+		Collision::CreateTextureAndBitmask(rockData.bulletTexture, "Textures\\rockEnemyBulletTexture.png");
 		rockData.spawnRadius = 45;
 		rockEnemies.clear();
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
-		electroData.areActive = true;
+		electroData.areActive = false;
 		electroData.maxAmount = 3;
-		electroData.enemyTexture.loadFromFile("Textures\\ElectroEnemy.jpg");
-		electroData.lightningTexture.loadFromFile("Textures\\lightningTexture1.png");
+		Collision::CreateTextureAndBitmask(electroData.enemyTexture, "Textures\\ElectroEnemy.jpg");
+		Collision::CreateTextureAndBitmask(electroData.lightningTexture, "Textures\\lightningTexture1.png");
 		electroData.spawnRadius = 35;
 		electroData.visibleDelayAsMilliseconds = 1000;
 		electroData.visible_lightningDelayAsMilliseconds = 400;
@@ -917,22 +958,24 @@ public:
 
 	/////////////////////////////////////////////////					ДОДЕЛЫВАЙ, ИНАЧЕ НЕ ПОЕШЬ(надо оптимизацию коллизии кщё сделать потом)
 	void checkForOrdinaryBulletsCollision() {
-			//ROMA ENEMIES
+		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
+				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, romaEnemies[j].shape)) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					romaEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
+					i--;
 					break;
 				}
 			}
 		}
-			//ROMA BULLETS
+		//ROMA BULLETS
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < romaBullets.size(); j++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
+				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, romaBullets[j])) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					romaBullets.erase(romaBullets.begin() + j);
+					i--;
 					break;
 				}
 			}
@@ -940,33 +983,39 @@ public:
 
 
 
-			//ROCK ENEMIES
+		//ROCK ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
+				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, rockEnemies[j].shape)) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					rockEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
+					i--;
 					break;
 				}
 			}
 		}
-			//ROCK BULLETS
+		//ROCK BULLETS
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < rockBullets.size(); j++) {
-				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
+				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, rockBullets[j].shape)) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					rockBullets.erase(rockBullets.begin() + j);
+					i--;
 					break;
 				}
 			}
 		}
-			//ELECTRO ENEMIES
+
+
+
+		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
 				if (electroEnemies[j].visible) {
-					if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
+					if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, electroEnemies[j].shape)) {
 						player.deleteBullet(BULT_ORDINARY, i);
 						electroEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
+						i--;
 						break;
 					}
 				}
@@ -975,24 +1024,26 @@ public:
 	}
 	
 	void checkForSplittingBulletsCollision() {
-			//ROMA ENEMIES
+		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					romaEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 					player.splitBullet(&player.ammo.splittingBullets[i]);
 					player.deleteBullet(BULT_SPLITTING, i);
+					i--;
 					break;
 				}
 			}
 		}
-			//ROMA BULLETS
+		//ROMA BULLETS
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < romaBullets.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittingBullets[i]);
 					player.deleteBullet(BULT_SPLITTING, i);
 					romaBullets.erase(romaBullets.begin() + j);
+					i--;
 					break;
 				}
 			}
@@ -1000,28 +1051,33 @@ public:
 
 
 
-			//ROCK ENEMY
+		//ROCK ENEMY
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
 					rockEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 					player.splitBullet(&player.ammo.splittingBullets[i]);
 					player.deleteBullet(BULT_SPLITTING, i);
+					i--;
 					break;
 				}
 			}
 		}
-			//ROCK BULLETS
+		//ROCK BULLETS
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < rockBullets.size(); j++) {
 				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittingBullets[i]);
 					player.deleteBullet(BULT_SPLITTING, i);
 					rockBullets.erase(rockBullets.begin() + j);
+					i--;
 					break;
 				}
 			}
 		}
+
+
+
 		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
@@ -1029,6 +1085,7 @@ public:
 					if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
 						electroEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
 						player.deleteBullet(BULT_SPLITTING, i);
+						i--;
 						break;
 					}
 				}
@@ -1037,24 +1094,26 @@ public:
 	}
 	
 	void checkForSplittedBulletsCollision() {			
-			//ROMA ENEMIES
+		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					romaEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 					player.splitBullet(&player.ammo.splittedBullets[i]);
 					player.deleteBullet(BULT_SPLITTED, i);
+					i--;
 					break;
 				}
 			}
 		}
-			//ROMA BULLETS
+		//ROMA BULLETS
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < romaBullets.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittedBullets[i]);
 					player.deleteBullet(BULT_SPLITTED, i);
 					romaBullets.erase(romaBullets.begin() + j);
+					i--;
 					break;
 				}
 			}
@@ -1062,28 +1121,33 @@ public:
 
 
 
-			//ROCK ENEMY
+		//ROCK ENEMY
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
 					rockEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 					player.splitBullet(&player.ammo.splittedBullets[i]);
 					player.deleteBullet(BULT_SPLITTED, i);
+					i--;
 					break;
 				}
 			}
 		}
-			//ROCK BULLETS
+		//ROCK BULLETS
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < rockBullets.size(); j++) {
 				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
 					player.splitBullet(&player.ammo.splittedBullets[i]);
 					player.deleteBullet(BULT_SPLITTED, i);
 					rockBullets.erase(rockBullets.begin() + j);
+					i--;
 					break;
 				}
 			}
 		}
+
+
+
 		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
@@ -1091,6 +1155,7 @@ public:
 					if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
 						electroEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
 						player.deleteBullet(BULT_SPLITTED, i);
+						i--;
 						break;
 					}
 				}
@@ -1099,7 +1164,65 @@ public:
 	}
 
 	void checkForRayBulletsCollision() {
+		//ROMA ENEMIES
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			if (player.ammo.rayBullets[i].state == BS_FIRING) {
+				for (int j = 0; j < romaEnemies.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
+						break;
+					}
+				}
+			}
+		}
+		//ROMA BULLETS
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			if (player.ammo.rayBullets[i].state == BS_FIRING) {
+				for (int j = 0; j < romaBullets.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, romaBullets[j])) {
+						romaBullets.erase(romaBullets.begin() + j);
+						break;
+					}
+				}
+			}
+		}
 
+
+
+		//ROCK ENEMIES
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			if (player.ammo.rayBullets[i].state == BS_FIRING) {
+				for (int j = 0; j < rockEnemies.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
+						break;
+					}
+				}
+			}
+		}
+		//ROCK BULLETS
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			if (player.ammo.rayBullets[i].state == BS_FIRING) {
+				for (int j = 0; j < rockBullets.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, rockBullets[j].shape)) {
+						rockBullets.erase(rockBullets.begin() + j);
+						break;
+					}
+				}
+			}
+		}
+
+		//ELECTRO ENEMIES
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			for (int j = 0; j < electroEnemies.size(); j++) {
+				if (electroEnemies[j].visible) {
+					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, electroEnemies[j].shape)) {
+						electroEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
+						break;
+					}
+				}
+			}
+		}
 	}
 
 	void checkForBulletsCollisions() {
@@ -1209,6 +1332,7 @@ public:
 		player.controlPlayer(&gameWindow);
 		player.rotateToMouse(static_cast<Vector2f>(Mouse::getPosition(gameWindow.window)));
 		player.checkForBulletSwap();
+		player.updateAdditionalScopePart();
 	}
 	void updatePlayerBullets() {
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
@@ -1360,6 +1484,9 @@ public:
 		}
 
 		gameWindow.window.draw(player.scope);
+		if (player.additionalScope.isActive) {
+			gameWindow.window.draw(player.additionalScope.shape);
+		}
 		gameWindow.window.draw(player.playerShape);
 
 		for (int i = 0; i < romaBullets.size(); i++) {
@@ -1394,12 +1521,12 @@ public:
 			}
 		}
 
+		checkForPlayerCollisions();
+		checkForBulletsCollisions();
 		updatePlayer();
 		updatePlayerBullets();
 		updateEnemies();
 		updateEnemyBullets();
-		checkForPlayerCollisions();
-		checkForBulletsCollisions();
 		drawNewFrame();
 
 		debugging();
