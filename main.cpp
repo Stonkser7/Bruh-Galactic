@@ -9,11 +9,15 @@
 using namespace sf;
 using namespace std;
 
+class Game;
+using MenuAction = void(Game::*)();
+
+
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
 enum ENEMYSTATE { ES_MOVING, ES_SPAWN_ANIM, ES_STANDING };
 enum ENEMYTYPE { ET_ROMA, ET_ROCK, ET_ELECTRO };
 enum BULLETTYPE { BULT_ORDINARY, BULT_SPLITTING, BULT_SPLITTED, BULT_RAY};
-enum ROCKENEMYSIDE {S_UP, S_DOWN};
+enum ENEMYSIDE {S_UP, S_DOWN};
 enum RAYBULLETSTATE {BS_FIRING, BS_DISAPPEARING, BS_DELETE};
 
 struct GameWindow {
@@ -22,33 +26,46 @@ struct GameWindow {
 	unsigned short int y;
 	String title;
 };
+struct MenuItem {
+	Text title;
+	MenuAction action;
+};
 
 //////////////
 //ENEMIES DATA
 //////////////
 struct RomaEnemiesData {
 	bool areActive;
+	unsigned int maxAmount;
 	Texture enemyTexture;
 	Texture bulletTexture;
 	Vector2f bulletSpeed;
 	int spawnRadius;
-	unsigned int maxAmount;
 };
 struct RockEnemiesData {
 	bool areActive;
+	unsigned int maxAmount;
 	Texture enemyTexture;
 	Texture bulletTexture;
 	int spawnRadius;
-	unsigned int maxAmount;
 };
 struct ElectroEnemiesData {
 	bool areActive;
+	unsigned int maxAmount;
 	Texture enemyTexture;
 	Texture lightningTexture;
 	int spawnRadius;
-	unsigned int maxAmount;
 	int visibleDelayAsMilliseconds;
 	int visible_lightningDelayAsMilliseconds;
+};
+struct HealerEnemiesData {
+	bool areActive;
+	unsigned int maxAmount;
+	int spawnRadius;
+	int actionAreaRadius;
+	Texture enemyTexture;
+	Texture actionAreaTexture;
+	Texture rayTexture;
 };
 ///////////////
 //ENEMY BULLETS
@@ -149,7 +166,9 @@ public:
 		}
 	}
 };
-
+///////////////////
+//PLAYER AMMUNITION
+///////////////////
 struct Ammunition {
 	vector <OrdinaryBullet> ordinaryBullets;
 	vector <SplittingBullet> splittingBullets;
@@ -172,14 +191,8 @@ struct AdditionalScope {
 	}
 };
 
-class Game;
-using MenuAction = void(Game::*)();
 class Menu {
 private:
-	struct MenuItem {
-		Text title;
-		MenuAction action;
-	};
 	int selectedItem;
 	bool isMenuTouched;
 	Font menuFont;
@@ -692,7 +705,7 @@ public:
 	}
 	
 	void move(GameWindow *gwindow) {
-		if (static_cast<int>(shape.getPosition().y) != destinationCoordY) {
+		if (abs(destinationCoordY - static_cast<int>(shape.getPosition().y)) > 0.4) {
 			if (shape.getPosition().y < destinationCoordY) {
 				shape.move(0, 0.4);
 			}
@@ -723,14 +736,14 @@ public:
 			shape.move(-1, 0);
 		}
 		else {
-			setState("ES_MOVING");
+			setState("ES_STANDING");
 			fireClock.restart();
 		}
 	}
 };
 class RockEnemy : public CircleEnemy {
 public:
-	ROCKENEMYSIDE side;
+	ENEMYSIDE side;
 	float destinationCoordY;					//defining when spawnRockEnemy() invoking
 	Texture* bulletTxtrPtr;
 	Vector2f defaultBulletSpeed;
@@ -844,13 +857,66 @@ public:
 
 	void move() {
 		if (shape.getPosition().x >= destinationCoordX) {
-			shape.move(-0.9, 0);
+			shape.move(-1.1, 0);
 		}
 		else {
 			setState("ES_STANDING");
 			visible = true;
 			fireClock.restart();
 		}
+	}
+};
+class HealerEnemy : public CircleEnemy {
+public:
+	CircleShape healArea;
+	bool isHealAreaActive;
+	ENEMYSIDE side;
+	Texture* rayTxtrPtr;
+	int spawnCoordY;
+	Vector2i destinationCoords;
+	Vector2f speed;
+
+	void spawnAnimation() {
+		if (static_cast<int>(shape.getPosition().y) != spawnCoordY) {
+			switch (side) {
+			case S_UP:
+				shape.move(0, 2);
+				healArea.move(0, 2);
+				break;
+			case S_DOWN:
+				shape.move(0, -2);
+				healArea.move(0, -2);
+				break;
+			}
+		}
+		else {
+			isHealAreaActive = true;
+			setState("ES_STANDING");
+		}
+	}
+
+	void move() {
+		// X COORD
+		if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) > abs(speed.x)) {
+			shape.move(speed.x, 0);
+			healArea.move(speed.x, 0);
+		}
+		// Y COORD
+		if (abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) > abs(speed.y)) {
+			shape.move(0, speed.y);
+			healArea.move(0, speed.y);
+		}
+		if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y)) {
+			setState("ES_STANDING");
+		}
+	}
+
+	void generateDestination(GameWindow *gwindow) {
+		destinationCoords.x = rand() % (gwindow->x / 3) + gwindow->x * 2 / 3;
+		destinationCoords.y = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
+		speed.x = (destinationCoords.x - shape.getPosition().x) / 720.f;	//framerate limit == 240 that means 3 secs to destination (240 * 3 == 720)
+		speed.y = (destinationCoords.y - shape.getPosition().y) / 720.f;	/////////////////////////////////////////////////////////
+		setState("ES_MOVING");
 	}
 };
 
@@ -861,6 +927,7 @@ private:
 	RomaEnemiesData romaData;
 	RockEnemiesData rockData;
 	ElectroEnemiesData electroData;
+	HealerEnemiesData healerData;
 	Texture gameBackgroundTexture;
 	RectangleShape gameBackground;
 	Clock delayBetweenEscapePresses;
@@ -873,10 +940,12 @@ public:
 	vector <RomaEnemy> romaEnemies;
 	vector <RockEnemy> rockEnemies;
 	vector <ElectroEnemy> electroEnemies;
+	vector <HealerEnemy> healerEnemies;
 	//enemy bullets
 	vector <RectangleShape> romaBullets;
 	vector <RockEnemyBullet> rockBullets;
 	vector <ElectroEnemyLightning> electroLightnings;
+	vector <RectangleShape> healerRays;
 	Game() {
 		initWindow();
 	}
@@ -896,6 +965,10 @@ public:
 			cout << endl << romaEnemies[0].shape.getOutlineThickness();
 		}*/
 		//cout << endl << player.ammo.rayBullets.size();
+		//cout << endl << healerEnemies.size();
+		if (!healerEnemies.empty()) {
+			cout << endl << healerEnemies[0].destinationCoords.x << " | " << healerEnemies[0].shape.getPosition().x << setw(5) << healerEnemies[0].destinationCoords.y << " | " << healerEnemies[0].shape.getPosition().y;
+		}
 	}
 
 	void initWindow() {
@@ -924,7 +997,7 @@ public:
 		romaBullets.clear();
 
 		//INITIALIZATION ROCK ENEMY
-		rockData.areActive = false;
+		rockData.areActive = !true;
 		rockData.maxAmount = 7;
 		Collision::CreateTextureAndBitmask(rockData.enemyTexture, "Textures\\rockEnemy.png");
 		Collision::CreateTextureAndBitmask(rockData.bulletTexture, "Textures\\rockEnemyBulletTexture.png");
@@ -933,15 +1006,26 @@ public:
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
-		electroData.areActive = false;
+		electroData.areActive = !true;
 		electroData.maxAmount = 3;
 		Collision::CreateTextureAndBitmask(electroData.enemyTexture, "Textures\\ElectroEnemy.jpg");
 		Collision::CreateTextureAndBitmask(electroData.lightningTexture, "Textures\\lightningTexture1.png");
 		electroData.spawnRadius = 35;
-		electroData.visibleDelayAsMilliseconds = 1000;
+		electroData.visibleDelayAsMilliseconds = 700;
 		electroData.visible_lightningDelayAsMilliseconds = 400;
 		electroEnemies.clear();
 		electroLightnings.clear();
+
+		//INITIALIZATION HEALER ENEMY
+		healerData.areActive = true;
+		healerData.maxAmount = 1;
+		healerData.spawnRadius = 30;
+		healerData.actionAreaRadius = 150;
+		Collision::CreateTextureAndBitmask(healerData.enemyTexture, "Textures\\healerEnemyTexture.png");
+		Collision::CreateTextureAndBitmask(healerData.actionAreaTexture, "Textures\\healerActionAreaTexture.png");
+		Collision::CreateTextureAndBitmask(healerData.rayTexture, "Textures\\healerRayTexture.png");
+		healerEnemies.clear();
+		healerRays.clear();
 	}
 
 	void initGame() {
@@ -961,7 +1045,7 @@ public:
 		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < romaEnemies.size(); j++) {
-				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, romaEnemies[j].shape)) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaEnemies[j].shape.getGlobalBounds())) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					romaEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 					i--;
@@ -972,7 +1056,7 @@ public:
 		//ROMA BULLETS
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < romaBullets.size(); j++) {
-				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, romaBullets[j])) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(romaBullets[j].getGlobalBounds())) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					romaBullets.erase(romaBullets.begin() + j);
 					i--;
@@ -986,7 +1070,7 @@ public:
 		//ROCK ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < rockEnemies.size(); j++) {
-				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, rockEnemies[j].shape)) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockEnemies[j].shape.getGlobalBounds())) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					rockEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 					i--;
@@ -997,7 +1081,7 @@ public:
 		//ROCK BULLETS
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < rockBullets.size(); j++) {
-				if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, rockBullets[j].shape)) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(rockBullets[j].shape.getGlobalBounds())) {
 					player.deleteBullet(BULT_ORDINARY, i);
 					rockBullets.erase(rockBullets.begin() + j);
 					i--;
@@ -1012,7 +1096,7 @@ public:
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
 				if (electroEnemies[j].visible) {
-					if (Collision::PixelPerfectTest(player.ammo.ordinaryBullets[i].shape, electroEnemies[j].shape)) {
+					if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
 						player.deleteBullet(BULT_ORDINARY, i);
 						electroEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
 						i--;
@@ -1213,7 +1297,7 @@ public:
 		}
 
 		//ELECTRO ENEMIES
-		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
 			for (int j = 0; j < electroEnemies.size(); j++) {
 				if (electroEnemies[j].visible) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, electroEnemies[j].shape)) {
@@ -1261,13 +1345,16 @@ public:
 		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1600 == 1);
 	}
 
+	bool isHealerEnemyNeedToSpawn() {
+		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2000 == 1);
+	}
+
 	void spawnRomaEnemy() {
 		RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
 		roma.fireDelayAsMilliseconds = 5300;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
-		roma.generateDestinationY(&gameWindow);
 		roma.shape.setRadius(romaData.spawnRadius);
 		roma.shape.setOrigin(Vector2f(romaData.spawnRadius, romaData.spawnRadius));
 		roma.shape.setPosition(Vector2f(gameWindow.x + romaData.spawnRadius, rand() % (gameWindow.y - romaData.spawnRadius * 4) + romaData.spawnRadius * 2));
@@ -1285,14 +1372,14 @@ public:
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
 		rock.shape.setRadius(rockData.spawnRadius);
 		rock.shape.setOrigin(rockData.spawnRadius, rockData.spawnRadius);
-		rock.side = ROCKENEMYSIDE(rand() % 2);
+		rock.side = ENEMYSIDE(rand() % 2);
 		switch (rock.side) {
 		case S_UP:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, 0 - rock.shape.getRadius()));
+			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, 0 - rockData.spawnRadius));
 			rock.destinationCoordY = gameWindow.y - rock.shape.getRadius();
 			break;
 		case S_DOWN:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, gameWindow.y + rock.shape.getRadius()));
+			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, gameWindow.y + rockData.spawnRadius));
 			rock.destinationCoordY = 0 + rock.shape.getRadius();
 			break;
 		}
@@ -1312,7 +1399,34 @@ public:
 		electro.destinationCoordX = gameWindow.x / 100 * 15;
 		electroEnemies.push_back(electro);
 	}
-	
+
+	void spawnHealerEnemy() {
+		HealerEnemy healer;
+		healer.shape.setTexture(&healerData.enemyTexture);
+		healer.shape.setRadius(healerData.spawnRadius);
+		healer.shape.setOrigin(healerData.spawnRadius, healerData.spawnRadius);
+		healer.rayTxtrPtr = &healerData.rayTexture;
+		healer.fireDelayAsMilliseconds = 1000;
+		healer.spawnCoordY = gameWindow.y / 2;
+		healer.side = ENEMYSIDE(rand() % 2);
+		switch (healer.side) {
+		case S_UP:
+			healer.shape.setPosition(Vector2f(rand() % (gameWindow.x / 3) + gameWindow.x / 2, 0 - healerData.spawnRadius));
+			break;
+		case S_DOWN:
+			healer.shape.setPosition(Vector2f(rand() % (gameWindow.x / 3) + gameWindow.x / 2, gameWindow.y + healerData.spawnRadius));
+			break;
+		}
+		healer.isHealAreaActive = false;
+		healer.healArea.setTexture(&healerData.actionAreaTexture);
+		healer.healArea.setFillColor(Color(healer.healArea.getFillColor().r, healer.healArea.getFillColor().g, healer.healArea.getFillColor().b, 40));
+		healer.healArea.setRadius(healerData.actionAreaRadius);
+		healer.healArea.setOrigin(healerData.actionAreaRadius, healerData.actionAreaRadius);
+		healer.healArea.setPosition(healer.shape.getPosition());
+		healer.setState("ES_SPAWN_ANIM");
+		healerEnemies.push_back(healer);
+	}
+
 	void checkForEnemiesSpawn() {
 		if (isRomaEnemyNeedToSpawn()) {
 			spawnRomaEnemy();
@@ -1322,6 +1436,9 @@ public:
 		}
 		if (isElectroEnemyNeedToSpawn()) {
 			spawnElectroEnemy();
+		}
+		if (isHealerEnemyNeedToSpawn()) {
+			spawnHealerEnemy();
 		}
 	}
 
@@ -1394,6 +1511,7 @@ public:
 			}
 			if (!romaEnemies[i].isAlive()) {
 				romaEnemies.erase(romaEnemies.begin() + i);
+				i--;
 			}
 		}
 		//ROCK ENEMIES
@@ -1407,6 +1525,7 @@ public:
 			rockEnemies[i].takeTarget(player.playerShape.getPosition());
 			if (!rockEnemies[i].isAlive()) {
 				rockEnemies.erase(rockEnemies.begin() + i);
+				i--;
 			}
 		}
 		//ELECTRO EMEMIES
@@ -1427,6 +1546,26 @@ public:
 			}
 			if (!electroEnemies[i].isAlive()) {
 				electroEnemies.erase(electroEnemies.begin() + i);
+				i--;
+			}
+		}
+		//HEALER ENEMIES
+		for (int i = 0; i < healerEnemies.size(); i++) {
+
+			//heal function!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+			if (healerEnemies[i].getState() == ES_SPAWN_ANIM) {
+				healerEnemies[i].spawnAnimation();
+			}
+			if (healerEnemies[i].getState() == ES_MOVING) {
+				healerEnemies[i].move();
+			}
+			if (healerEnemies[i].getState() == ES_STANDING) {
+				healerEnemies[i].generateDestination(&gameWindow);
+			}
+			if (!healerEnemies[i].isAlive()) {
+				healerEnemies.erase(healerEnemies.begin() + i);
+				i--;
 			}
 		}
 	}
@@ -1449,7 +1588,7 @@ public:
 		}
 		//ELECTRO LIGHTNINGS
 		for (int i = 0; i < electroLightnings.size(); i++) {
-			if (electroLightnings[i].visible_lightningClock.getElapsedTime().asMilliseconds() >= electroData.visible_lightningDelayAsMilliseconds) {
+			if (electroLightnings[i].visible_lightningClock.getElapsedTime().asMilliseconds() > electroData.visible_lightningDelayAsMilliseconds) {
 				electroLightnings.erase(electroLightnings.begin() + i);
 			}
 		}
@@ -1468,6 +1607,12 @@ public:
 			if (electroEnemies[i].visible) {
 				gameWindow.window.draw(electroEnemies[i].shape);
 			}
+		}
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			if (healerEnemies[i].isHealAreaActive) {
+				gameWindow.window.draw(healerEnemies[i].healArea);
+			}
+			gameWindow.window.draw(healerEnemies[i].shape);
 		}
 
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
@@ -1497,6 +1642,9 @@ public:
 		}
 		for (int i = 0; i < electroLightnings.size(); i++) {
 			gameWindow.window.draw(electroLightnings[i].shape);
+		}
+		for (int i = 0; i < healerRays.size(); i++) {
+			gameWindow.window.draw(healerRays[i]);
 		}
 		gameWindow.window.display();
 	}
@@ -1530,8 +1678,6 @@ public:
 		drawNewFrame();
 
 		debugging();
-
-
 	}
 };
 int main() {
