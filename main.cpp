@@ -66,6 +66,7 @@ struct HealerEnemiesData {
 	Texture enemyTexture;
 	Texture actionAreaTexture;
 	Texture rayTexture;
+	float heal;
 };
 ///////////////
 //ENEMY BULLETS
@@ -77,6 +78,12 @@ struct RockEnemyBullet {
 struct ElectroEnemyLightning {
 	RectangleShape shape;
 	Clock visible_lightningClock;
+};
+struct HealerEnemyRay {
+	RectangleShape shape;
+	void takeTarget(Vector2f coords) {
+		shape.setRotation((atan2(coords.y - shape.getPosition().y, coords.x - shape.getPosition().x)) * 180 / 3.14159265);
+	}
 };
 
 
@@ -445,7 +452,7 @@ public:
 		rotateGun();							//rotation only when player is shooting(for optimization)
 		switch (selectedBullet) {
 		case BULT_ORDINARY:
-			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 170 /*Delay between shots*/) {
+			if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
 				OrdinaryBullet bullet;
 				bullet.shape.setSize(Vector2f(32.f, 19.f));
 				bullet.shape.setTexture(&ammoData.ordinaryBulletData.texture);
@@ -688,6 +695,13 @@ public:
 		shape.setOutlineThickness(shape.getOutlineThickness() - damage);
 	}
 
+	void heal(float heal) {
+		shape.setOutlineThickness(shape.getOutlineThickness() + heal);
+		if (shape.getOutlineThickness() > 0) {
+			shape.setOutlineThickness(0);
+		}
+	}
+
 	bool isAlive() {
 		return shape.getRadius() > abs(shape.getOutlineThickness());
 	}
@@ -794,21 +808,21 @@ public:
 		switch (side) {
 		case S_UP:
 			if (shape.getPosition().y < destinationCoordY) {
-				shape.move(-0.2, 0.9);
+				shape.move(-0.2, 0.8);
 			}
 			else {
 				setState("ES_STANDING");
-				fireDelayAsMilliseconds = 2700;
+				fireDelayAsMilliseconds = 3500;
 				fireClock.restart();
 			}
 			break;
 		case S_DOWN:
 			if (shape.getPosition().y > destinationCoordY) {
-				shape.move(-0.2, -0.9);
+				shape.move(-0.2, -0.8);
 			}
 			else {
 				setState("ES_STANDING");
-				fireDelayAsMilliseconds = 2700;
+				fireDelayAsMilliseconds = 3500;
 				fireClock.restart();
 			}
 			break;
@@ -857,7 +871,7 @@ public:
 
 	void move() {
 		if (shape.getPosition().x >= destinationCoordX) {
-			shape.move(-1.1, 0);
+			shape.move(-1, 0);
 		}
 		else {
 			setState("ES_STANDING");
@@ -914,9 +928,13 @@ public:
 	void generateDestination(GameWindow *gwindow) {
 		destinationCoords.x = rand() % (gwindow->x / 3) + gwindow->x * 2 / 3;
 		destinationCoords.y = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
-		speed.x = (destinationCoords.x - shape.getPosition().x) / 720.f;	//framerate limit == 240 that means 3 secs to destination (240 * 3 == 720)
-		speed.y = (destinationCoords.y - shape.getPosition().y) / 720.f;	/////////////////////////////////////////////////////////
+		speed.x = (destinationCoords.x - shape.getPosition().x) / 600.f;	//framerate limit == 240 that means 2.5 secs to destination (240 * 2.5 == 600)
+		speed.y = (destinationCoords.y - shape.getPosition().y) / 600.f;	/////////////////////////////////////////////////////////
 		setState("ES_MOVING");
+	}
+
+	bool isCanHeal() {
+		return fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
 	}
 };
 
@@ -945,7 +963,7 @@ public:
 	vector <RectangleShape> romaBullets;
 	vector <RockEnemyBullet> rockBullets;
 	vector <ElectroEnemyLightning> electroLightnings;
-	vector <RectangleShape> healerRays;
+	vector <HealerEnemyRay> healerRays;
 	Game() {
 		initWindow();
 	}
@@ -965,10 +983,10 @@ public:
 			cout << endl << romaEnemies[0].shape.getOutlineThickness();
 		}*/
 		//cout << endl << player.ammo.rayBullets.size();
-		//cout << endl << healerEnemies.size();
-		if (!healerEnemies.empty()) {
+		cout << endl << healerEnemies.size();
+		/*if (!healerEnemies.empty()) {
 			cout << endl << healerEnemies[0].destinationCoords.x << " | " << healerEnemies[0].shape.getPosition().x << setw(5) << healerEnemies[0].destinationCoords.y << " | " << healerEnemies[0].shape.getPosition().y;
-		}
+		}*/
 	}
 
 	void initWindow() {
@@ -988,7 +1006,7 @@ public:
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
 		romaData.areActive = true;
-		romaData.maxAmount = 7;
+		romaData.maxAmount = 10;
 		Collision::CreateTextureAndBitmask(romaData.enemyTexture, "Textures\\RomaEnemy.jpg");
 		Collision::CreateTextureAndBitmask(romaData.bulletTexture, "Textures\\romaBulletTexture.jpg");
 		romaData.bulletSpeed = { -3.5, 0 };
@@ -997,8 +1015,8 @@ public:
 		romaBullets.clear();
 
 		//INITIALIZATION ROCK ENEMY
-		rockData.areActive = !true;
-		rockData.maxAmount = 7;
+		rockData.areActive = true;
+		rockData.maxAmount = 10;
 		Collision::CreateTextureAndBitmask(rockData.enemyTexture, "Textures\\rockEnemy.png");
 		Collision::CreateTextureAndBitmask(rockData.bulletTexture, "Textures\\rockEnemyBulletTexture.png");
 		rockData.spawnRadius = 45;
@@ -1006,8 +1024,8 @@ public:
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
-		electroData.areActive = !true;
-		electroData.maxAmount = 3;
+		electroData.areActive = true;
+		electroData.maxAmount = 4;
 		Collision::CreateTextureAndBitmask(electroData.enemyTexture, "Textures\\ElectroEnemy.jpg");
 		Collision::CreateTextureAndBitmask(electroData.lightningTexture, "Textures\\lightningTexture1.png");
 		electroData.spawnRadius = 35;
@@ -1018,12 +1036,13 @@ public:
 
 		//INITIALIZATION HEALER ENEMY
 		healerData.areActive = true;
-		healerData.maxAmount = 1;
+		healerData.maxAmount = 3;
+		healerData.heal = 0.06;
 		healerData.spawnRadius = 30;
-		healerData.actionAreaRadius = 150;
+		healerData.actionAreaRadius = 200;
 		Collision::CreateTextureAndBitmask(healerData.enemyTexture, "Textures\\healerEnemyTexture.png");
 		Collision::CreateTextureAndBitmask(healerData.actionAreaTexture, "Textures\\healerActionAreaTexture.png");
-		Collision::CreateTextureAndBitmask(healerData.rayTexture, "Textures\\healerRayTexture.png");
+		healerData.rayTexture.loadFromFile("Textures\\healerRayTexture.png");
 		healerEnemies.clear();
 		healerRays.clear();
 	}
@@ -1105,8 +1124,21 @@ public:
 				}
 			}
 		}
+
+
+
+		//HEALER ENEMIES
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+			for (int j = 0; j < healerEnemies.size(); j++) {
+				if (player.ammo.ordinaryBullets[i].shape.getGlobalBounds().intersects(healerEnemies[j].shape.getGlobalBounds())) {
+					player.deleteBullet(BULT_ORDINARY, i);
+					healerEnemies[j].takeDamage(player.ammoData.ordinaryBulletData.damage);
+					i--;
+					break;
+				}
+			}
+		}
 	}
-	
 	void checkForSplittingBulletsCollision() {
 		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
@@ -1168,6 +1200,7 @@ public:
 				if (electroEnemies[j].visible) {
 					if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
 						electroEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
+						player.splitBullet(&player.ammo.splittingBullets[i]);
 						player.deleteBullet(BULT_SPLITTING, i);
 						i--;
 						break;
@@ -1175,8 +1208,22 @@ public:
 				}
 			}
 		}
+
+
+
+		//HEALER ENEMIES
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+			for (int j = 0; j < healerEnemies.size(); j++) {
+				if (player.ammo.splittingBullets[i].shape.getGlobalBounds().intersects(healerEnemies[j].shape.getGlobalBounds())) {
+					healerEnemies[j].takeDamage(player.ammo.splittingBullets[i].damage);
+					player.splitBullet(&player.ammo.splittingBullets[i]);
+					player.deleteBullet(BULT_SPLITTING, i);
+					i--;
+					break;
+				}
+			}
+		}
 	}
-	
 	void checkForSplittedBulletsCollision() {			
 		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
@@ -1238,6 +1285,7 @@ public:
 				if (electroEnemies[j].visible) {
 					if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(electroEnemies[j].shape.getGlobalBounds())) {
 						electroEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
+						player.splitBullet(&player.ammo.splittedBullets[i]);
 						player.deleteBullet(BULT_SPLITTED, i);
 						i--;
 						break;
@@ -1245,8 +1293,22 @@ public:
 				}
 			}
 		}
-	}
 
+
+
+		//HEALER ENEMIES
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			for (int j = 0; j < healerEnemies.size(); j++) {
+				if (player.ammo.splittedBullets[i].shape.getGlobalBounds().intersects(healerEnemies[j].shape.getGlobalBounds())) {
+					healerEnemies[j].takeDamage(player.ammo.splittedBullets[i].damage);
+					player.splitBullet(&player.ammo.splittedBullets[i]);
+					player.deleteBullet(BULT_SPLITTED, i);
+					i--;
+					break;
+				}
+			}
+		}
+	}
 	void checkForRayBulletsCollision() {
 		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
@@ -1298,10 +1360,26 @@ public:
 
 		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			for (int j = 0; j < electroEnemies.size(); j++) {
-				if (electroEnemies[j].visible) {
-					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, electroEnemies[j].shape)) {
-						electroEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
+			if (player.ammo.rayBullets[i].state == BS_FIRING) {
+				for (int j = 0; j < electroEnemies.size(); j++) {
+					if (electroEnemies[j].visible) {
+						if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
+							break;
+						}
+					}
+				}
+			}
+		}
+
+
+
+		//HEALER ENEMIES
+		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
+			if (player.ammo.rayBullets[i].state == BS_FIRING) {
+				for (int j = 0; j < healerEnemies.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
 						break;
 					}
 				}
@@ -1309,13 +1387,6 @@ public:
 		}
 	}
 
-	void checkForBulletsCollisions() {
-		checkForOrdinaryBulletsCollision();
-		checkForSplittingBulletsCollision();
-		checkForSplittedBulletsCollision();
-		checkForRayBulletsCollision();
-	}
-	
 	void checkForPlayerCollisions() {
 		//ROMA BULLETS
 		for (int i = 0; i < romaBullets.size(); i++) {
@@ -1332,28 +1403,135 @@ public:
 			}
 		}
 	}
+
+	void checkForEffectAreaCollisions() {
+		//healerEnemies HEAL AREA
+		healerRays.clear();
+		//roma enemies
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			if (healerEnemies[i].isHealAreaActive) {
+				for (int j = 0; j < romaEnemies.size(); j++) {
+					if (romaEnemies[j].shape.getOutlineThickness() < 0) {
+						if (Collision::PixelPerfectTest(healerEnemies[i].healArea, romaEnemies[j].shape)) {
+							HealerEnemyRay healRay;
+							healRay.shape.setTexture(healerEnemies[i].rayTxtrPtr);
+							healRay.shape.setPosition(healerEnemies[i].shape.getPosition());
+							healRay.shape.setSize(Vector2f(sqrt(pow(healerEnemies[i].shape.getPosition().x - romaEnemies[j].shape.getPosition().x, 2) + pow(healerEnemies[i].shape.getPosition().y - romaEnemies[j].shape.getPosition().y, 2)), 10));
+							healRay.shape.setOrigin(Vector2f(0, healRay.shape.getSize().y / 2));
+							healRay.takeTarget(romaEnemies[j].shape.getPosition());
+							healerRays.push_back(healRay);
+							if (healerEnemies[i].isCanHeal()) {
+								romaEnemies[j].heal(healerData.heal);
+							}
+						}
+					}
+				}
+			}
+		}
+		//rock enemies
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			if (healerEnemies[i].isHealAreaActive) {
+				for (int j = 0; j < rockEnemies.size(); j++) {
+					if (rockEnemies[j].shape.getOutlineThickness() < 0) {
+						if (Collision::PixelPerfectTest(healerEnemies[i].healArea, rockEnemies[j].shape)) {
+							HealerEnemyRay healRay;
+							healRay.shape.setTexture(healerEnemies[i].rayTxtrPtr);
+							healRay.shape.setPosition(healerEnemies[i].shape.getPosition());
+							healRay.shape.setSize(Vector2f(sqrt(pow(healerEnemies[i].shape.getPosition().x - rockEnemies[j].shape.getPosition().x, 2) + pow(healerEnemies[i].shape.getPosition().y - rockEnemies[j].shape.getPosition().y, 2)), 10));
+							healRay.shape.setOrigin(Vector2f(0, healRay.shape.getSize().y / 2));
+							healRay.takeTarget(rockEnemies[j].shape.getPosition());
+							healerRays.push_back(healRay);
+							if (healerEnemies[i].isCanHeal()) {
+								rockEnemies[j].heal(healerData.heal);
+							}
+						}
+					}
+				}
+			}
+		}
+		//electro enemies
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			if (healerEnemies[i].isHealAreaActive) {
+				for (int j = 0; j < electroEnemies.size(); j++) {
+					if (electroEnemies[j].shape.getOutlineThickness() < 0) {
+						if (electroEnemies[j].visible) {
+							if (Collision::PixelPerfectTest(healerEnemies[i].healArea, electroEnemies[j].shape)) {
+								HealerEnemyRay healRay;
+								healRay.shape.setTexture(healerEnemies[i].rayTxtrPtr);
+								healRay.shape.setPosition(healerEnemies[i].shape.getPosition());
+								healRay.shape.setSize(Vector2f(sqrt(pow(healerEnemies[i].shape.getPosition().x - electroEnemies[j].shape.getPosition().x, 2) + pow(healerEnemies[i].shape.getPosition().y - electroEnemies[j].shape.getPosition().y, 2)), 10));
+								healRay.shape.setOrigin(Vector2f(0, healRay.shape.getSize().y / 2));
+								healRay.takeTarget(electroEnemies[j].shape.getPosition());
+								healerRays.push_back(healRay);
+								if (healerEnemies[i].isCanHeal()) {
+									electroEnemies[j].heal(healerData.heal);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		//healer enemies
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			if (healerEnemies[i].isHealAreaActive) {
+				for (int j = 0; j < healerEnemies.size(); j++) {
+					if (healerEnemies[j].shape.getOutlineThickness() < 0) {
+						if (i != j) {
+							if (Collision::PixelPerfectTest(healerEnemies[i].healArea, healerEnemies[j].shape)) {
+								HealerEnemyRay healRay;
+								healRay.shape.setTexture(healerEnemies[i].rayTxtrPtr);
+								healRay.shape.setPosition(healerEnemies[i].shape.getPosition());
+								healRay.shape.setSize(Vector2f(sqrt(pow(healerEnemies[i].shape.getPosition().x - healerEnemies[j].shape.getPosition().x, 2) + pow(healerEnemies[i].shape.getPosition().y - healerEnemies[j].shape.getPosition().y, 2)), 10));
+								healRay.shape.setOrigin(Vector2f(0, healRay.shape.getSize().y / 2));
+								healRay.takeTarget(healerEnemies[j].shape.getPosition());
+								healerRays.push_back(healRay);
+								if (healerEnemies[i].isCanHeal()) {
+									healerEnemies[j].heal(healerData.heal);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	void checkForCollisions() {
+		checkForEffectAreaCollisions();
+		//player
+		checkForPlayerCollisions();
+		//bullets
+		checkForOrdinaryBulletsCollision();
+		checkForSplittingBulletsCollision();
+		checkForSplittedBulletsCollision();
+		checkForRayBulletsCollision();
+		//
+	}
+
 	
 	bool isRomaEnemyNeedToSpawn() {
-		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 700 == 1);
+		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 1100 == 1);
 	}
 
 	bool isRockEnemyNeedToSpawn() {
-		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 900 == 1);
+		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 1500 == 1);
 	}
 
 	bool isElectroEnemyNeedToSpawn() {
-		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 1600 == 1);
+		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 2400 == 1);
 	}
 
 	bool isHealerEnemyNeedToSpawn() {
-		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2000 == 1);
+		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2600 == 1);
 	}
 
 	void spawnRomaEnemy() {
 		RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 5300;
+		roma.fireDelayAsMilliseconds = 5200;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
 		roma.shape.setRadius(romaData.spawnRadius);
 		roma.shape.setOrigin(Vector2f(romaData.spawnRadius, romaData.spawnRadius));
@@ -1366,9 +1544,9 @@ public:
 		RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
-		rock.fireDelayAsMilliseconds = 800;
+		rock.fireDelayAsMilliseconds = 1000;
 		rock.shape.setRotation(0);
-		rock.defaultBulletSpeed = { 2.2, 0 };
+		rock.defaultBulletSpeed = { 2.0, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
 		rock.shape.setRadius(rockData.spawnRadius);
 		rock.shape.setOrigin(rockData.spawnRadius, rockData.spawnRadius);
@@ -1406,7 +1584,7 @@ public:
 		healer.shape.setRadius(healerData.spawnRadius);
 		healer.shape.setOrigin(healerData.spawnRadius, healerData.spawnRadius);
 		healer.rayTxtrPtr = &healerData.rayTexture;
-		healer.fireDelayAsMilliseconds = 1000;
+		healer.fireDelayAsMilliseconds = 100;
 		healer.spawnCoordY = gameWindow.y / 2;
 		healer.side = ENEMYSIDE(rand() % 2);
 		switch (healer.side) {
@@ -1419,7 +1597,7 @@ public:
 		}
 		healer.isHealAreaActive = false;
 		healer.healArea.setTexture(&healerData.actionAreaTexture);
-		healer.healArea.setFillColor(Color(healer.healArea.getFillColor().r, healer.healArea.getFillColor().g, healer.healArea.getFillColor().b, 40));
+		healer.healArea.setFillColor(Color(healer.healArea.getFillColor().r, healer.healArea.getFillColor().g, healer.healArea.getFillColor().b, 30));
 		healer.healArea.setRadius(healerData.actionAreaRadius);
 		healer.healArea.setOrigin(healerData.actionAreaRadius, healerData.actionAreaRadius);
 		healer.healArea.setPosition(healer.shape.getPosition());
@@ -1452,6 +1630,7 @@ public:
 		player.updateAdditionalScopePart();
 	}
 	void updatePlayerBullets() {
+		//ORDINARY BULLETS
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			if (player.ammo.ordinaryBullets[i].isOutOfScreen(&gameWindow)) {
 				player.deleteBullet(BULT_ORDINARY, i);
@@ -1460,6 +1639,7 @@ public:
 				player.ammo.ordinaryBullets[i].move();
 			}
 		}
+		//SPLITTING BULLETS
 		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
 			if (player.ammo.splittingBullets[i].isOutOfScreen(&gameWindow)) {
 				player.deleteBullet(BULT_SPLITTING, i);
@@ -1468,6 +1648,7 @@ public:
 				player.ammo.splittingBullets[i].move();
 			}
 		}
+		//SPLITTED BULLETS
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			if (player.ammo.splittedBullets[i].isOutOfScreen(&gameWindow)) {
 				player.deleteBullet(BULT_SPLITTED, i);
@@ -1476,6 +1657,7 @@ public:
 				player.ammo.splittedBullets[i].move();
 			}
 		}
+		//RAY BULLETS
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
 			switch (player.ammo.rayBullets[i].state) {
 			case BS_FIRING:
@@ -1551,9 +1733,6 @@ public:
 		}
 		//HEALER ENEMIES
 		for (int i = 0; i < healerEnemies.size(); i++) {
-
-			//heal function!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 			if (healerEnemies[i].getState() == ES_SPAWN_ANIM) {
 				healerEnemies[i].spawnAnimation();
 			}
@@ -1644,7 +1823,7 @@ public:
 			gameWindow.window.draw(electroLightnings[i].shape);
 		}
 		for (int i = 0; i < healerRays.size(); i++) {
-			gameWindow.window.draw(healerRays[i]);
+			gameWindow.window.draw(healerRays[i].shape);
 		}
 		gameWindow.window.display();
 	}
@@ -1669,8 +1848,7 @@ public:
 			}
 		}
 
-		checkForPlayerCollisions();
-		checkForBulletsCollisions();
+		checkForCollisions();
 		updatePlayer();
 		updatePlayerBullets();
 		updateEnemies();
