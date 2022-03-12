@@ -7,6 +7,7 @@
 #include <iomanip>
 #include <ctime>
 #include "Player.h"
+#include "Enemies.h"
 using namespace sf;
 using namespace std;
 
@@ -14,76 +15,13 @@ class Game;
 using ButtonAction = void(Game::*)();
 
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
-enum ENEMYSTATE { ES_MOVING, ES_SPAWN_ANIM, ES_STANDING };
 enum ENEMYTYPE { ET_ROMA, ET_ROCK, ET_ELECTRO };
-enum ENEMYSIDE {S_UP, S_DOWN};
 
-//struct GameWindow {
-//	RenderWindow window;
-//	unsigned short x;
-//	unsigned short y;
-//	String title;
-//};
 
 struct Button {
 	Text title;
 	ButtonAction action;
 	RectangleShape buttonBackground;
-};
-
-//////////////
-//ENEMIES DATA
-//////////////
-struct RomaEnemiesData {
-	bool areActive;
-	unsigned int maxAmount;
-	Texture enemyTexture;
-	Texture bulletTexture;
-	Vector2f bulletSpeed;
-	int spawnRadius;
-};
-struct RockEnemiesData {
-	bool areActive;
-	unsigned int maxAmount;
-	Texture enemyTexture;
-	Texture bulletTexture;
-	int spawnRadius;
-};
-struct ElectroEnemiesData {
-	bool areActive;
-	unsigned int maxAmount;
-	Texture enemyTexture;
-	Texture lightningTexture;
-	int spawnRadius;
-	int visibleDelayAsMilliseconds;
-	int visible_lightningDelayAsMilliseconds;
-};
-struct HealerEnemiesData {
-	bool areActive;
-	unsigned int maxAmount;
-	int spawnRadius;
-	int healAreaRadius;
-	Texture enemyTexture;
-	Texture healAreaTexture;
-	Texture rayTexture;
-	float heal;
-};
-///////////////
-//ENEMY BULLETS
-///////////////
-struct RockEnemyBullet {
-	CircleShape shape;
-	Vector2f speed;
-};
-struct ElectroEnemyLightning {
-	RectangleShape shape;
-	Clock visible_lightningClock;
-};
-struct HealerEnemyRay {
-	RectangleShape shape;
-	void takeTarget(Vector2f coords) {
-		shape.setRotation((atan2(coords.y - shape.getPosition().y, coords.x - shape.getPosition().x)) * 180 / 3.14159265);
-	}
 };
 
 
@@ -243,283 +181,6 @@ public:
 	}
 };
 
-///////////////
-//ENEMY CLASSES
-///////////////
-class CircleEnemy {
-private:
-	ENEMYSTATE state;
-public:
-	CircleEnemy() {
-		shape.setOutlineColor(Color(139, 0, 0, 180));
-	}
-	CircleShape shape;
-	Clock fireClock;
-	int fireDelayAsMilliseconds;
-
-	void setState(string state) {
-		if (state == "ES_MOVING") {
-			this->state = ES_MOVING;
-		}
-		if (state == "ES_SPAWN_ANIM") {
-			this->state = ES_SPAWN_ANIM;
-		}
-		if (state == "ES_STANDING") {
-			this->state = ES_STANDING;
-		}
-	}
-
-	ENEMYSTATE getState() {
-		return state;
-	}
-
-	void takeDamage(int damage) {
-		shape.setOutlineThickness(shape.getOutlineThickness() - damage);
-	}
-
-	void heal(float heal) {
-		shape.setOutlineThickness(shape.getOutlineThickness() + heal);
-		if (shape.getOutlineThickness() > 0) {
-			shape.setOutlineThickness(0);
-		}
-	}
-
-	bool isAlive() {
-		return shape.getRadius() > abs(shape.getOutlineThickness());
-	}
-
-};
-class RomaEnemy : public CircleEnemy {
-public:
-	float spawnCoordX;
-	int destinationCoordY;
-	Texture* bulletTxtrPtr;
-	
-	void generateDestinationY(GameWindow *gwindow) {
-		destinationCoordY = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
-		setState("ES_MOVING");
-	}
-	
-	void move(GameWindow *gwindow) {
-		if (abs(destinationCoordY - static_cast<int>(shape.getPosition().y)) > 0.4) {
-			if (shape.getPosition().y < destinationCoordY) {
-				shape.move(0, 0.4);
-			}
-			else {
-				shape.move(0, -0.4);
-			}
-		}
-		else {
-			setState("ES_STANDING");
-		}
-	}
-	
-	bool isNeedToFire() {
-		return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
-	}
-	
-	RectangleShape fire() {
-		RectangleShape bullet;
-		bullet.setTexture(bulletTxtrPtr);
-		bullet.setSize(Vector2f(45, 25));
-		bullet.setPosition(Vector2f(shape.getPosition()));
-		fireClock.restart();
-		return bullet;
-	}
-	
-	void spawnAnimation() {
-		if (shape.getPosition().x != spawnCoordX) {
-			shape.move(-1, 0);
-		}
-		else {
-			setState("ES_STANDING");
-			fireClock.restart();
-		}
-	}
-};
-class RockEnemy : public CircleEnemy {
-public:
-	ENEMYSIDE side;
-	float destinationCoordY;					//defining when spawnRockEnemy() invoking
-	Texture* bulletTxtrPtr;
-	Vector2f defaultBulletSpeed;
-	float bulletSpeedVariation;
-	
-	bool isNeedToFire() {
-		return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
-	}
-
-	void rotateGun() {
-		shape.rotate(-90);
-		float rotation = shape.getRotation();
-		if (rotation >= 0 && rotation <= 90) {
-			defaultBulletSpeed.x = rotation * bulletSpeedVariation;
-			defaultBulletSpeed.y = (90 - rotation) * -bulletSpeedVariation;
-		}
-		if (rotation > 90 && rotation <= 180) {
-			defaultBulletSpeed.x = (180 - rotation) * bulletSpeedVariation;
-			defaultBulletSpeed.y = (rotation - 90) * bulletSpeedVariation;
-		}
-		if (rotation > 180 && rotation <= 270) {
-			defaultBulletSpeed.x = (rotation - 180) * -bulletSpeedVariation;
-			defaultBulletSpeed.y = (270 - rotation) * bulletSpeedVariation;
-		}
-		if (rotation > 270 && rotation < 360) {
-			defaultBulletSpeed.x = (360 - rotation) * -bulletSpeedVariation;
-			defaultBulletSpeed.y = (rotation - 270) * -bulletSpeedVariation;
-		}
-	}
-	
-	RockEnemyBullet fire() {
-		RockEnemyBullet bullet;
-		bullet.shape.setTexture(bulletTxtrPtr);
-		bullet.shape.setRadius(15);
-		bullet.shape.setPosition(Vector2f(shape.getPosition()));
-		bullet.shape.setOrigin(bullet.shape.getRadius(), bullet.shape.getRadius());
-		rotateGun();
-		bullet.speed = defaultBulletSpeed;
-		fireClock.restart();
-		return bullet;
-	}
-	
-	void takeTarget(Vector2f coords) {
-		shape.setRotation((atan2(shape.getPosition().y - coords.y, shape.getPosition().x - coords.x)) * 180 / 3.14159265);
-	}
-	
-	void move() {
-		switch (side) {
-		case S_UP:
-			if (shape.getPosition().y < destinationCoordY) {
-				shape.move(-0.3, 0.8);
-			}
-			else {
-				setState("ES_STANDING");
-				fireDelayAsMilliseconds = 3500;
-				fireClock.restart();
-			}
-			break;
-		case S_DOWN:
-			if (shape.getPosition().y > destinationCoordY) {
-				shape.move(-0.3, -0.8);
-			}
-			else {
-				setState("ES_STANDING");
-				fireDelayAsMilliseconds = 3500;
-				fireClock.restart();
-			}
-			break;
-		}
-	}
-};
-class ElectroEnemy : public CircleEnemy {
-public:
-	ElectroEnemy() {
-		visible = true;
-	}
-	Texture* lightningTxtrPtr;
-	float destinationCoordX;
-	Clock visibleClock;
-	bool visible;
-
-	void toggleVisible() {
-		visible = !visible;
-		visibleClock.restart();
-	}
-
-	bool isNeedToFire() {
-		return getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
-	}
-
-	void moveRandomCoordY(GameWindow *gwindow) {
-		shape.setPosition(Vector2f(shape.getPosition().x, rand() % static_cast<int>((gwindow->y - shape.getRadius() * 4)) + shape.getRadius() * 2));
-	}
-
-	ElectroEnemyLightning fire(Vector2f coords) {
-		ElectroEnemyLightning lightning;
-		lightning.shape.setPosition(shape.getPosition());
-		lightning.shape.setSize(Vector2f(sqrt(pow(shape.getPosition().x - coords.x, 2) + pow(abs(shape.getPosition().y - coords.y), 2)), shape.getRadius()));
-		lightning.shape.setOrigin(lightning.shape.getSize().x, lightning.shape.getSize().y / 2);
-		lightning.shape.setRotation((atan2(lightning.shape.getPosition().y - coords.y, lightning.shape.getPosition().x - coords.x)) * 180 / 3.14159265);
-		lightning.shape.setTexture(lightningTxtrPtr);
-		fireClock.restart();
-		lightning.visible_lightningClock.restart();
-		return lightning;
-	}
-
-	void takeTarget(Vector2f coords) {
-		shape.setRotation((atan2(shape.getPosition().y - coords.y, shape.getPosition().x - coords.x)) * 180 / 3.14159265);
-		shape.rotate(-90);
-	}
-
-	void move() {
-		if (shape.getPosition().x >= destinationCoordX) {
-			shape.move(-1, 0);
-		}
-		else {
-			setState("ES_STANDING");
-			visible = true;
-			fireClock.restart();
-		}
-	}
-};
-class HealerEnemy : public CircleEnemy {
-public:
-	CircleShape healArea;
-	bool isHealAreaActive;
-	ENEMYSIDE side;
-	Texture* rayTxtrPtr;
-	int spawnCoordY;
-	Vector2i destinationCoords;
-	Vector2f speed;
-
-	void spawnAnimation() {
-		if (static_cast<int>(shape.getPosition().y) != spawnCoordY) {
-			switch (side) {
-			case S_UP:
-				shape.move(0, 2);
-				healArea.move(0, 2);
-				break;
-			case S_DOWN:
-				shape.move(0, -2);
-				healArea.move(0, -2);
-				break;
-			}
-		}
-		else {
-			isHealAreaActive = true;
-			setState("ES_STANDING");
-		}
-	}
-
-	void move() {
-		// X COORD
-		if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) > abs(speed.x)) {
-			shape.move(speed.x, 0);
-			healArea.move(speed.x, 0);
-		}
-		// Y COORD
-		if (abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) > abs(speed.y)) {
-			shape.move(0, speed.y);
-			healArea.move(0, speed.y);
-		}
-		if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y)) {
-			setState("ES_STANDING");
-		}
-	}
-
-	void generateDestination(GameWindow *gwindow) {
-		destinationCoords.x = rand() % (gwindow->x / 3) + gwindow->x * 2 / 3;
-		destinationCoords.y = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
-		speed.x = (destinationCoords.x - shape.getPosition().x) / 600.f;	//framerate limit == 240 that means 2.5 secs to destination (240 * 2.5 == 600)
-		speed.y = (destinationCoords.y - shape.getPosition().y) / 600.f;	/////////////////////////////////////////////////////////
-		setState("ES_MOVING");
-	}
-
-	bool isCanHeal() {
-		return fireClock.getElapsedTime().asMilliseconds() > fireDelayAsMilliseconds;
-	}
-};
-
 
 class Game {
 private:
@@ -538,10 +199,10 @@ public:
 	Event event;
 	GAMESTATE gameState;
 	//enemies
-	vector <RomaEnemy> romaEnemies;
-	vector <RockEnemy> rockEnemies;
-	vector <ElectroEnemy> electroEnemies;
-	vector <HealerEnemy> healerEnemies;
+	vector <Enemy::RomaEnemy> romaEnemies;
+	vector <Enemy::RockEnemy> rockEnemies;
+	vector <Enemy::ElectroEnemy> electroEnemies;
+	vector <Enemy::HealerEnemy> healerEnemies;
 	//enemy bullets
 	vector <RectangleShape> romaBullets;
 	vector <RockEnemyBullet> rockBullets;
@@ -1123,7 +784,7 @@ public:
 	}
 
 	void spawnRomaEnemy() {
-		RomaEnemy roma;
+		Enemy::RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
 		roma.fireDelayAsMilliseconds = 5000;
@@ -1136,7 +797,7 @@ public:
 	}
 	
 	void spawnRockEnemy() {
-		RockEnemy rock;
+		Enemy::RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
 		rock.fireDelayAsMilliseconds = 1000;
@@ -1161,7 +822,7 @@ public:
 	}
 
 	void spawnElectroEnemy() {
-		ElectroEnemy electro;
+		Enemy::ElectroEnemy electro;
 		electro.shape.setTexture(&electroData.enemyTexture);
 		electro.lightningTxtrPtr = &electroData.lightningTexture;
 		electro.fireDelayAsMilliseconds = 1500;
@@ -1174,7 +835,7 @@ public:
 	}
 
 	void spawnHealerEnemy() {
-		HealerEnemy healer;
+		Enemy::HealerEnemy healer;
 		healer.shape.setTexture(&healerData.enemyTexture);
 		healer.shape.setRadius(healerData.spawnRadius);
 		healer.shape.setOrigin(healerData.spawnRadius, healerData.spawnRadius);
