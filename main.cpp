@@ -10,8 +10,7 @@ using namespace sf;
 using namespace std;
 
 class Game;
-using MenuAction = void(Game::*)();
-
+using ButtonAction = void(Game::*)();
 
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
 enum ENEMYSTATE { ES_MOVING, ES_SPAWN_ANIM, ES_STANDING };
@@ -22,13 +21,15 @@ enum RAYBULLETSTATE {BS_FIRING, BS_DISAPPEARING, BS_DELETE};
 
 struct GameWindow {
 	RenderWindow window;
-	unsigned short int x;
-	unsigned short int y;
+	unsigned short x;
+	unsigned short y;
 	String title;
 };
-struct MenuItem {
+
+struct Button {
 	Text title;
-	MenuAction action;
+	ButtonAction action;
+	RectangleShape buttonBackground;
 };
 
 //////////////
@@ -62,9 +63,9 @@ struct HealerEnemiesData {
 	bool areActive;
 	unsigned int maxAmount;
 	int spawnRadius;
-	int actionAreaRadius;
+	int healAreaRadius;
 	Texture enemyTexture;
-	Texture actionAreaTexture;
+	Texture healAreaTexture;
 	Texture rayTexture;
 	float heal;
 };
@@ -200,47 +201,50 @@ struct AdditionalScope {
 
 class Menu {
 private:
-	int selectedItem;
+	int selectedButton;
 	bool isMenuTouched;
 	Font menuFont;
-	Clock delayBetweenMenuPresses;
 
 	Texture menuBackgroundTexture;
-	Texture menuItemBackgroundTexture;
+	Texture buttonBackgroundTexture;
 public:
+	Clock delayBetweenMenuPresses;
 	Text caption;
 	RectangleShape menuBackground;
-	RectangleShape menuItemBackground;
-	vector <MenuItem> menuItems;
+	vector <Button> buttons;
 	
+	int getSelectedButton() {
+		return selectedButton;
+	}
+
 	void initMenu(GameWindow *gwindow) {
-		Collision::CreateTextureAndBitmask(menuBackgroundTexture, "Textures\\menuBackgroundTexture.jpg");
-		Collision::CreateTextureAndBitmask(menuItemBackgroundTexture, "Textures\\menuItemBackgroundTexture.png");
+		menuBackgroundTexture.loadFromFile("Textures\\menuBackgroundTexture.jpg");
+		buttonBackgroundTexture.loadFromFile("Textures\\menuButtonBackgroundTexture.png");
 		menuBackground.setTexture(&menuBackgroundTexture);
 		menuBackground.setSize(Vector2f(gwindow->x, gwindow->y));
-		menuBackground.setPosition(Vector2f(0, 0));
-		menuItemBackground.setTexture(&menuItemBackgroundTexture);
-		selectedItem = 0;
+		menuBackground.setPosition(0, 0);
+		selectedButton = 0;
 		menuFont.loadFromFile("Fonts\\Hacked Cyr.ttf");
 		caption.setFont(menuFont);
 		caption.setString("BRUH GALACTIC");
 		caption.setFillColor(Color(25, 25, 112));
 		caption.setPosition(Vector2f(gwindow->x / 2.6, gwindow->y / 2.5));
 		caption.setCharacterSize(50);
-		caption.getGlobalBounds().height;
-		caption.getGlobalBounds().width;
 		isMenuTouched = false;
 	}
 	
-	void addMenuItem(string title, MenuAction action) {
-		MenuItem item;
-		item.title.setFont(menuFont);
-		item.title.setString(title);
-		item.title.setFillColor(Color(139, 0, 0));
-		item.title.setCharacterSize(30);
-		item.title.setPosition(Vector2f(caption.findCharacterPos(2 + menuItems.size()).x, caption.getPosition().y + caption.getGlobalBounds().height * 2 + menuItems.size() * item.title.getGlobalBounds().height * 2));
-		item.action = action;
-		menuItems.push_back(item);
+	void addMenuButton(string title, ButtonAction action) {
+		Button button;
+		button.title.setFont(menuFont);
+		button.title.setString(title);
+		button.title.setFillColor(Color(139, 0, 0));
+		button.title.setCharacterSize(30);
+		button.title.setPosition(Vector2f(caption.findCharacterPos(2 + buttons.size()).x, caption.getPosition().y + caption.getGlobalBounds().height * 2 + buttons.size() * button.title.getGlobalBounds().height * 2));
+		button.buttonBackground.setSize(Vector2f(button.title.getGlobalBounds().width, button.title.getGlobalBounds().height));
+		button.buttonBackground.setPosition(Vector2f(button.title.getGlobalBounds().left, button.title.getGlobalBounds().top));
+		button.buttonBackground.setTexture(&buttonBackgroundTexture);
+		button.action = action;
+		buttons.push_back(button);
 	}
 	
 	void controlMenu() {
@@ -248,9 +252,9 @@ public:
 			/*if (!menu.isMenuTouched) {
 				menu.isMenuTouched = !menu.isMenuTouched;
 			}*/
-			selectedItem--;
-			if (selectedItem < 0) {
-				selectedItem = menuItems.size() - 1;
+			selectedButton--;
+			if (selectedButton < 0) {
+				selectedButton = buttons.size() - 1;
 			}
 			delayBetweenMenuPresses.restart();
 		}
@@ -258,20 +262,95 @@ public:
 			/*if (!menu.isMenuTouched) {
 				menu.isMenuTouched = !menu.isMenuTouched;
 			}*/
-			selectedItem++;
-			if (selectedItem > menuItems.size() - 1) {
-				selectedItem = 0;
+			selectedButton++;
+			if (selectedButton > buttons.size() - 1) {
+				selectedButton = 0;
 			}
 			delayBetweenMenuPresses.restart();
 		}
 	}
 	
-	void selectMenuItem(Game *gameClass) {
-		menuItemBackground.setPosition(Vector2f(menuItems[selectedItem].title.getGlobalBounds().left, menuItems[selectedItem].title.getGlobalBounds().top));
-		menuItemBackground.setSize(Vector2f(menuItems[selectedItem].title.getGlobalBounds().width, menuItems[selectedItem].title.getGlobalBounds().height));
+	void selectMenuButton(Game *gameClass) {
 		if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && delayBetweenMenuPresses.getElapsedTime().asMilliseconds() > 200) {
-			(gameClass->*menuItems[selectedItem].action)();
+			(gameClass->*buttons[selectedButton].action)();
 			delayBetweenMenuPresses.restart();
+		}
+	}
+};
+class Pause {
+private:
+	int selectedButton;
+	Font pauseFont;
+	Clock delayBetweenPausePresses;
+
+	Texture boxTexture;
+	Texture buttonBackgroundTexture;
+	Texture backgroundBlurTexture;
+public:
+	Text caption;
+	RectangleShape pauseBackgroundBlur;
+	RectangleShape pauseBox;
+	vector <Button> buttons;
+
+	int getSelectedButton() {
+		return selectedButton;
+	}
+
+	void initPause(GameWindow *gwindow) {
+		boxTexture.loadFromFile("Textures\\pauseBackgroundTexture.jpg");
+		buttonBackgroundTexture.loadFromFile("Textures\\pauseButtonBackgroundTexture.jpg");
+		backgroundBlurTexture.loadFromFile("Textures\\backgroundBlurTexture.jpg");
+		pauseBackgroundBlur.setTexture(&backgroundBlurTexture);
+		pauseBackgroundBlur.setSize(Vector2f(gwindow->x, gwindow->y));
+		pauseBackgroundBlur.setPosition(0, 0);
+		pauseBackgroundBlur.setFillColor(Color(169, 169, 169, 200));
+		pauseBox.setTexture(&boxTexture);
+		pauseBox.setSize(Vector2f(gwindow->x / 3, gwindow->y / 3));
+		pauseBox.setPosition(gwindow->x / 3, gwindow->y / 3);
+		selectedButton = 0;
+		pauseFont.loadFromFile("Fonts\\Hacked Cyr.ttf");
+		caption.setFont(pauseFont);
+		caption.setString("PAUSE");
+		caption.setFillColor(Color(101, 55, 65));
+		caption.setCharacterSize(70);
+		caption.setPosition(Vector2f(pauseBox.getPosition().x + pauseBox.getSize().x / 2 - caption.getGlobalBounds().width / 2, pauseBox.getPosition().y));
+	}
+
+	void addPauseButton(string title, ButtonAction action, GameWindow *gwindow) {
+		Button button;
+		button.title.setFont(pauseFont);
+		button.title.setString(title);
+		button.title.setFillColor(Color(255, 255, 255));
+		button.title.setCharacterSize(30);
+		button.title.setPosition(Vector2f(pauseBox.getPosition().x + pauseBox.getSize().x / 2 - button.title.getGlobalBounds().width / 2, caption.getPosition().y + caption.getGlobalBounds().height * 2 + buttons.size() * button.title.getGlobalBounds().height * 2));
+		button.buttonBackground.setSize(Vector2f(button.title.getGlobalBounds().width, button.title.getGlobalBounds().height));
+		button.buttonBackground.setPosition(Vector2f(button.title.getGlobalBounds().left, button.title.getGlobalBounds().top));
+		button.buttonBackground.setTexture(&buttonBackgroundTexture);
+		button.action = action;
+		buttons.push_back(button);
+	}
+
+	void controlPause() {
+		if (Keyboard::isKeyPressed(Keyboard::Key::W) && delayBetweenPausePresses.getElapsedTime().asMilliseconds() > 200) {
+			selectedButton--;
+			if (selectedButton < 0) {
+				selectedButton = buttons.size() - 1;
+			}
+			delayBetweenPausePresses.restart();
+		}
+		if (Keyboard::isKeyPressed(Keyboard::Key::S) && delayBetweenPausePresses.getElapsedTime().asMilliseconds() > 200) {
+			selectedButton++;
+			if (selectedButton > buttons.size() - 1) {
+				selectedButton = 0;
+			}
+			delayBetweenPausePresses.restart();
+		}
+	}
+
+	void selectPauseButton(Game *gameClass) {
+		if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && delayBetweenPausePresses.getElapsedTime().asMilliseconds() > 200) {
+			(gameClass->*buttons[selectedButton].action)();
+			delayBetweenPausePresses.restart();
 		}
 	}
 };
@@ -808,7 +887,7 @@ public:
 		switch (side) {
 		case S_UP:
 			if (shape.getPosition().y < destinationCoordY) {
-				shape.move(-0.2, 0.8);
+				shape.move(-0.3, 0.8);
 			}
 			else {
 				setState("ES_STANDING");
@@ -818,7 +897,7 @@ public:
 			break;
 		case S_DOWN:
 			if (shape.getPosition().y > destinationCoordY) {
-				shape.move(-0.2, -0.8);
+				shape.move(-0.3, -0.8);
 			}
 			else {
 				setState("ES_STANDING");
@@ -952,6 +1031,7 @@ private:
 public:
 	GameWindow gameWindow;
 	Menu menu;
+	Pause pause;
 	Event event;
 	GAMESTATE gameState;
 	//enemies
@@ -983,10 +1063,11 @@ public:
 			cout << endl << romaEnemies[0].shape.getOutlineThickness();
 		}*/
 		//cout << endl << player.ammo.rayBullets.size();
-		cout << endl << healerEnemies.size();
+		//cout << endl << healerEnemies.size();
 		/*if (!healerEnemies.empty()) {
 			cout << endl << healerEnemies[0].destinationCoords.x << " | " << healerEnemies[0].shape.getPosition().x << setw(5) << healerEnemies[0].destinationCoords.y << " | " << healerEnemies[0].shape.getPosition().y;
 		}*/
+		//cout << pause.getSelectedButton() << endl;
 	}
 
 	void initWindow() {
@@ -1009,7 +1090,7 @@ public:
 		romaData.maxAmount = 10;
 		Collision::CreateTextureAndBitmask(romaData.enemyTexture, "Textures\\RomaEnemy.jpg");
 		Collision::CreateTextureAndBitmask(romaData.bulletTexture, "Textures\\romaBulletTexture.jpg");
-		romaData.bulletSpeed = { -3.5, 0 };
+		romaData.bulletSpeed = { -4, 0 };
 		romaData.spawnRadius = 40;
 		romaEnemies.clear();
 		romaBullets.clear();
@@ -1029,7 +1110,7 @@ public:
 		Collision::CreateTextureAndBitmask(electroData.enemyTexture, "Textures\\ElectroEnemy.jpg");
 		Collision::CreateTextureAndBitmask(electroData.lightningTexture, "Textures\\lightningTexture1.png");
 		electroData.spawnRadius = 35;
-		electroData.visibleDelayAsMilliseconds = 700;
+		electroData.visibleDelayAsMilliseconds = 800;
 		electroData.visible_lightningDelayAsMilliseconds = 400;
 		electroEnemies.clear();
 		electroLightnings.clear();
@@ -1038,10 +1119,11 @@ public:
 		healerData.areActive = true;
 		healerData.maxAmount = 3;
 		healerData.heal = 0.06;
-		healerData.spawnRadius = 30;
-		healerData.actionAreaRadius = 200;
+		healerData.spawnRadius = 24;
+		healerData.healAreaRadius = 230;
 		Collision::CreateTextureAndBitmask(healerData.enemyTexture, "Textures\\healerEnemyTexture.png");
-		Collision::CreateTextureAndBitmask(healerData.actionAreaTexture, "Textures\\healerActionAreaTexture.png");
+		Collision::CreateTextureAndBitmask(healerData.healAreaTexture, "Textures\\healerActionAreaTexture.png");
+		healerData.healAreaTexture.setSmooth(true);
 		healerData.rayTexture.loadFromFile("Textures\\healerRayTexture.png");
 		healerEnemies.clear();
 		healerRays.clear();
@@ -1055,11 +1137,20 @@ public:
 		initEnemies();
 	}
 	
+	void continueGame() {
+		gameState = GS_PLAY;
+	}
+
+	void backToMenu() {
+		gameState = GS_MENU;
+		menu.delayBetweenMenuPresses.restart();
+	}
+
 	void exitGame() {
 		gameState = GS_EXIT;
 	}
 
-	/////////////////////////////////////////////////					ДОДЕЛЫВАЙ, ИНАЧЕ НЕ ПОЕШЬ(надо оптимизацию коллизии кщё сделать потом)
+	/////////////////////////////////////////////////					ДОДЕЛЫВАЙ, ИНАЧЕ НЕ ПОЕШЬ(надо оптимизацию коллизии ещё сделать потом)
 	void checkForOrdinaryBulletsCollision() {
 		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
@@ -1391,14 +1482,14 @@ public:
 		//ROMA BULLETS
 		for (int i = 0; i < romaBullets.size(); i++) {
 			if (player.playerShape.getGlobalBounds().intersects(romaBullets[i].getGlobalBounds())) {
-				player.setHPAmount(player.getHPAmount() - 1);
+				//player.setHPAmount(player.getHPAmount() - 1);
 				romaBullets.erase(romaBullets.begin() + i);
 			}
 		}
 		//ROCK BULLETS
 		for (int i = 0; i < rockBullets.size(); i++) {
 			if (player.playerShape.getGlobalBounds().intersects(rockBullets[i].shape.getGlobalBounds())) {
-				player.setHPAmount(player.getHPAmount() - 1);
+				//player.setHPAmount(player.getHPAmount() - 1);
 				rockBullets.erase(rockBullets.begin() + i);
 			}
 		}
@@ -1499,6 +1590,7 @@ public:
 
 
 	void checkForCollisions() {
+		//efrects
 		checkForEffectAreaCollisions();
 		//player
 		checkForPlayerCollisions();
@@ -1524,7 +1616,7 @@ public:
 	}
 
 	bool isHealerEnemyNeedToSpawn() {
-		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2600 == 1);
+		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2100 == 1);
 	}
 
 	void spawnRomaEnemy() {
@@ -1553,11 +1645,11 @@ public:
 		rock.side = ENEMYSIDE(rand() % 2);
 		switch (rock.side) {
 		case S_UP:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, 0 - rockData.spawnRadius));
+			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) * 2 / 3, 0 - rockData.spawnRadius));
 			rock.destinationCoordY = gameWindow.y - rock.shape.getRadius();
 			break;
 		case S_DOWN:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, gameWindow.y + rockData.spawnRadius));
+			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) * 2 / 3, gameWindow.y + rockData.spawnRadius));
 			rock.destinationCoordY = 0 + rock.shape.getRadius();
 			break;
 		}
@@ -1569,7 +1661,7 @@ public:
 		ElectroEnemy electro;
 		electro.shape.setTexture(&electroData.enemyTexture);
 		electro.lightningTxtrPtr = &electroData.lightningTexture;
-		electro.fireDelayAsMilliseconds = 1700;
+		electro.fireDelayAsMilliseconds = 1500;
 		electro.shape.setRotation(270);
 		electro.shape.setRadius(electroData.spawnRadius);
 		electro.shape.setOrigin(electroData.spawnRadius, electroData.spawnRadius);
@@ -1596,10 +1688,10 @@ public:
 			break;
 		}
 		healer.isHealAreaActive = false;
-		healer.healArea.setTexture(&healerData.actionAreaTexture);
+		healer.healArea.setTexture(&healerData.healAreaTexture);
 		healer.healArea.setFillColor(Color(healer.healArea.getFillColor().r, healer.healArea.getFillColor().g, healer.healArea.getFillColor().b, 30));
-		healer.healArea.setRadius(healerData.actionAreaRadius);
-		healer.healArea.setOrigin(healerData.actionAreaRadius, healerData.actionAreaRadius);
+		healer.healArea.setRadius(healerData.healAreaRadius);
+		healer.healArea.setOrigin(healerData.healAreaRadius, healerData.healAreaRadius);
 		healer.healArea.setPosition(healer.shape.getPosition());
 		healer.setState("ES_SPAWN_ANIM");
 		healerEnemies.push_back(healer);
@@ -1714,7 +1806,7 @@ public:
 		for (int i = 0; i < electroEnemies.size(); i++) {
 			if (electroEnemies[i].isNeedToFire()) {
 				electroLightnings.push_back(electroEnemies[i].fire(player.playerShape.getPosition()));
-				player.setHPAmount(player.getHPAmount() - 1);
+				//player.setHPAmount(player.getHPAmount() - 1);
 			}
 			if (electroEnemies[i].getState() == ES_MOVING) {
 				electroEnemies[i].move();
@@ -1738,6 +1830,7 @@ public:
 			}
 			if (healerEnemies[i].getState() == ES_MOVING) {
 				healerEnemies[i].move();
+				healerEnemies[i].heal(0.01);
 			}
 			if (healerEnemies[i].getState() == ES_STANDING) {
 				healerEnemies[i].generateDestination(&gameWindow);
@@ -1772,8 +1865,10 @@ public:
 			}
 		}
 	}
-	void drawNewFrame() {
-		gameWindow.window.clear();
+	void drawNewGameFrame(bool isClearAndDisplay = true) {
+		if (isClearAndDisplay) {	//this code need for updatePauseFrame()
+			gameWindow.window.clear();
+		}
 		gameWindow.window.draw(gameBackground);
 
 		for (int i = 0; i < romaEnemies.size(); i++) {
@@ -1825,37 +1920,50 @@ public:
 		for (int i = 0; i < healerRays.size(); i++) {
 			gameWindow.window.draw(healerRays[i].shape);
 		}
-		gameWindow.window.display();
+		if (isClearAndDisplay) {	//this code need for updatePauseFrame()
+			gameWindow.window.display();
+		}
 	}
 
 	void updateMenuFrame(Game *gameClass) {
 		menu.controlMenu();
-		menu.selectMenuItem(gameClass);
-		gameWindow.window.clear(Color::Black);
+		menu.selectMenuButton(gameClass);
+		gameWindow.window.clear();
 		gameWindow.window.draw(menu.menuBackground);
 		gameWindow.window.draw(menu.caption);
-		gameWindow.window.draw(menu.menuItemBackground);
-		for (int i = 0; i < menu.menuItems.size(); i++) {
-			gameWindow.window.draw(menu.menuItems[i].title);
+		gameWindow.window.draw(menu.buttons[menu.getSelectedButton()].buttonBackground);
+		for (int i = 0; i < menu.buttons.size(); i++) {
+			gameWindow.window.draw(menu.buttons[i].title);
 		}
 		gameWindow.window.display();
 	}
 	void updateGameFrame() {
-		if (Keyboard::isKeyPressed(Keyboard::Key::Escape)) {
-			if (delayBetweenEscapePresses.getElapsedTime().asMilliseconds() >= 1000) {
-				gameState = GS_MENU;
-				delayBetweenEscapePresses.restart();
-			}
+		if (Keyboard::isKeyPressed(Keyboard::Key::Escape) && delayBetweenEscapePresses.getElapsedTime().asMilliseconds() > 1000) {
+			gameState = GS_PAUSE;
+			delayBetweenEscapePresses.restart();
 		}
-
 		checkForCollisions();
 		updatePlayer();
 		updatePlayerBullets();
 		updateEnemies();
 		updateEnemyBullets();
-		drawNewFrame();
+		drawNewGameFrame();
 
 		debugging();
+	}
+	void updatePauseFrame(Game *gameClass) {
+		pause.controlPause();
+		pause.selectPauseButton(gameClass);
+		gameWindow.window.clear();
+		drawNewGameFrame(false);
+		gameWindow.window.draw(pause.pauseBackgroundBlur);
+		gameWindow.window.draw(pause.pauseBox);
+		gameWindow.window.draw(pause.caption);
+		gameWindow.window.draw(pause.buttons[pause.getSelectedButton()].buttonBackground);
+		for (int i = 0; i < pause.buttons.size(); i++) {
+			gameWindow.window.draw(pause.buttons[i].title);
+		}
+		gameWindow.window.display();
 	}
 };
 int main() {
@@ -1863,8 +1971,11 @@ int main() {
 	rand();
 	Game BG;
 	BG.menu.initMenu(&BG.gameWindow);
-	BG.menu.addMenuItem("PLAY", &Game::initGame);
-	BG.menu.addMenuItem("EXIT", &Game::exitGame);
+	BG.menu.addMenuButton("PLAY", &Game::initGame);
+	BG.menu.addMenuButton("EXIT", &Game::exitGame);
+	BG.pause.initPause(&BG.gameWindow);
+	BG.pause.addPauseButton("CONTINUE", &Game::continueGame, &BG.gameWindow);
+	BG.pause.addPauseButton("MAIN MENU", &Game::backToMenu, &BG.gameWindow);
 	BG.gameState = GS_MENU;
 	while (BG.gameWindow.window.isOpen()) {
 		while (BG.gameWindow.window.pollEvent(BG.event)) {
@@ -1880,6 +1991,9 @@ int main() {
 			break;
 		case GS_PLAY:
 			BG.updateGameFrame();
+			break;
+		case GS_PAUSE:
+			BG.updatePauseFrame(&BG);
 			break;
 		case GS_EXIT:
 			BG.gameWindow.window.close();
