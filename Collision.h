@@ -45,7 +45,7 @@ namespace Collision {
 	/// AlphaLimit: The threshold at which a pixel becomes "solid". If AlphaLimit is 127, a pixel with
 	/// alpha value 128 will cause a collision and a pixel with alpha value 126 will not.
 	/// 
-	/// This functions creates bitmasks of the textures of the two sprites by
+	/// This functions creates bitmasks of the textures of the two shapes by
 	/// downloading the textures from the graphics card to memory -> SLOW!
 	/// You can avoid this by using the "CreateTextureAndBitmask" function
 	//////
