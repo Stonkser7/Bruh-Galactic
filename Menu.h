@@ -23,12 +23,8 @@ public:
 	vector <Button> buttons;
 
 	int getSelectedButton();
-
 	void initMenu(GameWindow* gwindow);
-
 	void addMenuButton(string title, ButtonAction action);
-
 	void controlMenu();
-
 	void selectMenuButton(Game* gameClass);
 };

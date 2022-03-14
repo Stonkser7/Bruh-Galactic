@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "Enemies.h"
 #include "Menu.h"
+#include "Pause.h"
 using namespace sf;
 using namespace std;
 
@@ -16,101 +17,14 @@ using namespace std;
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
 enum ENEMYTYPE { ET_ROMA, ET_ROCK, ET_ELECTRO };
 
-class Pause {
-private:
-	int selectedButton;
-	Font pauseFont;
-	Clock delayBetweenPausePresses;
-
-	Texture boxTexture;
-	Texture buttonBackgroundTexture;
-	Texture backgroundBlurTexture;
-public:
-	Text caption;
-	RectangleShape pauseBackgroundBlur;
-	RectangleShape pauseBox;
-	vector <Button> buttons;
-
-	int getSelectedButton() {
-		return selectedButton;
-	}
-
-	void initPause(GameWindow *gwindow) {
-		boxTexture.loadFromFile("Textures\\pauseBoxTexture.jpg");
-		buttonBackgroundTexture.loadFromFile("Textures\\pauseButtonBackgroundTexture.jpg");
-		backgroundBlurTexture.loadFromFile("Textures\\backgroundBlurTexture.jpg");
-		pauseBackgroundBlur.setTexture(&backgroundBlurTexture);
-		pauseBackgroundBlur.setSize(Vector2f(gwindow->x, gwindow->y));
-		pauseBackgroundBlur.setPosition(0, 0);
-		pauseBackgroundBlur.setFillColor(Color(68, 68, 68, 230));
-		pauseBox.setTexture(&boxTexture);
-		pauseBox.setSize(Vector2f(gwindow->x / 3, gwindow->y / 3));
-		pauseBox.setPosition(static_cast<float>(gwindow->x) / 3, static_cast<float>(gwindow->y) / 3);
-		selectedButton = 0;
-		pauseFont.loadFromFile("Fonts\\Hacked Cyr.ttf");
-		caption.setFont(pauseFont);
-		caption.setString("PAUSE");
-		caption.setFillColor(Color(128, 128, 0));
-		caption.setCharacterSize(70);
-		caption.setPosition(Vector2f(pauseBox.getPosition().x + pauseBox.getSize().x / 2 - caption.getGlobalBounds().width / 2, pauseBox.getPosition().y));
-	}
-
-	void addPauseButton(string title, ButtonAction action, GameWindow *gwindow) {
-		Button button;
-		button.title.setFont(pauseFont);
-		button.title.setString(title);
-		button.title.setFillColor(Color(255, 228, 225));
-		button.title.setCharacterSize(30);
-		button.title.setPosition(Vector2f(pauseBox.getPosition().x + pauseBox.getSize().x / 2 - button.title.getGlobalBounds().width / 2, caption.getPosition().y + caption.getGlobalBounds().height * 2 + buttons.size() * button.title.getGlobalBounds().height * 2));
-		button.buttonBackground.setSize(Vector2f(button.title.getGlobalBounds().width, button.title.getGlobalBounds().height));
-		button.buttonBackground.setPosition(Vector2f(button.title.getGlobalBounds().left, button.title.getGlobalBounds().top));
-		button.buttonBackground.setTexture(&buttonBackgroundTexture);
-		button.action = action;
-		buttons.push_back(button);
-	}
-
-	void controlPause() {
-		if (Keyboard::isKeyPressed(Keyboard::Key::W) && delayBetweenPausePresses.getElapsedTime().asMilliseconds() > 200) {
-			selectedButton--;
-			if (selectedButton < 0) {
-				selectedButton = buttons.size() - 1;
-			}
-			delayBetweenPausePresses.restart();
-		}
-		if (Keyboard::isKeyPressed(Keyboard::Key::S) && delayBetweenPausePresses.getElapsedTime().asMilliseconds() > 200) {
-			selectedButton++;
-			if (selectedButton > buttons.size() - 1) {
-				selectedButton = 0;
-			}
-			delayBetweenPausePresses.restart();
-		}
-	}
-
-	void selectPauseButton(Game *gameClass) {
-		if (Keyboard::isKeyPressed(Keyboard::Key::Enter) && delayBetweenPausePresses.getElapsedTime().asMilliseconds() > 200) {
-			(gameClass->*buttons[selectedButton].action)();
-			delayBetweenPausePresses.restart();
-		}
-	}
-};
-
-
 class Game {
 private:
 	Player player;
+	//enemies data
 	RomaEnemiesData romaData;
 	RockEnemiesData rockData;
 	ElectroEnemiesData electroData;
 	HealerEnemiesData healerData;
-	Texture gameBackgroundTexture;
-	RectangleShape gameBackground;
-	Clock delayBetweenEscapePresses;
-public:
-	GameWindow gameWindow;
-	Menu menu;
-	Pause pause;
-	Event event;
-	GAMESTATE gameState;
 	//enemies
 	vector <Enemy::RomaEnemy> romaEnemies;
 	vector <Enemy::RockEnemy> rockEnemies;
@@ -121,11 +35,19 @@ public:
 	vector <RockEnemyBullet> rockBullets;
 	vector <ElectroEnemyLightning> electroLightnings;
 	vector <HealerEnemyRay> healerRays;
+	Texture gameBackgroundTexture;
+	RectangleShape gameBackground;
+	Clock delayBetweenEscapePresses;
+public:
+	GameWindow gameWindow;
+	Menu menu;
+	Pause pause;
+	Event event;
+	GAMESTATE gameState;
 	Game() {
 		initWindow();
 	}
 	void debugging() {
-		//cout << rockEnemies[0].shape.getRotation() << "\n";
 		//cout << endl << romaEnemies[0].destinationY << setw(10) << romaEnemies[0].shape.getPosition().y;
 		//cout << "\n" << player.playerShape.getRotation();
 		/*if (!rockBullets.empty()) {
@@ -145,6 +67,7 @@ public:
 			cout << endl << healerEnemies[0].destinationCoords.x << " | " << healerEnemies[0].shape.getPosition().x << setw(5) << healerEnemies[0].destinationCoords.y << " | " << healerEnemies[0].shape.getPosition().y;
 		}*/
 		//cout << pause.getSelectedButton() << endl;
+		//cout << player.ammo.splittedBullets.size() + player.ammo.splittingBullets.size() << endl;
 	}
 
 	void initWindow() {
