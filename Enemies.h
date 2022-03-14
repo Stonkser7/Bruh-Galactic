@@ -55,6 +55,8 @@ struct RockEnemyBullet {
 struct ElectroEnemyLightning {
 	RectangleShape shape;
 	Clock visible_lightningClock;
+	Clock excessVisible_lightningClock;
+	int excessVisible_lightningTime;
 };
 struct HealerEnemyRay {
 	RectangleShape shape;
@@ -75,17 +77,14 @@ namespace Enemy {
 		CircleShape shape;
 		Clock fireClock;
 		int fireDelayAsMilliseconds;
+		Clock excessFireClock;
+		int excessFireTime;
 
 		void setState(string state);
-
 		ENEMYSTATE getState();
-
 		void takeDamage(int damage);
-
 		void heal(float heal);
-
 		bool isAlive();
-
 	};
 	class RomaEnemy : public CircleEnemy {
 	public:
@@ -94,13 +93,9 @@ namespace Enemy {
 		Texture* bulletTxtrPtr;
 
 		void generateDestinationY(GameWindow* gwindow);
-
 		void move(GameWindow* gwindow);
-
 		bool isNeedToFire();
-
 		RectangleShape fire();
-
 		void spawnAnimation();
 	};
 	class RockEnemy : public CircleEnemy {
@@ -112,13 +107,9 @@ namespace Enemy {
 		float bulletSpeedVariation;
 
 		bool isNeedToFire();
-
 		void rotateGun();
-
 		RockEnemyBullet fire();
-
 		void takeTarget(Vector2f coords);
-
 		void move();
 	};
 	class ElectroEnemy : public CircleEnemy {
@@ -128,17 +119,14 @@ namespace Enemy {
 		float destinationCoordX;
 		Clock visibleClock;
 		bool visible;
+		Clock excessVisibleClock;
+		int excessVisibleTime;
 
 		void toggleVisible();
-
 		bool isNeedToFire();
-
 		void moveRandomCoordY(GameWindow* gwindow);
-
 		ElectroEnemyLightning fire(Vector2f coords);
-
 		void takeTarget(Vector2f coords);
-
 		void move();
 	};
 	class HealerEnemy : public CircleEnemy {
@@ -152,11 +140,8 @@ namespace Enemy {
 		Vector2f speed;
 
 		void spawnAnimation();
-
 		void move();
-
 		void generateDestination(GameWindow* gwindow);
-
 		bool isCanHeal();
 	};
 }

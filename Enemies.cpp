@@ -6,6 +6,7 @@ void HealerEnemyRay::takeTarget(Vector2f coords) {
 
 Enemy::CircleEnemy::CircleEnemy() {
 	shape.setOutlineColor(Color(139, 0, 0, 180));
+	excessFireTime = 0;
 }
 void Enemy::CircleEnemy::setState(string state) {
 	if (state == "ES_MOVING") {
@@ -34,6 +35,7 @@ bool Enemy::CircleEnemy::isAlive() {
 	return shape.getRadius() > abs(shape.getOutlineThickness());
 }
 
+//ROMA ENEMY
 void Enemy::RomaEnemy::generateDestinationY(GameWindow* gwindow) {
 	destinationCoordY = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
 	setState("ES_MOVING");
@@ -52,7 +54,7 @@ void Enemy::RomaEnemy::move(GameWindow* gwindow) {
 	}
 }
 bool Enemy::RomaEnemy::isNeedToFire() {
-	return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
+	return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() - excessFireTime >= fireDelayAsMilliseconds;
 }
 RectangleShape Enemy::RomaEnemy::fire() {
 	RectangleShape bullet;
@@ -60,6 +62,7 @@ RectangleShape Enemy::RomaEnemy::fire() {
 	bullet.setSize(Vector2f(45, 25));
 	bullet.setPosition(Vector2f(shape.getPosition()));
 	fireClock.restart();
+	excessFireTime = 0;
 	return bullet;
 }
 void Enemy::RomaEnemy::spawnAnimation() {
@@ -72,8 +75,9 @@ void Enemy::RomaEnemy::spawnAnimation() {
 	}
 }
 
+//ROCK ENEMY
 bool Enemy::RockEnemy::isNeedToFire() {
-	return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
+	return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() - excessFireTime >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() - excessFireTime >= fireDelayAsMilliseconds;
 }
 void Enemy::RockEnemy::rotateGun() {
 	shape.rotate(-90);
@@ -104,6 +108,7 @@ RockEnemyBullet Enemy::RockEnemy::fire() {
 	rotateGun();
 	bullet.speed = defaultBulletSpeed;
 	fireClock.restart();
+	excessFireTime = 0;
 	return bullet;
 }
 void Enemy::RockEnemy::takeTarget(Vector2f coords) {
@@ -134,15 +139,18 @@ void Enemy::RockEnemy::move() {
 	}
 }
 
+//ELECTRO ENEMY
 Enemy::ElectroEnemy::ElectroEnemy() {
 	visible = true;
+	excessVisibleTime = 0;
 }
 void Enemy::ElectroEnemy::toggleVisible() {
 	visible = !visible;
 	visibleClock.restart();
+	excessVisibleTime = 0;
 }
 bool Enemy::ElectroEnemy::isNeedToFire() {
-	return getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() >= fireDelayAsMilliseconds;
+	return getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() - excessFireTime >= fireDelayAsMilliseconds;
 }
 void Enemy::ElectroEnemy::moveRandomCoordY(GameWindow* gwindow) {
 	shape.setPosition(Vector2f(shape.getPosition().x, rand() % static_cast<int>((gwindow->y - shape.getRadius() * 4)) + shape.getRadius() * 2));
@@ -155,7 +163,9 @@ ElectroEnemyLightning Enemy::ElectroEnemy::fire(Vector2f coords) {
 	lightning.shape.setRotation((atan2(lightning.shape.getPosition().y - coords.y, lightning.shape.getPosition().x - coords.x)) * 180 / 3.14159265);
 	lightning.shape.setTexture(lightningTxtrPtr);
 	fireClock.restart();
+	excessFireTime = 0;
 	lightning.visible_lightningClock.restart();
+	lightning.excessVisible_lightningTime = 0;
 	return lightning;
 }
 void Enemy::ElectroEnemy::takeTarget(Vector2f coords) {
@@ -173,6 +183,7 @@ void Enemy::ElectroEnemy::move() {
 	}
 }
 
+//HEALER ENEMY
 void Enemy::HealerEnemy::spawnAnimation() {
 	if (static_cast<int>(shape.getPosition().y) != spawnCoordY) {
 		switch (side) {
@@ -214,5 +225,5 @@ void Enemy::HealerEnemy::generateDestination(GameWindow* gwindow) {
 	setState("ES_MOVING");
 }
 bool Enemy::HealerEnemy::isCanHeal() {
-	return fireClock.getElapsedTime().asMilliseconds() > fireDelayAsMilliseconds;
+	return fireClock.getElapsedTime().asMilliseconds() - excessFireTime > fireDelayAsMilliseconds;
 }

@@ -47,6 +47,8 @@ struct OrdinaryBulletData {
 	Vector2f defaultSpeed;
 	float speedVariation;
 	Clock fireDelay;
+	int fireDelayAsMilliseconds;
+	int excessFireTime;
 	Texture texture;
 };
 struct SplittingBulletData {
@@ -55,11 +57,15 @@ struct SplittingBulletData {
 	int defaultRadius;
 	float speedVariation;
 	Clock fireDelay;
+	int fireDelayAsMilliseconds;
+	int excessFireTime;
 	Texture texture;
 };
 struct RayBulletData {
 	int damage;
 	Clock fireDelay;
+	int fireDelayAsMilliseconds;
+	int excessFireTime;
 	Texture texture;
 	int delayBeforeDissapearAsMilliseconds;
 };
@@ -106,6 +112,7 @@ public:
 	AdditionalScope additionalScope;
 	Ammunition ammo;
 	AmmoData ammoData;
+	Clock excessFireClock;
 
 	void initPlayer(GameWindow* gwindow);
 	void initAmmunition();

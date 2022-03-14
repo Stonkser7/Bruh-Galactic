@@ -70,21 +70,30 @@ void Player::initPlayer(GameWindow* gwindow) {
 }
 void Player::initAmmunition() {
 	selectedBullet = BULT_ORDINARY;
+	//ORDINARY BULLET
 	Collision::CreateTextureAndBitmask(ammoData.ordinaryBulletData.texture, "Textures\\pchel.jpg");
 	ammoData.ordinaryBulletData.damage = 10;
 	ammoData.ordinaryBulletData.defaultSpeed = { 12, 0 };
 	ammoData.ordinaryBulletData.speedVariation = ammoData.ordinaryBulletData.defaultSpeed.x / 90;
+	ammoData.ordinaryBulletData.fireDelayAsMilliseconds = 150;
+	ammoData.ordinaryBulletData.excessFireTime = 0;
 
+	//SPLITTING BULLET
 	Collision::CreateTextureAndBitmask(ammoData.splittingBulletData.texture, "Textures\\splittingBulletTexture.png");
 	ammoData.splittingBulletData.defaultDamage = 30;
 	ammoData.splittingBulletData.defaultRadius = 25;
 	ammoData.splittingBulletData.defaultSpeed = { 6, 0 };
 	ammoData.splittingBulletData.speedVariation = ammoData.splittingBulletData.defaultSpeed.x / 90;
+	ammoData.splittingBulletData.fireDelayAsMilliseconds = 600;
+	ammoData.splittingBulletData.excessFireTime = 0;
 
+	//RAY BULLET
 	Collision::CreateTextureAndBitmask(ammoData.rayBulletData.texture, "Textures\\rayBulletTexture.png");
 	ammoData.rayBulletData.texture.setSmooth(true);
 	ammoData.rayBulletData.damage = 120;
 	ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds = 100;
+	ammoData.rayBulletData.fireDelayAsMilliseconds = 1400;
+	ammoData.rayBulletData.excessFireTime = 0;
 
 	ammo.ordinaryBullets.clear();
 	ammo.splittingBullets.clear();
@@ -191,7 +200,7 @@ void Player::rotateGun() {
 void Player::fire() {
 	switch (selectedBullet) {
 	case BULT_ORDINARY:
-		if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() > 150 /*Delay between shots*/) {
+		if (ammoData.ordinaryBulletData.fireDelay.getElapsedTime().asMilliseconds() - ammoData.ordinaryBulletData.excessFireTime > ammoData.ordinaryBulletData.fireDelayAsMilliseconds) {
 			OrdinaryBullet bullet;
 			bullet.shape.setSize(Vector2f(32.f, 19.f));
 			bullet.shape.setTexture(&ammoData.ordinaryBulletData.texture);
@@ -201,11 +210,12 @@ void Player::fire() {
 			bullet.speed = ammoData.ordinaryBulletData.defaultSpeed;
 			ammo.ordinaryBullets.push_back(bullet);
 			ammoData.ordinaryBulletData.fireDelay.restart();
+			ammoData.ordinaryBulletData.excessFireTime = 0;
 			return;
 		}
 		break;
 	case BULT_SPLITTING:
-		if (ammoData.splittingBulletData.fireDelay.getElapsedTime().asMilliseconds() > 600 /*Delay between shots*/) {
+		if (ammoData.splittingBulletData.fireDelay.getElapsedTime().asMilliseconds() - ammoData.splittingBulletData.excessFireTime > ammoData.splittingBulletData.fireDelayAsMilliseconds) {
 			SplittingBullet bullet;
 			bullet.shape.setRadius(ammoData.splittingBulletData.defaultRadius);
 			bullet.shape.setTexture(&ammoData.splittingBulletData.texture);
@@ -216,11 +226,12 @@ void Player::fire() {
 			bullet.speed = ammoData.splittingBulletData.defaultSpeed;
 			ammo.splittingBullets.push_back(bullet);
 			ammoData.splittingBulletData.fireDelay.restart();
+			ammoData.splittingBulletData.excessFireTime = 0;
 			return;
 		}
 		break;
 	case BULT_RAY:
-		if (ammoData.rayBulletData.fireDelay.getElapsedTime().asMilliseconds() > 1400 /*Delay between shots*/) {
+		if (ammoData.rayBulletData.fireDelay.getElapsedTime().asMilliseconds() - ammoData.rayBulletData.excessFireTime > ammoData.rayBulletData.fireDelayAsMilliseconds) {
 			RayBullet bullet;
 			bullet.shape.setSize(Vector2f(0, 20));
 			bullet.shape.setTexture(&ammoData.rayBulletData.texture);
@@ -231,6 +242,7 @@ void Player::fire() {
 			additionalScope.toggleActive();
 			ammo.rayBullets.push_back(bullet);
 			ammoData.rayBulletData.fireDelay.restart();
+			ammoData.rayBulletData.excessFireTime = 0;
 			return;
 		}
 		break;

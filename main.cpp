@@ -13,7 +13,6 @@
 using namespace sf;
 using namespace std;
 
-
 enum GAMESTATE { GS_PAUSE, GS_PLAY, GS_EXIT, GS_MENU };
 enum ENEMYTYPE { ET_ROMA, ET_ROCK, ET_ELECTRO };
 
@@ -136,9 +135,51 @@ public:
 		player.initAmmunition();
 		initEnemies();
 	}
+
+	void pauseGame() {
+		gameState = GS_PAUSE;
+		player.excessFireClock.restart();
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			romaEnemies[i].excessFireClock.restart();
+		}
+		for (int i = 0; i < rockEnemies.size(); i++) {
+			rockEnemies[i].excessFireClock.restart();
+		}
+		for (int i = 0; i < electroEnemies.size(); i++) {
+			electroEnemies[i].excessFireClock.restart();
+			electroEnemies[i].excessVisibleClock.restart();
+		}
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			healerEnemies[i].excessFireClock.restart();
+		}
+
+		for (int i = 0; i < electroLightnings.size(); i++) {
+			electroLightnings[i].excessVisible_lightningClock.restart();
+		}
+	}
 	
 	void continueGame() {
 		gameState = GS_PLAY;
+		player.ammoData.ordinaryBulletData.excessFireTime = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.splittingBulletData.excessFireTime = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.rayBulletData.excessFireTime = player.excessFireClock.getElapsedTime().asMilliseconds();
+		for (int i = 0; i < romaEnemies.size(); i++) {
+			romaEnemies[i].excessFireTime = romaEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+		}
+		for (int i = 0; i < rockEnemies.size(); i++) {
+			rockEnemies[i].excessFireTime = rockEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+		}
+		for (int i = 0; i < electroEnemies.size(); i++) {
+			electroEnemies[i].excessFireTime = electroEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+			electroEnemies[i].excessVisibleTime = electroEnemies[i].excessVisibleClock.getElapsedTime().asMilliseconds();
+		}
+		for (int i = 0; i < healerEnemies.size(); i++) {
+			healerEnemies[i].excessFireTime = healerEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+		}
+
+		for (int i = 0; i < electroLightnings.size(); i++) {
+			electroLightnings[i].excessVisible_lightningTime = electroLightnings[i].excessVisible_lightningClock.getElapsedTime().asMilliseconds();
+		}
 	}
 
 	void backToMenu() {
@@ -513,6 +554,7 @@ public:
 							healerRays.push_back(healRay);
 							if (healerEnemies[i].isCanHeal()) {
 								romaEnemies[j].heal(healerData.heal);
+								healerEnemies[i].excessFireTime = 0;
 							}
 						}
 					}
@@ -534,6 +576,7 @@ public:
 							healerRays.push_back(healRay);
 							if (healerEnemies[i].isCanHeal()) {
 								rockEnemies[j].heal(healerData.heal);
+								healerEnemies[i].excessFireTime = 0;
 							}
 						}
 					}
@@ -556,6 +599,7 @@ public:
 								healerRays.push_back(healRay);
 								if (healerEnemies[i].isCanHeal()) {
 									electroEnemies[j].heal(healerData.heal);
+									healerEnemies[i].excessFireTime = 0;
 								}
 							}
 						}
@@ -579,6 +623,7 @@ public:
 								healerRays.push_back(healRay);
 								if (healerEnemies[i].isCanHeal()) {
 									healerEnemies[j].heal(healerData.heal);
+									healerEnemies[i].excessFireTime = 0;
 								}
 							}
 						}
@@ -810,7 +855,7 @@ public:
 			}
 			if (electroEnemies[i].getState() == ES_MOVING) {
 				electroEnemies[i].move();
-				if (electroEnemies[i].visibleClock.getElapsedTime().asMilliseconds() >= electroData.visibleDelayAsMilliseconds) {
+				if (electroEnemies[i].visibleClock.getElapsedTime().asMilliseconds() - electroEnemies[i].excessVisibleTime >= electroData.visibleDelayAsMilliseconds) {
 					electroEnemies[i].toggleVisible();
 					electroEnemies[i].moveRandomCoordY(&gameWindow);
 				}
@@ -860,7 +905,7 @@ public:
 		}
 		//ELECTRO LIGHTNINGS
 		for (int i = 0; i < electroLightnings.size(); i++) {
-			if (electroLightnings[i].visible_lightningClock.getElapsedTime().asMilliseconds() > electroData.visible_lightningDelayAsMilliseconds) {
+			if (electroLightnings[i].visible_lightningClock.getElapsedTime().asMilliseconds() - electroLightnings[i].excessVisible_lightningTime > electroData.visible_lightningDelayAsMilliseconds) {
 				electroLightnings.erase(electroLightnings.begin() + i);
 			}
 		}
@@ -941,7 +986,7 @@ public:
 
 	void updateGameFrame() {
 		if (Keyboard::isKeyPressed(Keyboard::Key::Escape) && delayBetweenEscapePresses.getElapsedTime().asMilliseconds() > 1000) {
-			gameState = GS_PAUSE;
+			pauseGame();
 			delayBetweenEscapePresses.restart();
 		}
 		checkForCollisions();
