@@ -225,6 +225,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EA26C2E6756049A58575A4023620E804"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_EACA63574DA94F3EB735BAE543281ED7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1026,6 +1032,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EA26C2E6756049A58575A4023620E804"
+            {
+            "SourcePath" = "8:C:\\Users\\Stonkser\\Desktop\\фотокарточки\\gta7.ico"
+            "TargetName" = "8:gta7.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_0D7C2011AC4B47D98B80593EC37F15F9"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EACA63574DA94F3EB735BAE543281ED7"
             {
             "SourcePath" = "8:..\\..\\Textures\\backgroundBlurTexture.jpg"
@@ -1184,6 +1210,17 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_0D7C2011AC4B47D98B80593EC37F15F9"
+                    {
+                    "Name" = "8:icons"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_F100AE05EB87483BB66489E6A953176D"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_103A02C917FE4D549F7E9ECF52E284D5"
                     {
                     "Name" = "8:Textures"
@@ -1356,7 +1393,7 @@
             "Target" = "8:_4566608A3F364B0F9F2290048D1B72A1"
             "Folder" = "8:_291CB46AE5584094BC94D5C2C4BE84F2"
             "WorkingFolder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Icon" = "8:"
+            "Icon" = "8:_EA26C2E6756049A58575A4023620E804"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D576743F9C50470BBFE0DE14F2D8383A"
@@ -1370,7 +1407,7 @@
             "Target" = "8:_4566608A3F364B0F9F2290048D1B72A1"
             "Folder" = "8:_11DADF15BE124AA0922E7C000E47338D"
             "WorkingFolder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Icon" = "8:"
+            "Icon" = "8:_EA26C2E6756049A58575A4023620E804"
             "Feature" = "8:"
             }
         }
