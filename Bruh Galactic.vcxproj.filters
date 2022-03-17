@@ -163,5 +163,7 @@
     <None Include="sfml-network-d-2.dll" />
     <None Include="sfml-window-2.dll" />
     <None Include="sfml-window-d-2.dll" />
+    <None Include="Setup\SetupBruhGalactic\Debug\setup.exe" />
+    <None Include="Setup\SetupBruhGalactic\Debug\SetupBruhGalactic.msi" />
   </ItemGroup>
 </Project>

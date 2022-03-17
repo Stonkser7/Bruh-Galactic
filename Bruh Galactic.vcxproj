@@ -197,6 +197,8 @@
     <Font Include="Fonts\Hacked Cyr.ttf" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Setup\SetupBruhGalactic\Debug\setup.exe" />
+    <None Include="Setup\SetupBruhGalactic\Debug\SetupBruhGalactic.msi" />
     <None Include="sfml-audio-2.dll" />
     <None Include="sfml-audio-d-2.dll" />
     <None Include="sfml-graphics-2.dll" />
