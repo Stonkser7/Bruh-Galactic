@@ -188,12 +188,12 @@ void Enemy::HealerEnemy::spawnAnimation() {
 	if (static_cast<int>(shape.getPosition().y) != spawnCoordY) {
 		switch (side) {
 		case S_UP:
-			shape.move(0, 2);
-			healArea.move(0, 2);
+			shape.move(0, 4);
+			healArea.move(0, 4);
 			break;
 		case S_DOWN:
-			shape.move(0, -2);
-			healArea.move(0, -2);
+			shape.move(0, -4);
+			healArea.move(0, -4);
 			break;
 		}
 	}

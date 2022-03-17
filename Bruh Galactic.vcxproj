@@ -161,6 +161,53 @@
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Player.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\background.jpg" />
+    <Image Include="Textures\backgroundBlurTexture.jpg" />
+    <Image Include="Textures\ElectroEnemy.jpg" />
+    <Image Include="Textures\healerActionAreaTexture.png" />
+    <Image Include="Textures\healerEnemyTexture.png" />
+    <Image Include="Textures\healerRayTexture.png" />
+    <Image Include="Textures\hi.jpg" />
+    <Image Include="Textures\HPtexture.png" />
+    <Image Include="Textures\lightningTexture1.png" />
+    <Image Include="Textures\lightningTexture2.png" />
+    <Image Include="Textures\menuBackgroundTexture.jpg" />
+    <Image Include="Textures\menuButtonBackgroundTexture.png" />
+    <Image Include="Textures\menuItemBackgroundTexture(bruh mode).png" />
+    <Image Include="Textures\ordinaryBulletScopeTexture.png" />
+    <Image Include="Textures\pauseBoxTexture.jpg" />
+    <Image Include="Textures\pauseButtonBackgroundTexture.jpg" />
+    <Image Include="Textures\pchel.jpg" />
+    <Image Include="Textures\playerTexture1HP.jpg" />
+    <Image Include="Textures\playerTexture2HP.jpg" />
+    <Image Include="Textures\playerTexture3HP.jpg" />
+    <Image Include="Textures\rayBulletScopeTexture.png" />
+    <Image Include="Textures\rayBulletScopeTexture2.png" />
+    <Image Include="Textures\rayBulletTexture.png" />
+    <Image Include="Textures\rockEnemy.png" />
+    <Image Include="Textures\rockEnemyBulletTexture.png" />
+    <Image Include="Textures\romaBulletTexture.jpg" />
+    <Image Include="Textures\RomaEnemy.jpg" />
+    <Image Include="Textures\splittingBulletScopeTexture.png" />
+    <Image Include="Textures\splittingBulletTexture.png" />
+    <Image Include="Textures\w.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Fonts\Hacked Cyr.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="sfml-audio-2.dll" />
+    <None Include="sfml-audio-d-2.dll" />
+    <None Include="sfml-graphics-2.dll" />
+    <None Include="sfml-graphics-d-2.dll" />
+    <None Include="sfml-network-2.dll" />
+    <None Include="sfml-network-d-2.dll" />
+    <None Include="sfml-system-2.dll" />
+    <None Include="sfml-system-d-2.dll" />
+    <None Include="sfml-window-2.dll" />
+    <None Include="sfml-window-d-2.dll" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

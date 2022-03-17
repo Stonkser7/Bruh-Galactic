@@ -89,7 +89,7 @@ public:
 		romaData.maxAmount = 10;
 		Collision::CreateTextureAndBitmask(romaData.enemyTexture, "Textures\\RomaEnemy.jpg");
 		Collision::CreateTextureAndBitmask(romaData.bulletTexture, "Textures\\romaBulletTexture.jpg");
-		romaData.bulletSpeed = { -4, 0 };
+		romaData.bulletSpeed = { -3, 0 };
 		romaData.spawnRadius = 45;
 		romaEnemies.clear();
 		romaBullets.clear();
@@ -649,26 +649,26 @@ public:
 
 	
 	bool isRomaEnemyNeedToSpawn() {
-		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 1300 == 1);
+		return (romaData.areActive == true && romaEnemies.size() < romaData.maxAmount && rand() % 1500 == 1);
 	}
 
 	bool isRockEnemyNeedToSpawn() {
-		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 1500 == 1);
+		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 1800 == 1);
 	}
 
 	bool isElectroEnemyNeedToSpawn() {
-		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 2700 == 1);
+		return (electroData.areActive == true && electroEnemies.size() < electroData.maxAmount && rand() % 3100 == 1);
 	}
 
 	bool isHealerEnemyNeedToSpawn() {
-		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2300 == 1);
+		return (healerData.areActive == true && healerEnemies.size() < healerData.maxAmount && rand() % 2600 == 1);
 	}
 
 	void spawnRomaEnemy() {
 		Enemy::RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 5000;
+		roma.fireDelayAsMilliseconds = 4200;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
 		roma.shape.setRadius(romaData.spawnRadius);
 		roma.shape.setOrigin(Vector2f(romaData.spawnRadius, romaData.spawnRadius));
@@ -681,7 +681,7 @@ public:
 		Enemy::RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
-		rock.fireDelayAsMilliseconds = 1000;
+		rock.fireDelayAsMilliseconds = 900;
 		rock.shape.setRotation(0);
 		rock.defaultBulletSpeed = { 2.0, 0 };
 		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
