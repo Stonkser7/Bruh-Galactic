@@ -69,7 +69,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_3DD7938187704B009E985755C29232BB"
+        "MsmKey" = "8:_39D5A4E8F32A4C368CAD23648D3EFFD2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -82,12 +82,6 @@
         "Entry"
         {
         "MsmKey" = "8:_4547E24E413345F192CEBF175E70A22B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_4566608A3F364B0F9F2290048D1B72A1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -123,19 +117,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7AEDCB1657014861AFF22F66BC450A73"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_7CE5169348D04F1D9E75DBF556D12ECE"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7D8FD24923134F788D9949BF2FD69E72"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -159,25 +141,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9E4FE85909E7491C8B57688AA8DB0CB6"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A6C603E4C633446BB80C48371B039433"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_A7CA0AC8925C42CBBBFF65179410011B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_ABF181F8BAFE4F0C9D70B6B108991639"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,19 +159,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C6EE3CDF30184A84BE67211EA5D1A942"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D421854376F14855A178E788B6FFCD55"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_D5DC3CA542974689AC3036797353DC3C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -243,12 +195,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F0111F0540F944278760431DAFDD0202"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_F3CB49A9ED3548828E924BAAFB5B8649"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -256,12 +202,6 @@
         "Entry"
         {
         "MsmKey" = "8:_FB9E5EACB56142C597636969F185C017"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FF580F7E68BD46529F3B274F8E1D43D9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -532,26 +472,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3DD7938187704B009E985755C29232BB"
-            {
-            "SourcePath" = "8:..\\..\\sfml-audio-2.dll"
-            "TargetName" = "8:sfml-audio-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_44789A1A9DD94FB19CDAC21AD82851E6"
             {
             "SourcePath" = "8:..\\..\\Textures\\pchel.jpg"
@@ -692,52 +612,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7AEDCB1657014861AFF22F66BC450A73"
-            {
-            "SourcePath" = "8:..\\..\\sfml-audio-d-2.dll"
-            "TargetName" = "8:sfml-audio-d-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7CE5169348D04F1D9E75DBF556D12ECE"
             {
             "SourcePath" = "8:C:\\Users\\Stonkser\\Desktop\\фотокарточки\\GTA6logo.ico"
             "TargetName" = "8:GTA6logo.ico"
             "Tag" = "8:"
             "Folder" = "8:_0D7C2011AC4B47D98B80593EC37F15F9"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7D8FD24923134F788D9949BF2FD69E72"
-            {
-            "SourcePath" = "8:..\\..\\sfml-graphics-d-2.dll"
-            "TargetName" = "8:sfml-graphics-d-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -812,72 +692,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9E4FE85909E7491C8B57688AA8DB0CB6"
-            {
-            "SourcePath" = "8:..\\..\\sfml-network-2.dll"
-            "TargetName" = "8:sfml-network-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A6C603E4C633446BB80C48371B039433"
             {
             "SourcePath" = "8:..\\..\\Textures\\pauseButtonBackgroundTexture.jpg"
             "TargetName" = "8:pauseButtonBackgroundTexture.jpg"
             "Tag" = "8:"
             "Folder" = "8:_103A02C917FE4D549F7E9ECF52E284D5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A7CA0AC8925C42CBBBFF65179410011B"
-            {
-            "SourcePath" = "8:..\\..\\sfml-network-d-2.dll"
-            "TargetName" = "8:sfml-network-d-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ABF181F8BAFE4F0C9D70B6B108991639"
-            {
-            "SourcePath" = "8:..\\..\\sfml-system-d-2.dll"
-            "TargetName" = "8:sfml-system-d-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -932,52 +752,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C6EE3CDF30184A84BE67211EA5D1A942"
-            {
-            "SourcePath" = "8:..\\..\\sfml-system-2.dll"
-            "TargetName" = "8:sfml-system-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D421854376F14855A178E788B6FFCD55"
             {
             "SourcePath" = "8:..\\..\\Textures\\lightningTexture1.png"
             "TargetName" = "8:lightningTexture1.png"
             "Tag" = "8:"
             "Folder" = "8:_103A02C917FE4D549F7E9ECF52E284D5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D5DC3CA542974689AC3036797353DC3C"
-            {
-            "SourcePath" = "8:..\\..\\sfml-window-2.dll"
-            "TargetName" = "8:sfml-window-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1092,26 +872,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F0111F0540F944278760431DAFDD0202"
-            {
-            "SourcePath" = "8:..\\..\\sfml-graphics-2.dll"
-            "TargetName" = "8:sfml-graphics-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F3CB49A9ED3548828E924BAAFB5B8649"
             {
             "SourcePath" = "8:..\\..\\Textures\\rockEnemy.png"
@@ -1138,26 +898,6 @@
             "TargetName" = "8:ElectroEnemy.jpg"
             "Tag" = "8:"
             "Folder" = "8:_103A02C917FE4D549F7E9ECF52E284D5"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FF580F7E68BD46529F3B274F8E1D43D9"
-            {
-            "SourcePath" = "8:..\\..\\sfml-window-d-2.dll"
-            "TargetName" = "8:sfml-window-d-2.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1202,7 +942,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_9B41C93B69E34ED5BFD14530C0205221"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -1262,7 +1002,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BruhGalactic"
         "ProductCode" = "8:{D1C0FAB1-ED3C-4A24-8BEB-81D9D204E9FA}"
-        "PackageCode" = "8:{E0F94FED-0A3E-4CD0-A939-D95528FAAFA3}"
+        "PackageCode" = "8:{65AFF5D0-BC64-44B8-9758-BDB50E8D7A47}"
         "UpgradeCode" = "8:{0BE9785C-C951-4A92-93E1-843098F5F442}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"
@@ -1283,7 +1023,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:1"
+        "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -1382,30 +1122,30 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_5C14390CCF8E4A4CBDF8216EE67FA369"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_081D53F760834D9793DAD2E9A0DBC8E0"
             {
-            "Name" = "8:BRUH GALACTIC"
+            "Name" = "8:Shortcut to Основные выходные файлы from Bruh Galactic (Active)"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_4566608A3F364B0F9F2290048D1B72A1"
-            "Folder" = "8:_291CB46AE5584094BC94D5C2C4BE84F2"
+            "Target" = "8:_39D5A4E8F32A4C368CAD23648D3EFFD2"
+            "Folder" = "8:_11DADF15BE124AA0922E7C000E47338D"
             "WorkingFolder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
             "Icon" = "8:_7CE5169348D04F1D9E75DBF556D12ECE"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D576743F9C50470BBFE0DE14F2D8383A"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_41FC525C3EAE425EAF0F105C5A7FD55B"
             {
-            "Name" = "8:BRUH GALACTIC"
+            "Name" = "8:Shortcut to Основные выходные файлы from Bruh Galactic (Active) (2)"
             "Arguments" = "8:"
             "Description" = "8:"
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_4566608A3F364B0F9F2290048D1B72A1"
-            "Folder" = "8:_11DADF15BE124AA0922E7C000E47338D"
+            "Target" = "8:_39D5A4E8F32A4C368CAD23648D3EFFD2"
+            "Folder" = "8:_291CB46AE5584094BC94D5C2C4BE84F2"
             "WorkingFolder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
             "Icon" = "8:_7CE5169348D04F1D9E75DBF556D12ECE"
             "Feature" = "8:"
@@ -1809,9 +1549,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4566608A3F364B0F9F2290048D1B72A1"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_39D5A4E8F32A4C368CAD23648D3EFFD2"
             {
-            "SourcePath" = "8:..\\..\\x64\\Debug\\Bruh Galactic.exe"
+            "SourcePath" = "8:..\\..\\x64\\Release\\Bruh Galactic.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_9B41C93B69E34ED5BFD14530C0205221"
