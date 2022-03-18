@@ -72,7 +72,7 @@ public:
 	void initWindow() {
 		gameWindow.x = 1920;
 		gameWindow.y = 1080;
-		gameWindow.title = "BRUH Galactic";
+		gameWindow.title = "BRUH GALACTIC";
 		gameWindow.window.create(VideoMode(gameWindow.x, gameWindow.y), gameWindow.title, Style::Fullscreen);
 		gameWindow.window.setFramerateLimit(240);
 	}

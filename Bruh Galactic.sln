@@ -5,29 +5,39 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Bruh Galactic", "Bruh Galactic.vcxproj", "{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupBruhGalactic", "..\SetupBruhGalactic\SetupBruhGalactic\SetupBruhGalactic.vdproj", "{758DD1F5-20EF-4DFD-98AA-31FA7E136F69}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "BruhGalacticInstaller", "BruhGalacticInstaller\BruhGalacticInstaller\BruhGalacticInstaller.vdproj", "{5FA26E34-B22C-4658-B9F0-330DF915055E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Default = Debug|Default
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Release|Default = Release|Default
 		Release|x64 = Release|x64
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Debug|Default.ActiveCfg = Debug|x64
+		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Debug|Default.Build.0 = Debug|x64
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Debug|x64.ActiveCfg = Debug|x64
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Debug|x64.Build.0 = Debug|x64
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Debug|x86.ActiveCfg = Debug|Win32
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Debug|x86.Build.0 = Debug|Win32
+		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Release|Default.ActiveCfg = Release|x64
+		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Release|Default.Build.0 = Release|x64
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Release|x64.ActiveCfg = Release|x64
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Release|x64.Build.0 = Release|x64
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Release|x86.ActiveCfg = Release|Win32
 		{8B1FCD57-D0CA-4C08-BC6C-21FC4052446E}.Release|x86.Build.0 = Release|Win32
-		{758DD1F5-20EF-4DFD-98AA-31FA7E136F69}.Debug|x64.ActiveCfg = Debug
-		{758DD1F5-20EF-4DFD-98AA-31FA7E136F69}.Debug|x64.Build.0 = Debug
-		{758DD1F5-20EF-4DFD-98AA-31FA7E136F69}.Debug|x86.ActiveCfg = Debug
-		{758DD1F5-20EF-4DFD-98AA-31FA7E136F69}.Release|x64.ActiveCfg = Release
-		{758DD1F5-20EF-4DFD-98AA-31FA7E136F69}.Release|x86.ActiveCfg = Release
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Debug|Default.ActiveCfg = Debug
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Debug|Default.Build.0 = Debug
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Debug|x64.ActiveCfg = Debug
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Debug|x64.Build.0 = Debug
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Debug|x86.ActiveCfg = Debug
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Release|Default.ActiveCfg = Release
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Release|Default.Build.0 = Release
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Release|x64.ActiveCfg = Release
+		{5FA26E34-B22C-4658-B9F0-330DF915055E}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,24 +49,5 @@ Global
 		Debug|Default = Debug|Default
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
-		Release|Default = Release|Default
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Default = Debug|Default
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|Default = Release|Default
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
-	EndGlobalSection
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Default = Debug|Default
-		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
-		Release|Default = Release|Default
-		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 EndGlobal
