@@ -203,6 +203,9 @@ void Enemy::HealerEnemy::spawnAnimation() {
 	}
 }
 void Enemy::HealerEnemy::move() {
+	if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y)) {
+		setState("ES_STANDING");
+	}
 	// X COORD
 	if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) > abs(speed.x)) {
 		shape.move(speed.x, 0);
@@ -212,9 +215,6 @@ void Enemy::HealerEnemy::move() {
 	if (abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) > abs(speed.y)) {
 		shape.move(0, speed.y);
 		healArea.move(0, speed.y);
-	}
-	if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y)) {
-		setState("ES_STANDING");
 	}
 }
 void Enemy::HealerEnemy::generateDestination(GameWindow* gwindow) {

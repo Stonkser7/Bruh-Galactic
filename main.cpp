@@ -160,9 +160,10 @@ public:
 	
 	void continueGame() {
 		gameState = GS_PLAY;
-		player.ammoData.ordinaryBulletData.excessFireTime = player.excessFireClock.getElapsedTime().asMilliseconds();
-		player.ammoData.splittingBulletData.excessFireTime = player.excessFireClock.getElapsedTime().asMilliseconds();
-		player.ammoData.rayBulletData.excessFireTime = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.ordinaryBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.splittingBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.rayBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.grenadeBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			romaEnemies[i].excessFireTime = romaEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
 		}
@@ -448,7 +449,6 @@ public:
 				for (int j = 0; j < romaEnemies.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, romaEnemies[j].shape)) {
 						romaEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
-						break;
 					}
 				}
 			}
@@ -459,7 +459,6 @@ public:
 				for (int j = 0; j < romaBullets.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, romaBullets[j])) {
 						romaBullets.erase(romaBullets.begin() + j);
-						break;
 					}
 				}
 			}
@@ -473,7 +472,6 @@ public:
 				for (int j = 0; j < rockEnemies.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, rockEnemies[j].shape)) {
 						rockEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
-						break;
 					}
 				}
 			}
@@ -484,7 +482,6 @@ public:
 				for (int j = 0; j < rockBullets.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, rockBullets[j].shape)) {
 						rockBullets.erase(rockBullets.begin() + j);
-						break;
 					}
 				}
 			}
@@ -497,7 +494,6 @@ public:
 					if (electroEnemies[j].visible) {
 						if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, electroEnemies[j].shape)) {
 							electroEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
-							break;
 						}
 					}
 				}
@@ -512,7 +508,127 @@ public:
 				for (int j = 0; j < healerEnemies.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, healerEnemies[j].shape)) {
 						healerEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
-						break;
+					}
+				}
+			}
+		}
+	}
+	void checkForGrenadeBulletCollision() {
+		//ROMA ENEMIES
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			if (player.ammo.grenadeBullets[i].state == BS_EXPLOSING) {
+				for (int j = 0; j < romaEnemies.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+					}
+				}
+			}
+		}
+		//ROMA BULLETS
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			if (player.ammo.grenadeBullets[i].state == BS_EXPLOSING) {
+				for (int j = 0; j < romaBullets.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, romaBullets[j])) {
+						romaBullets.erase(romaBullets.begin() + j);
+						j--;
+						continue;
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, romaBullets[j])) {
+						romaBullets.erase(romaBullets.begin() + j);
+						j--;
+						continue;
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, romaBullets[j])) {
+						romaBullets.erase(romaBullets.begin() + j);
+						j--;
+						continue;
+					}
+				}
+			}
+		}
+
+
+
+		//ROCK ENEMIES
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			if (player.ammo.grenadeBullets[i].state == BS_EXPLOSING) {
+				for (int j = 0; j < rockEnemies.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+					}
+				}
+			}
+		}
+		//ROCK BULLETS
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			if (player.ammo.grenadeBullets[i].state == BS_EXPLOSING) {
+				for (int j = 0; j < rockBullets.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, rockBullets[j].shape)) {
+						rockBullets.erase(rockBullets.begin() + j);
+						j--;
+						continue;
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, rockBullets[j].shape)) {
+						rockBullets.erase(rockBullets.begin() + j);
+						j--;
+						continue;
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, rockBullets[j].shape)) {
+						rockBullets.erase(rockBullets.begin() + j);
+						j--;
+						continue;
+					}
+				}
+			}
+		}
+
+
+
+		//ELECTRO ENEMIES
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			if (player.ammo.grenadeBullets[i].state == BS_EXPLOSING) {
+				for (int j = 0; j < electroEnemies.size(); j++) {
+					if (electroEnemies[j].visible) {
+						if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+						}
+						if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+						}
+						if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+						}
+					}
+				}
+			}
+		}
+
+
+
+		//HEALER ENEMIES
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			if (player.ammo.grenadeBullets[i].state == BS_EXPLOSING) {
+				for (int j = 0; j < healerEnemies.size(); j++) {
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+					}
+					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
 					}
 				}
 			}
@@ -644,6 +760,7 @@ public:
 		checkForSplittingBulletsCollision();
 		checkForSplittedBulletsCollision();
 		checkForRayBulletsCollision();
+		checkForGrenadeBulletCollision();
 		//
 	}
 
@@ -811,6 +928,17 @@ public:
 				break;
 			}
 		}
+		//GRENADE BULLETS
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			switch (player.ammo.grenadeBullets[i].state) {
+			case BS_EXPLOSING:
+				player.deleteBullet(BULT_GRENADE, i);
+				break;
+			case BS_FLYING:
+				player.ammo.grenadeBullets[i].move();
+				break;
+			}
+		}
 	}
 	void updateEnemies() {
 		checkForEnemiesSpawn();
@@ -916,6 +1044,7 @@ public:
 		}
 		gameWindow.window.draw(gameBackground);
 
+		//ENEMIES
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			gameWindow.window.draw(romaEnemies[i].shape);
 		}
@@ -934,6 +1063,7 @@ public:
 			gameWindow.window.draw(healerEnemies[i].shape);
 		}
 
+		//PLAYER BULLETS
 		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
 			gameWindow.window.draw(player.ammo.ordinaryBullets[i].shape);
 		}
@@ -946,7 +1076,13 @@ public:
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
 			gameWindow.window.draw(player.ammo.rayBullets[i].shape);
 		}
-
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			gameWindow.window.draw(player.ammo.grenadeBullets[i].thirdDamageArea);
+			gameWindow.window.draw(player.ammo.grenadeBullets[i].secondDamageArea);
+			gameWindow.window.draw(player.ammo.grenadeBullets[i].firstDamageArea);
+			gameWindow.window.draw(player.ammo.grenadeBullets[i].shape);
+		}
+			 
 		gameWindow.window.draw(player.scope);
 		if (player.additionalScope.isActive) {
 			gameWindow.window.draw(player.additionalScope.shape);
