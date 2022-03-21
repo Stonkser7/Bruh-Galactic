@@ -69,7 +69,6 @@ public:
 	void controlPlayer(GameWindow* gwindow);
 	void updateAdditionalScopePart();
 	void move(Vector2f offset);
-	void rotateGun();
 	void fire();
 	void splitBullet(SplittingBullet* splittingBullet);
 	void splitBullet(SplittedBullet* splittedBullet);

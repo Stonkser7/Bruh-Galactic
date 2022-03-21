@@ -103,11 +103,9 @@ namespace Enemy {
 		ENEMYSIDE side;
 		float destinationCoordY;					//defining when spawnRockEnemy() invoking
 		Texture* bulletTxtrPtr;
-		Vector2f defaultBulletSpeed;
-		float bulletSpeedVariation;
+		float bulletAcceleration;
 
 		bool isNeedToFire();
-		void rotateGun();
 		RockEnemyBullet fire();
 		void takeTarget(Vector2f coords);
 		void move();

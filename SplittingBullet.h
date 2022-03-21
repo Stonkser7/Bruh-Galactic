@@ -9,9 +9,6 @@ struct SplittingBulletData {
 
 	int defaultRadius;
 
-	Vector2f defaultSpeed;
-	float speedVariation;
-
 	Clock fireTimer;
 	int fireDelayAsMilliseconds;
 
@@ -24,7 +21,8 @@ class SplittingBullet {
 public:
 	CircleShape shape;
 	Vector2f speed;
-	int damage;
+	float acceleration;
+	float damage;
 	void move();
 	bool isOutOfScreen(GameWindow* gwindow);
 };

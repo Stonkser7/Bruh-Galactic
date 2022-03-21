@@ -79,34 +79,14 @@ void Enemy::RomaEnemy::spawnAnimation() {
 bool Enemy::RockEnemy::isNeedToFire() {
 	return getState() == ES_MOVING && fireClock.getElapsedTime().asMilliseconds() - excessFireTime >= fireDelayAsMilliseconds || getState() == ES_STANDING && fireClock.getElapsedTime().asMilliseconds() - excessFireTime >= fireDelayAsMilliseconds;
 }
-void Enemy::RockEnemy::rotateGun() {
-	shape.rotate(-90);
-	float rotation = shape.getRotation();
-	if (rotation >= 0 && rotation <= 90) {
-		defaultBulletSpeed.x = rotation * bulletSpeedVariation;
-		defaultBulletSpeed.y = (90 - rotation) * -bulletSpeedVariation;
-	}
-	if (rotation > 90 && rotation <= 180) {
-		defaultBulletSpeed.x = (180 - rotation) * bulletSpeedVariation;
-		defaultBulletSpeed.y = (rotation - 90) * bulletSpeedVariation;
-	}
-	if (rotation > 180 && rotation <= 270) {
-		defaultBulletSpeed.x = (rotation - 180) * -bulletSpeedVariation;
-		defaultBulletSpeed.y = (270 - rotation) * bulletSpeedVariation;
-	}
-	if (rotation > 270 && rotation < 360) {
-		defaultBulletSpeed.x = (360 - rotation) * -bulletSpeedVariation;
-		defaultBulletSpeed.y = (rotation - 270) * -bulletSpeedVariation;
-	}
-}
 RockEnemyBullet Enemy::RockEnemy::fire() {
 	RockEnemyBullet bullet;
 	bullet.shape.setTexture(bulletTxtrPtr);
 	bullet.shape.setRadius(15);
 	bullet.shape.setPosition(Vector2f(shape.getPosition()));
 	bullet.shape.setOrigin(bullet.shape.getRadius(), bullet.shape.getRadius());
-	rotateGun();
-	bullet.speed = defaultBulletSpeed;
+	bullet.speed.x = bulletAcceleration * -cos(shape.getRotation() * 3.14 / 180);
+	bullet.speed.y = bulletAcceleration * -sin(shape.getRotation() * 3.14 / 180);
 	fireClock.restart();
 	excessFireTime = 0;
 	return bullet;
@@ -122,7 +102,7 @@ void Enemy::RockEnemy::move() {
 		}
 		else {
 			setState("ES_STANDING");
-			fireDelayAsMilliseconds = 3500;
+			fireDelayAsMilliseconds = 3300;
 			fireClock.restart();
 		}
 		break;
@@ -132,7 +112,7 @@ void Enemy::RockEnemy::move() {
 		}
 		else {
 			setState("ES_STANDING");
-			fireDelayAsMilliseconds = 3500;
+			fireDelayAsMilliseconds = 3300;
 			fireClock.restart();
 		}
 		break;

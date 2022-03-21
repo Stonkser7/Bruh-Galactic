@@ -37,8 +37,6 @@ void Player::initAmmunition() {
 	//ORDINARY BULLET
 	Collision::CreateTextureAndBitmask(ammoData.ordinaryBulletData.texture, "Textures\\pchel.jpg");
 	ammoData.ordinaryBulletData.damage = 10;
-	ammoData.ordinaryBulletData.defaultSpeed = { 12, 0 };
-	ammoData.ordinaryBulletData.speedVariation = ammoData.ordinaryBulletData.defaultSpeed.x / 90;
 	ammoData.ordinaryBulletData.fireDelayAsMilliseconds = 150;
 	ammoData.ordinaryBulletData.excessFireDelay = 0;
 
@@ -46,8 +44,6 @@ void Player::initAmmunition() {
 	Collision::CreateTextureAndBitmask(ammoData.splittingBulletData.texture, "Textures\\splittingBulletTexture.png");
 	ammoData.splittingBulletData.defaultDamage = 30;
 	ammoData.splittingBulletData.defaultRadius = 25;
-	ammoData.splittingBulletData.defaultSpeed = { 6, 0 };
-	ammoData.splittingBulletData.speedVariation = ammoData.splittingBulletData.defaultSpeed.x / 90;
 	ammoData.splittingBulletData.fireDelayAsMilliseconds = 600;
 	ammoData.splittingBulletData.excessFireDelay = 0;
 
@@ -74,11 +70,11 @@ void Player::initAmmunition() {
 	ammoData.grenadeBulletData.secondLevelDamage = 25;
 	ammoData.grenadeBulletData.thirdLevelDamage = 10;
 
-	ammoData.grenadeBulletData.defaultRadius = 10;
+	ammoData.grenadeBulletData.defaultRadius = 30;
 
-	ammoData.grenadeBulletData.firstAreaRaduis = 70;
-	ammoData.grenadeBulletData.secondAreaRaduis = 180;
-	ammoData.grenadeBulletData.thirdAreaRaduis = 300;
+	ammoData.grenadeBulletData.firstAreaRaduis = 100;
+	ammoData.grenadeBulletData.secondAreaRaduis = 200;
+	ammoData.grenadeBulletData.thirdAreaRaduis = 350;
 
 	ammoData.grenadeBulletData.excessFireDelay = 0;
 
@@ -114,7 +110,6 @@ void Player::rotateToMouse(Vector2f coords) {
 }
 void Player::controlPlayer(GameWindow* gwindow) {
 	if (Mouse::isButtonPressed(Mouse::Button::Left)) {
-		rotateGun();									//rotation only when player is shooting(for optimization)
 		fire();
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
@@ -143,47 +138,6 @@ void Player::move(Vector2f offset) {
 	scope.move(offset);
 	additionalScope.shape.move(offset);
 }
-void Player::rotateGun() {
-	float rotation = playerShape.getRotation();
-	switch (getSelectedBulletType()) {
-	case BULT_ORDINARY:
-		if (rotation >= 0 && rotation <= 90) {
-			ammoData.ordinaryBulletData.defaultSpeed.x = rotation * ammoData.ordinaryBulletData.speedVariation;
-			ammoData.ordinaryBulletData.defaultSpeed.y = (90 - rotation) * -ammoData.ordinaryBulletData.speedVariation;
-		}
-		if (rotation > 90 && rotation <= 180) {
-			ammoData.ordinaryBulletData.defaultSpeed.x = (180 - rotation) * ammoData.ordinaryBulletData.speedVariation;
-			ammoData.ordinaryBulletData.defaultSpeed.y = (rotation - 90) * ammoData.ordinaryBulletData.speedVariation;
-		}
-		if (rotation > 180 && rotation <= 270) {
-			ammoData.ordinaryBulletData.defaultSpeed.x = (rotation - 180) * -ammoData.ordinaryBulletData.speedVariation;
-			ammoData.ordinaryBulletData.defaultSpeed.y = (270 - rotation) * ammoData.ordinaryBulletData.speedVariation;
-		}
-		if (rotation > 270 && rotation < 360) {
-			ammoData.ordinaryBulletData.defaultSpeed.x = (360 - rotation) * -ammoData.ordinaryBulletData.speedVariation;
-			ammoData.ordinaryBulletData.defaultSpeed.y = (rotation - 270) * -ammoData.ordinaryBulletData.speedVariation;
-		}
-		break;
-	case BULT_SPLITTING:
-		if (rotation >= 0 && rotation <= 90) {
-			ammoData.splittingBulletData.defaultSpeed.x = rotation * ammoData.splittingBulletData.speedVariation;
-			ammoData.splittingBulletData.defaultSpeed.y = (90 - rotation) * -ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 90 && rotation <= 180) {
-			ammoData.splittingBulletData.defaultSpeed.x = (180 - rotation) * ammoData.splittingBulletData.speedVariation;
-			ammoData.splittingBulletData.defaultSpeed.y = (rotation - 90) * ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 180 && rotation <= 270) {
-			ammoData.splittingBulletData.defaultSpeed.x = (rotation - 180) * -ammoData.splittingBulletData.speedVariation;
-			ammoData.splittingBulletData.defaultSpeed.y = (270 - rotation) * ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 270 && rotation < 360) {
-			ammoData.splittingBulletData.defaultSpeed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
-			ammoData.splittingBulletData.defaultSpeed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
-		}
-		break;
-	}
-}
 void Player::fire() {
 	switch (selectedBullet) {
 	case BULT_ORDINARY:
@@ -194,7 +148,9 @@ void Player::fire() {
 			bullet.shape.setOrigin(Vector2f(bullet.shape.getSize().x / 2.f, bullet.shape.getSize().y / 2.f));
 			bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % static_cast<int>(sizeX)) + playerShape.getPosition().y - playerShape.getOrigin().x));
 			bullet.shape.setRotation(playerShape.getRotation() - 90);
-			bullet.speed = ammoData.ordinaryBulletData.defaultSpeed;
+			bullet.acceleration = 10;
+			bullet.speed.x = bullet.acceleration * cos((playerShape.getRotation() - 90) * 3.14 / 180);
+			bullet.speed.y = bullet.acceleration * sin((playerShape.getRotation() - 90) * 3.14 / 180);
 			ammo.ordinaryBullets.push_back(bullet);
 			ammoData.ordinaryBulletData.fireTimer.restart();
 			ammoData.ordinaryBulletData.excessFireDelay = 0;
@@ -210,7 +166,9 @@ void Player::fire() {
 			bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			bullet.shape.setRotation(playerShape.getRotation());
 			bullet.damage = ammoData.splittingBulletData.defaultDamage;
-			bullet.speed = ammoData.splittingBulletData.defaultSpeed;
+			bullet.acceleration = 5;
+			bullet.speed.x = bullet.acceleration * cos((playerShape.getRotation() - 90) * 3.14 / 180);
+			bullet.speed.y = bullet.acceleration * sin((playerShape.getRotation() - 90) * 3.14 / 180);
 			ammo.splittingBullets.push_back(bullet);
 			ammoData.splittingBulletData.fireTimer.restart();
 			ammoData.splittingBulletData.excessFireDelay = 0;
@@ -278,51 +236,20 @@ void Player::splitBullet(SplittingBullet* splittingBullet) {
 	splittedBullet.shape.setPosition(splittingBullet->shape.getPosition());
 	splittedBullet.shape.setRadius(splittingBullet->shape.getRadius() / 1.5);
 	splittedBullet.damage = splittingBullet->damage / 1.5;
+	splittedBullet.acceleration = splittingBullet->acceleration;
 	splittedBullet.levelOfSplit = 1;
 
 
-	splittedBullet.speed = splittingBullet->speed;
 	splittedBullet.shape.setRotation(splittingBullet->shape.getRotation());
-	splittedBullet.shape.rotate(-10);
-	float rotation = splittedBullet.shape.getRotation();
-	if (rotation >= 0 && rotation <= 90) {
-		splittedBullet.speed.x = rotation * ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (90 - rotation) * -ammoData.splittingBulletData.speedVariation;
-	}
-	if (rotation > 90 && rotation <= 180) {
-		splittedBullet.speed.x = (180 - rotation) * ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (rotation - 90) * ammoData.splittingBulletData.speedVariation;
-	}
-	if (rotation > 180 && rotation <= 270) {
-		splittedBullet.speed.x = (rotation - 180) * -ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (270 - rotation) * ammoData.splittingBulletData.speedVariation;
-	}
-	if (rotation > 270 && rotation < 360) {
-		splittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
-	}
+	splittedBullet.shape.rotate(-7);
+	splittedBullet.speed.x = splittedBullet.acceleration * cos((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
+	splittedBullet.speed.y = splittedBullet.acceleration * sin((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 	ammo.splittedBullets.push_back(splittedBullet);
 
-	splittedBullet.speed = splittingBullet->speed;
 	splittedBullet.shape.setRotation(splittingBullet->shape.getRotation());
-	splittedBullet.shape.rotate(10);
-	rotation = splittedBullet.shape.getRotation();
-	if (rotation >= 0 && rotation <= 90) {
-		splittedBullet.speed.x = rotation * ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (90 - rotation) * -ammoData.splittingBulletData.speedVariation;
-	}
-	if (rotation > 90 && rotation <= 180) {
-		splittedBullet.speed.x = (180 - rotation) * ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (rotation - 90) * ammoData.splittingBulletData.speedVariation;
-	}
-	if (rotation > 180 && rotation <= 270) {
-		splittedBullet.speed.x = (rotation - 180) * -ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (270 - rotation) * ammoData.splittingBulletData.speedVariation;
-	}
-	if (rotation > 270 && rotation < 360) {
-		splittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
-		splittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
-	}
+	splittedBullet.shape.rotate(7);
+	splittedBullet.speed.x = splittedBullet.acceleration * cos((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
+	splittedBullet.speed.y = splittedBullet.acceleration * sin((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 	ammo.splittedBullets.push_back(splittedBullet);
 }
 void Player::splitBullet(SplittedBullet* splittedBullet) {
@@ -332,51 +259,20 @@ void Player::splitBullet(SplittedBullet* splittedBullet) {
 		twiceSplittedBullet.shape.setPosition(splittedBullet->shape.getPosition());
 		twiceSplittedBullet.shape.setRadius(splittedBullet->shape.getRadius() / 1.5);
 		twiceSplittedBullet.damage = splittedBullet->damage / 1.5;
+		twiceSplittedBullet.acceleration = splittedBullet->acceleration;
 		twiceSplittedBullet.levelOfSplit = splittedBullet->levelOfSplit + 1;
 
 
-		twiceSplittedBullet.speed = splittedBullet->speed;
 		twiceSplittedBullet.shape.setRotation(splittedBullet->shape.getRotation());
-		twiceSplittedBullet.shape.rotate(-12);
-		float rotation = twiceSplittedBullet.shape.getRotation();
-		if (rotation >= 0 && rotation <= 90) {
-			twiceSplittedBullet.speed.x = rotation * ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (90 - rotation) * -ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 90 && rotation <= 180) {
-			twiceSplittedBullet.speed.x = (180 - rotation) * ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (rotation - 90) * ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 180 && rotation <= 270) {
-			twiceSplittedBullet.speed.x = (rotation - 180) * -ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (270 - rotation) * ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 270 && rotation < 360) {
-			twiceSplittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
-		}
+		twiceSplittedBullet.shape.rotate(-10);
+		twiceSplittedBullet.speed.x = twiceSplittedBullet.acceleration * cos((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
+		twiceSplittedBullet.speed.y = twiceSplittedBullet.acceleration * sin((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 		ammo.splittedBullets.push_back(twiceSplittedBullet);
 
-		twiceSplittedBullet.speed = splittedBullet->speed;
 		twiceSplittedBullet.shape.setRotation(splittedBullet->shape.getRotation());
-		twiceSplittedBullet.shape.rotate(12);
-		rotation = twiceSplittedBullet.shape.getRotation();
-		if (rotation >= 0 && rotation <= 90) {
-			twiceSplittedBullet.speed.x = rotation * ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (90 - rotation) * -ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 90 && rotation <= 180) {
-			twiceSplittedBullet.speed.x = (180 - rotation) * ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (rotation - 90) * ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 180 && rotation <= 270) {
-			twiceSplittedBullet.speed.x = (rotation - 180) * -ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (270 - rotation) * ammoData.splittingBulletData.speedVariation;
-		}
-		if (rotation > 270 && rotation < 360) {
-			twiceSplittedBullet.speed.x = (360 - rotation) * -ammoData.splittingBulletData.speedVariation;
-			twiceSplittedBullet.speed.y = (rotation - 270) * -ammoData.splittingBulletData.speedVariation;
-		}
+		twiceSplittedBullet.shape.rotate(10);
+		twiceSplittedBullet.speed.x = twiceSplittedBullet.acceleration * cos((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
+		twiceSplittedBullet.speed.y = twiceSplittedBullet.acceleration * sin((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 		ammo.splittedBullets.push_back(twiceSplittedBullet);
 	}
 }

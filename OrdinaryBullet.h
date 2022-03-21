@@ -7,9 +7,6 @@ using namespace sf;
 struct OrdinaryBulletData {
 	int damage;
 
-	Vector2f defaultSpeed;
-	float speedVariation;
-
 	Clock fireTimer;
 	int fireDelayAsMilliseconds;
 
@@ -22,6 +19,7 @@ class OrdinaryBullet {
 public:
 	RectangleShape shape;
 	Vector2f speed;
+	float acceleration;
 	void move();
 	bool isOutOfScreen(GameWindow* gwindow);
 };

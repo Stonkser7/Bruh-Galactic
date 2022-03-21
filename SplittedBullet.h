@@ -8,7 +8,8 @@ class SplittedBullet {
 public:
 	CircleShape shape;
 	Vector2f speed;
-	int damage;
+	float acceleration;
+	float damage;
 	int levelOfSplit;
 	void move();
 	bool isOutOfScreen(GameWindow* gwindow);

@@ -785,7 +785,7 @@ public:
 		Enemy::RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 4200;
+		roma.fireDelayAsMilliseconds = 4000;
 		roma.spawnCoordX = gameWindow.x - romaData.spawnRadius;
 		roma.shape.setRadius(romaData.spawnRadius);
 		roma.shape.setOrigin(Vector2f(romaData.spawnRadius, romaData.spawnRadius));
@@ -800,8 +800,7 @@ public:
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
 		rock.fireDelayAsMilliseconds = 900;
 		rock.shape.setRotation(0);
-		rock.defaultBulletSpeed = { 2.0, 0 };
-		rock.bulletSpeedVariation = rock.defaultBulletSpeed.x / 90;
+		rock.bulletAcceleration = 2.5;
 		rock.shape.setRadius(rockData.spawnRadius);
 		rock.shape.setOrigin(rockData.spawnRadius, rockData.spawnRadius);
 		rock.side = ENEMYSIDE(rand() % 2);
@@ -1077,9 +1076,9 @@ public:
 			gameWindow.window.draw(player.ammo.rayBullets[i].shape);
 		}
 		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			gameWindow.window.draw(player.ammo.grenadeBullets[i].thirdDamageArea);
-			gameWindow.window.draw(player.ammo.grenadeBullets[i].secondDamageArea);
-			gameWindow.window.draw(player.ammo.grenadeBullets[i].firstDamageArea);
+			//gameWindow.window.draw(player.ammo.grenadeBullets[i].thirdDamageArea);
+			//gameWindow.window.draw(player.ammo.grenadeBullets[i].secondDamageArea);
+			//gameWindow.window.draw(player.ammo.grenadeBullets[i].firstDamageArea);
 			gameWindow.window.draw(player.ammo.grenadeBullets[i].shape);
 		}
 			 
