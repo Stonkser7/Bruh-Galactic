@@ -51,6 +51,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_2132C05E923E4FC1BBEDBE6E043E77D3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_286D283D9BCD490AAA1E7AD820023AEF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -87,6 +93,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3AE1115869A04C94B5B7CE1ED91E2E5E"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_3C06F3F7FDAB4CBC81D0C1B7FE40A533"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -100,6 +112,12 @@
         "Entry"
         {
         "MsmKey" = "8:_52661828C3D1475A8B9ED7CCB4FDA0F1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_65CF9ACE19B8475DBB7F47E8256C60AD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -154,6 +172,12 @@
         "Entry"
         {
         "MsmKey" = "8:_8073D384B5BA4C97A6E209A54104ED64"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_90454EE2420F48FC8CA013EC5B96ED32"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -249,6 +273,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_F619003F2AE54AA1B60510C15126F9A4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F743461D99D54A7B80A78A333616FC15"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -321,6 +351,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    }
+                }
             }
         }
     }
@@ -463,6 +501,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2132C05E923E4FC1BBEDBE6E043E77D3"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\grenadeBulletTexture.png"
+            "TargetName" = "8:grenadeBulletTexture.png"
+            "Tag" = "8:"
+            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A8485DF01E842AAA26560B1A1D3745B"
             {
             "SourcePath" = "8:..\\..\\Textures\\menuBackgroundTexture.jpg"
@@ -563,6 +621,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3AE1115869A04C94B5B7CE1ED91E2E5E"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\grenadeFirstDamageArea.png"
+            "TargetName" = "8:grenadeFirstDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3C06F3F7FDAB4CBC81D0C1B7FE40A533"
             {
             "SourcePath" = "8:..\\..\\Textures\\backgroundBlurTexture.jpg"
@@ -609,6 +687,26 @@
             "TargetName" = "8:sfml-network-2.dll"
             "Tag" = "8:"
             "Folder" = "8:_E173579CC8834D25B736B14E847681F0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_65CF9ACE19B8475DBB7F47E8256C60AD"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\grenadeThirdDamageArea.png"
+            "TargetName" = "8:grenadeThirdDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -787,6 +885,26 @@
             {
             "SourcePath" = "8:..\\..\\Textures\\lightningTexture1.png"
             "TargetName" = "8:lightningTexture1.png"
+            "Tag" = "8:"
+            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_90454EE2420F48FC8CA013EC5B96ED32"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\grenadeScopeTexture.png"
+            "TargetName" = "8:grenadeScopeTexture.png"
             "Tag" = "8:"
             "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
             "Condition" = "8:"
@@ -1089,6 +1207,26 @@
             "TargetName" = "8:sfml-graphics-d-2.dll"
             "Tag" = "8:"
             "Folder" = "8:_E173579CC8834D25B736B14E847681F0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F619003F2AE54AA1B60510C15126F9A4"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\grenadeSecondDamageArea.png"
+            "TargetName" = "8:grenadeSecondDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1782,7 +1920,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_286D283D9BCD490AAA1E7AD820023AEF"
             {
-            "SourcePath" = "8:..\\..\\x64\\Debug\\Bruh Galactic.exe"
+            "SourcePath" = "8:..\\..\\x64\\Release\\Bruh Galactic.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E173579CC8834D25B736B14E847681F0"

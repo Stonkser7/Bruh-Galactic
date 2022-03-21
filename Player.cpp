@@ -31,6 +31,7 @@ void Player::initPlayer(GameWindow* gwindow) {
 	scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 	scope.setTextureRect(IntRect(0, 0, 70, 26));
 	scope.setTexture(&ordinaryBulletScopeTexture);
+	additionalScope.isActive = false;
 }
 void Player::initAmmunition() {
 	selectedBullet = BULT_ORDINARY;
