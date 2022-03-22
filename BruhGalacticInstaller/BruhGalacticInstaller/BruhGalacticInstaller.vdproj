@@ -1290,7 +1290,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_6990F33D4BCB4CD6AFF14FC14368B558"
             {
             "Name" = "8:#1916"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:DesktopFolder"
@@ -1301,7 +1301,7 @@
             "{1525181F-901A-416C-8A58-119130FE478E}:_8E42E44A1641472C83FABD88F9E018D8"
             {
             "Name" = "8:#1919"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:ProgramMenuFolder"
@@ -1313,7 +1313,7 @@
             {
             "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer]\\[ProductName]"
             "Name" = "8:#1925"
-            "AlwaysCreate" = "11:FALSE"
+            "AlwaysCreate" = "11:TRUE"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Property" = "8:TARGETDIR"
@@ -1371,7 +1371,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BRUH GALACTIC"
         "ProductCode" = "8:{E81E3DF7-0F38-485C-BE2E-CB6943823072}"
-        "PackageCode" = "8:{8D065E98-C088-44D2-B7AA-1A8DC0447F7F}"
+        "PackageCode" = "8:{C48A32A1-2DEA-4353-8807-69A32D00B7DF}"
         "UpgradeCode" = "8:{F5F741B0-1CA7-4808-A3A2-9D61C0681E41}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"

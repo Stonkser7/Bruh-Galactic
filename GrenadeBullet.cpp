@@ -6,7 +6,7 @@ void GrenadeBullet::move() {
 		explosionWave.setRadius(shape.getRadius());
 		explosionWave.setOrigin(shape.getRadius(), shape.getRadius());
 		explosionWave.setPosition(shape.getPosition());
-		explosionWave.setFillColor(Color(139, 0, 0, 40));
+		explosionWave.setFillColor(Color(139, 0, 0, 10));
 		explosionWave.setOutlineColor(Color(255, 69, 0));
 		explosionWave.setOutlineThickness(10);
 	}
@@ -30,7 +30,7 @@ void GrenadeBullet::move() {
 
 void GrenadeBullet::explosionAnimation() {
 	if (explosionWave.getRadius() < thirdDamageArea.getRadius()) {
-		explosionWave.setRadius(explosionWave.getRadius() + 17);
+		explosionWave.setRadius(explosionWave.getRadius() + 12);
 		explosionWave.setOrigin(explosionWave.getRadius(), explosionWave.getRadius());
 	}
 	else {
