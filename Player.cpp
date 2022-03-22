@@ -83,6 +83,7 @@ void Player::initAmmunition() {
 	ammo.splittingBullets.clear();
 	ammo.splittedBullets.clear();
 	ammo.rayBullets.clear();
+	ammo.grenadeBullets.clear();
 }
 void Player::setHPAmount(int requiredAmount) {
 	HPAmount = requiredAmount;
@@ -184,7 +185,7 @@ void Player::fire() {
 			bullet.shape.setOrigin(Vector2f(0, bullet.shape.getSize().y / 2));
 			bullet.shape.setRotation(playerShape.getRotation() - 90);
 			bullet.shape.setPosition(Vector2f(playerShape.getPosition()));
-			bullet.state = BS_FIRING;
+			bullet.state = RBS_FIRING;
 			additionalScope.toggleActive();
 			ammo.rayBullets.push_back(bullet);
 			ammoData.rayBulletData.fireTimer.restart();
@@ -212,18 +213,16 @@ void Player::fire() {
 			bullet.thirdDamageArea.setOrigin(ammoData.grenadeBulletData.thirdAreaRaduis, ammoData.grenadeBulletData.thirdAreaRaduis);
 			//setting rotation
 			bullet.shape.setRotation(playerShape.getRotation());
-			bullet.firstDamageArea.setRotation(playerShape.getRotation());
-			bullet.secondDamageArea.setRotation(playerShape.getRotation());
-			bullet.thirdDamageArea.setRotation(playerShape.getRotation());
 			//setting position
 			bullet.shape.setPosition(playerShape.getPosition());
 			bullet.firstDamageArea.setPosition(playerShape.getPosition());
 			bullet.secondDamageArea.setPosition(playerShape.getPosition());
 			bullet.thirdDamageArea.setPosition(playerShape.getPosition());
+
 			bullet.destinationCoords = Mouse::getPosition();
 			bullet.speed.x = (static_cast<float>(bullet.destinationCoords.x) - bullet.shape.getPosition().x) / 240;	//framerate limit == 240 that means 1 secs to destination (240 * 1 == 240)
 			bullet.speed.y = (static_cast<float>(bullet.destinationCoords.y) - bullet.shape.getPosition().y) / 240;	//////////////////////////////////////////////////////////////////////////
-			bullet.state = BS_FLYING;
+			bullet.state = GBS_FLYING;
 			ammo.grenadeBullets.push_back(bullet);
 			ammoData.grenadeBulletData.fireTimer.restart();
 			ammoData.grenadeBulletData.excessFireDelay = 0;

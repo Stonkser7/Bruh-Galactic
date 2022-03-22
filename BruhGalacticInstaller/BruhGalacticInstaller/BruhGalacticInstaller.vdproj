@@ -1371,7 +1371,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:BRUH GALACTIC"
         "ProductCode" = "8:{E81E3DF7-0F38-485C-BE2E-CB6943823072}"
-        "PackageCode" = "8:{D993FC1A-2573-455D-9A78-BAE26841AC36}"
+        "PackageCode" = "8:{8D065E98-C088-44D2-B7AA-1A8DC0447F7F}"
         "UpgradeCode" = "8:{F5F741B0-1CA7-4808-A3A2-9D61C0681E41}"
         "AspNetVersion" = "8:"
         "RestartWWWService" = "11:FALSE"

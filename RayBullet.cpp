@@ -5,7 +5,7 @@ void RayBullet::fire() {
 		shape.setSize(Vector2f(shape.getSize().x + 100, shape.getSize().y));
 	}
 	else {
-		state = BS_DISAPPEARING;
+		state = RBS_DISAPPEARING;
 		delayBeforeDissapear.restart();
 	}
 }
@@ -15,6 +15,6 @@ void RayBullet::dissapear() {
 		shape.setFillColor(Color(shape.getFillColor().r, shape.getFillColor().g, shape.getFillColor().b, shape.getFillColor().a - 1));
 	}
 	else {
-		state = BS_DELETE;
+		state = RBS_DELETE;
 	}
 }
