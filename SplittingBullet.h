@@ -18,6 +18,8 @@ struct SplittingBulletData {
 };
 
 class SplittingBullet {
+private:
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 public:
 	CircleShape shape;
 	Vector2f speed;
@@ -25,4 +27,5 @@ public:
 	float damage;
 	void move();
 	bool isOutOfScreen(GameWindow* gwindow);
+	float getDeltaTime();
 };

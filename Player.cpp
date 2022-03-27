@@ -11,17 +11,21 @@ void AdditionalScope::toggleActive() {
 
 
 //PLAYER
+float Player::getDeltaTime() {
+	return deltaTime.restart().asSeconds();
+}
 void Player::initPlayer(GameWindow* gwindow) {
-	Collision::CreateTextureAndBitmask(playertexture1HP, "Textures\\playerTexture1HP.jpg");
-	Collision::CreateTextureAndBitmask(playertexture2HP, "Textures\\playerTexture2HP.jpg");
-	Collision::CreateTextureAndBitmask(playertexture3HP, "Textures\\playerTexture3HP.jpg");
-	ordinaryBulletScopeTexture.loadFromFile("Textures\\ordinaryBulletScopeTexture.png");
-	splittingBulletScopeTexture.loadFromFile("Textures\\splittingBulletScopeTexture.png");
-	rayBulletScopeTexture.loadFromFile("Textures\\rayBulletScopeTexture.png");
-	rayBulletAdditionalScopeTexture.loadFromFile("Textures\\rayBulletScopeTexture2.png");
-	grenadeBulletScopeTexture.loadFromFile("Textures\\grenadeScopeTexture.png");
+	Collision::CreateTextureAndBitmask(playertexture1HP, "Textures\\Player\\playerTexture1HP.jpg");
+	Collision::CreateTextureAndBitmask(playertexture2HP, "Textures\\Player\\playerTexture2HP.jpg");
+	Collision::CreateTextureAndBitmask(playertexture3HP, "Textures\\Player\\playerTexture3HP.jpg");
+	ordinaryBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\ordinaryBulletScopeTexture.png");
+	splittingBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\splittingBulletScopeTexture.png");
+	rayBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\rayBulletScopeTexture.png");
+	rayBulletAdditionalScopeTexture.loadFromFile("Textures\\Player\\Scopes\\rayBulletScopeTexture2.png");
+	grenadeBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\grenadeBulletScopeTexture.png");
 	sizeX = 90;
 	sizeY = 50;
+	speed = { 0, 500 };
 	playerShape.setSize(Vector2f(sizeX, sizeY));
 	playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
 	playerShape.setPosition(Vector2f(gwindow->x / 100 * 5, gwindow->y / 2));
@@ -36,20 +40,20 @@ void Player::initPlayer(GameWindow* gwindow) {
 void Player::initAmmunition() {
 	selectedBullet = BULT_ORDINARY;
 	//ORDINARY BULLET
-	Collision::CreateTextureAndBitmask(ammoData.ordinaryBulletData.texture, "Textures\\pchel.jpg");
+	Collision::CreateTextureAndBitmask(ammoData.ordinaryBulletData.texture, "Textures\\Player\\Bullets\\ordinaryBullet.jpg");
 	ammoData.ordinaryBulletData.damage = 10;
 	ammoData.ordinaryBulletData.fireDelayAsMilliseconds = 150;
 	ammoData.ordinaryBulletData.excessFireDelay = 0;
 
 	//SPLITTING BULLET
-	Collision::CreateTextureAndBitmask(ammoData.splittingBulletData.texture, "Textures\\splittingBulletTexture.png");
+	Collision::CreateTextureAndBitmask(ammoData.splittingBulletData.texture, "Textures\\Player\\Bullets\\splittingBullet.png");
 	ammoData.splittingBulletData.defaultDamage = 30;
 	ammoData.splittingBulletData.defaultRadius = 25;
 	ammoData.splittingBulletData.fireDelayAsMilliseconds = 600;
 	ammoData.splittingBulletData.excessFireDelay = 0;
 
 	//RAY BULLET
-	Collision::CreateTextureAndBitmask(ammoData.rayBulletData.texture, "Textures\\rayBulletTexture.png");
+	Collision::CreateTextureAndBitmask(ammoData.rayBulletData.texture, "Textures\\Player\\Bullets\\rayBullet.png");
 	ammoData.rayBulletData.texture.setSmooth(true);
 	ammoData.rayBulletData.damage = 120;
 	ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds = 100;
@@ -57,19 +61,19 @@ void Player::initAmmunition() {
 	ammoData.rayBulletData.excessFireDelay = 0;
 
 	//GRENADE BULLET
-	ammoData.grenadeBulletData.texture.loadFromFile("Textures\\grenadeBulletTexture.png");
-	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.firstAreaTexture, "Textures\\grenadeFirstDamageArea.png");
-	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.secondAreaTexture, "Textures\\grenadeSecondDamageArea.png");
-	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.thirdAreaTexture, "Textures\\grenadeThirdDamageArea.png");
+	ammoData.grenadeBulletData.texture.loadFromFile("Textures\\Player\\Bullets\\grenadeBullet.png");
+	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.firstAreaTexture, "Textures\\Player\\Bullets\\grenadeFirstDamageArea.png");
+	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.secondAreaTexture, "Textures\\Player\\Bullets\\grenadeSecondDamageArea.png");
+	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.thirdAreaTexture, "Textures\\Player\\Bullets\\grenadeThirdDamageArea.png");
 	ammoData.grenadeBulletData.firstAreaTexture.setSmooth(true);
 	ammoData.grenadeBulletData.secondAreaTexture.setSmooth(true);
 	ammoData.grenadeBulletData.thirdAreaTexture.setSmooth(true);
 
 	ammoData.grenadeBulletData.fireDelayAsMilliseconds = 1200;
 
-	ammoData.grenadeBulletData.firstLevelDamage = 60;
-	ammoData.grenadeBulletData.secondLevelDamage = 25;
-	ammoData.grenadeBulletData.thirdLevelDamage = 10;
+	ammoData.grenadeBulletData.firstLevelDamage = 70;
+	ammoData.grenadeBulletData.secondLevelDamage = 30;
+	ammoData.grenadeBulletData.thirdLevelDamage = 15;
 
 	ammoData.grenadeBulletData.defaultRadius = 30;
 
@@ -111,14 +115,15 @@ void Player::rotateToMouse(Vector2f coords) {
 	additionalScope.shape.setRotation(playerShape.getRotation() - 90);
 }
 void Player::controlPlayer(GameWindow* gwindow) {
+	float deltaT = getDeltaTime();
 	if (Mouse::isButtonPressed(Mouse::Button::Left)) {
 		fire();
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
-		move({ 0, -1.7 });
+		move({ speed.x * deltaT, -speed.y * deltaT });
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < gwindow->y) {
-		move({ 0, 1.7 });
+		move({ speed.x * deltaT, speed.y * deltaT });
 	}
 }
 void Player::updateAdditionalScopePart() {
@@ -150,7 +155,7 @@ void Player::fire() {
 			bullet.shape.setOrigin(Vector2f(bullet.shape.getSize().x / 2.f, bullet.shape.getSize().y / 2.f));
 			bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, (rand() % static_cast<int>(sizeX)) + playerShape.getPosition().y - playerShape.getOrigin().x));
 			bullet.shape.setRotation(playerShape.getRotation() - 90);
-			bullet.acceleration = 10;
+			bullet.acceleration = 2300;
 			bullet.speed.x = bullet.acceleration * cos((playerShape.getRotation() - 90) * 3.14 / 180);
 			bullet.speed.y = bullet.acceleration * sin((playerShape.getRotation() - 90) * 3.14 / 180);
 			ammo.ordinaryBullets.push_back(bullet);
@@ -168,7 +173,7 @@ void Player::fire() {
 			bullet.shape.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
 			bullet.shape.setRotation(playerShape.getRotation());
 			bullet.damage = ammoData.splittingBulletData.defaultDamage;
-			bullet.acceleration = 5;
+			bullet.acceleration = 1200;
 			bullet.speed.x = bullet.acceleration * cos((playerShape.getRotation() - 90) * 3.14 / 180);
 			bullet.speed.y = bullet.acceleration * sin((playerShape.getRotation() - 90) * 3.14 / 180);
 			ammo.splittingBullets.push_back(bullet);
@@ -220,9 +225,9 @@ void Player::fire() {
 			bullet.thirdDamageArea.setPosition(playerShape.getPosition());
 
 			bullet.destinationCoords = Mouse::getPosition();
-			bullet.speed.x = (static_cast<float>(bullet.destinationCoords.x) - bullet.shape.getPosition().x) / 240;	//framerate limit == 240 that means 1 secs to destination (240 * 1 == 240)
-			bullet.speed.y = (static_cast<float>(bullet.destinationCoords.y) - bullet.shape.getPosition().y) / 240;	//////////////////////////////////////////////////////////////////////////
-			bullet.state = GBS_FLYING;
+			bullet.speed.x = (static_cast<float>(bullet.destinationCoords.x) - bullet.shape.getPosition().x);	//speed * deltaT == 1secs to destination
+			bullet.speed.y = (static_cast<float>(bullet.destinationCoords.y) - bullet.shape.getPosition().y);	////////////////////////////////////////////////
+			bullet.state = GBS_MOVE;
 			ammo.grenadeBullets.push_back(bullet);
 			ammoData.grenadeBulletData.fireTimer.restart();
 			ammoData.grenadeBulletData.excessFireDelay = 0;

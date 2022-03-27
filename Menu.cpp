@@ -4,8 +4,8 @@ int Menu::getSelectedButton() {
 	return selectedButton;
 }
 void Menu::initMenu(GameWindow* gwindow) {
-	menuBackgroundTexture.loadFromFile("Textures\\menuBackgroundTexture.jpg");
-	buttonBackgroundTexture.loadFromFile("Textures\\menuButtonBackgroundTexture.png");
+	menuBackgroundTexture.loadFromFile("Textures\\GUI\\menuBackground.jpg");
+	buttonBackgroundTexture.loadFromFile("Textures\\GUI\\menuButtonBackground.png");
 	menuBackground.setTexture(&menuBackgroundTexture);
 	menuBackground.setSize(Vector2f(gwindow->x, gwindow->y));
 	menuBackground.setPosition(0, 0);

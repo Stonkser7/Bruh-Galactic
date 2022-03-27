@@ -5,6 +5,8 @@
 using namespace sf;
 
 class SplittedBullet {
+private:
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 public:
 	CircleShape shape;
 	Vector2f speed;
@@ -13,4 +15,5 @@ public:
 	int levelOfSplit;
 	void move();
 	bool isOutOfScreen(GameWindow* gwindow);
+	float getDeltaTime();
 };

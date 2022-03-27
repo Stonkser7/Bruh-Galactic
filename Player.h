@@ -38,6 +38,8 @@ private:
 	float sizeX;
 	float sizeY;
 
+	Vector2f speed;
+
 	BULLETTYPE selectedBullet;
 
 	int HPAmount;
@@ -52,6 +54,8 @@ private:
 	Texture rayBulletAdditionalScopeTexture;
 	Texture grenadeBulletScopeTexture;
 
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
+
 public:
 	RectangleShape playerShape;
 	RectangleShape scope;
@@ -59,6 +63,8 @@ public:
 	Ammunition ammo;
 	AmmoData ammoData;
 	Clock excessFireClock;
+
+	float getDeltaTime();
 
 	void initPlayer(GameWindow* gwindow);
 	void initAmmunition();

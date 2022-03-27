@@ -16,7 +16,6 @@ struct RomaEnemiesData {
 	unsigned int maxAmount;
 	Texture enemyTexture;
 	Texture bulletTexture;
-	Vector2f bulletSpeed;
 	int spawnRadius;
 };
 struct RockEnemiesData {
@@ -48,9 +47,25 @@ struct HealerEnemiesData {
 ///////////////
 //ENEMY BULLETS
 ///////////////
+struct RomaEnemyBullet {
+private:
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
+public:
+	RectangleShape shape;
+	Vector2f speed;
+	void move();
+	bool isOutOfScreen();
+	float getDeltaTime();
+};
 struct RockEnemyBullet {
+private:
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
+public:
 	CircleShape shape;
 	Vector2f speed;
+	void move();
+	bool isOutOfScreen(GameWindow *gwindow);
+	float getDeltaTime();
 };
 struct ElectroEnemyLightning {
 	RectangleShape shape;
@@ -72,6 +87,7 @@ namespace Enemy {
 	class CircleEnemy {
 	private:
 		ENEMYSTATE state;
+		Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 	public:
 		CircleEnemy();
 		CircleShape shape;
@@ -85,6 +101,7 @@ namespace Enemy {
 		void takeDamage(int damage);
 		void heal(float heal);
 		bool isAlive();
+		float getDeltaTime();
 	};
 	class RomaEnemy : public CircleEnemy {
 	public:
@@ -95,7 +112,7 @@ namespace Enemy {
 		void generateDestinationY(GameWindow* gwindow);
 		void move(GameWindow* gwindow);
 		bool isNeedToFire();
-		RectangleShape fire();
+		RomaEnemyBullet fire();
 		void spawnAnimation();
 	};
 	class RockEnemy : public CircleEnemy {

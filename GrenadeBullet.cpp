@@ -1,7 +1,8 @@
 #include "GrenadeBullet.h"
 
 void GrenadeBullet::move() {
-	if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y)) {
+	float deltaT = getDeltaTime();
+	if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) * deltaT && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y) * deltaT) {
 		state = GBS_EXPLOSING;
 		explosionWave.setRadius(shape.getRadius());
 		explosionWave.setOrigin(shape.getRadius(), shape.getRadius());
@@ -10,20 +11,20 @@ void GrenadeBullet::move() {
 		explosionWave.setOutlineColor(Color(255, 69, 0));
 		explosionWave.setOutlineThickness(10);
 	}
-	if (state == GBS_FLYING) {
+	else {
 		// X COORD
-		if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) > abs(speed.x)) {
-			shape.move(speed.x, 0);
-			firstDamageArea.move(speed.x, 0);
-			secondDamageArea.move(speed.x, 0);
-			thirdDamageArea.move(speed.x, 0);
+		if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) > abs(speed.x) * deltaT) {
+			shape.move(speed.x * deltaT, 0);
+			firstDamageArea.move(speed.x * deltaT, 0);
+			secondDamageArea.move(speed.x * deltaT, 0);
+			thirdDamageArea.move(speed.x * deltaT, 0);
 		}
 		// Y COORD
-		if (abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) > abs(speed.y)) {
-			shape.move(0, speed.y);
-			firstDamageArea.move(0, speed.y);
-			secondDamageArea.move(0, speed.y);
-			thirdDamageArea.move(0, speed.y);
+		if (abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) > abs(speed.y) * deltaT) {
+			shape.move(0, speed.y * deltaT);
+			firstDamageArea.move(0, speed.y * deltaT);
+			secondDamageArea.move(0, speed.y * deltaT);
+			thirdDamageArea.move(0, speed.y * deltaT);
 		}
 	}
 }
@@ -36,4 +37,8 @@ void GrenadeBullet::explosionAnimation() {
 	else {
 		state = GBS_DELETE;
 	}
+}
+
+float GrenadeBullet::getDeltaTime() {
+	return deltaTime.restart().asSeconds();
 }

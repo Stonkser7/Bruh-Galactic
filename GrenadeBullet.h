@@ -3,7 +3,7 @@
 
 using namespace sf;
 
-enum GRENADEBULLETSTATE { GBS_FLYING, GBS_EXPLOSING, GBS_EXPLOSIONANIM, GBS_DELETE };
+enum GRENADEBULLETSTATE { GBS_MOVE, GBS_EXPLOSING, GBS_EXPLOSIONANIM, GBS_DELETE };
 
 struct GrenadeBulletData {
 	int firstLevelDamage;
@@ -28,6 +28,8 @@ struct GrenadeBulletData {
 
 
 class GrenadeBullet {
+private:
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 public:
 	CircleShape shape;
 
@@ -44,4 +46,5 @@ public:
 
 	void move();
 	void explosionAnimation();
+	float getDeltaTime();
 };

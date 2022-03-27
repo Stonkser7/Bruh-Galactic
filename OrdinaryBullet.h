@@ -16,10 +16,13 @@ struct OrdinaryBulletData {
 };
 
 class OrdinaryBullet {
+private:
+	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 public:
 	RectangleShape shape;
 	Vector2f speed;
 	float acceleration;
 	void move();
 	bool isOutOfScreen(GameWindow* gwindow);
+	float getDeltaTime();
 };

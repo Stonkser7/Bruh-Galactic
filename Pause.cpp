@@ -4,9 +4,9 @@ int Pause::getSelectedButton() {
 	return selectedButton;
 }
 void Pause::initPause(GameWindow* gwindow) {
-	boxTexture.loadFromFile("Textures\\pauseBoxTexture.jpg");
-	buttonBackgroundTexture.loadFromFile("Textures\\pauseButtonBackgroundTexture.jpg");
-	backgroundBlurTexture.loadFromFile("Textures\\backgroundBlurTexture.jpg");
+	boxTexture.loadFromFile("Textures\\GUI\\pauseBox.jpg");
+	buttonBackgroundTexture.loadFromFile("Textures\\GUI\\pauseButtonBackground.jpg");
+	backgroundBlurTexture.loadFromFile("Textures\\GUI\\gameBackgroundBlur.jpg");
 	pauseBackgroundBlur.setTexture(&backgroundBlurTexture);
 	pauseBackgroundBlur.setSize(Vector2f(gwindow->x, gwindow->y));
 	pauseBackgroundBlur.setPosition(0, 0);

@@ -15,25 +15,19 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_002A5B3BA43F437D8AFCA086E926A30B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_099B7BF39F25494798AA52B8AA111F00"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_09D1628D3E7A40278CA40BE5892BE183"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_0CE07F44A48C4E23883B9A260356F443"
+        "MsmKey" = "8:_0DE21750A48845CD81972AD571887A54"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_1688B23C34734834B4B102750BD7FA88"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -45,61 +39,49 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_1F8FA19D46B143FA88B89A54D224A989"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_2132C05E923E4FC1BBEDBE6E043E77D3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_286D283D9BCD490AAA1E7AD820023AEF"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_2A8485DF01E842AAA26560B1A1D3745B"
+        "MsmKey" = "8:_2B1163E835D440969DEDA9464D7759F1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_322C50D0AA194617B000FD4975D49360"
+        "MsmKey" = "8:_31C109FAA16D4B60AE3079315E41973A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_366FF85F2E634DBAA171A217E7CB7BE3"
+        "MsmKey" = "8:_33406058D16546D3AA4AC42E308E132E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_375108539FAE410FB3A1969AFC28DF84"
+        "MsmKey" = "8:_33D59C3112BB402E95CE8F42001AE859"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_37B695CAB8B44EA1ACF5E4CB73232637"
+        "MsmKey" = "8:_40325A7EA21C492BA44489BD487C1E52"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3AE1115869A04C94B5B7CE1ED91E2E5E"
+        "MsmKey" = "8:_4568B356AC424719A5F661360C2ECCC4"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_3C06F3F7FDAB4CBC81D0C1B7FE40A533"
+        "MsmKey" = "8:_4A9A3AD606694C159C5C754EF3274CD7"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -117,12 +99,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_65CF9ACE19B8475DBB7F47E8256C60AD"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_66A723AAA343475F9E466113C3D14252"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -135,13 +111,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6F0DDF727F0848B098950D32AC4CAFCF"
+        "MsmKey" = "8:_6E2B7E98DD62466C84B59AA035B103B6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_6F18B0CC051D454AB57777B70FA3C387"
+        "MsmKey" = "8:_743CAB747AED4C22A1A39A0214A15172"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_759BB18CA6054D02B78DB96CDE88072C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -153,13 +135,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_796204318B1C45B9B6DFDDF6ECBFEA05"
+        "MsmKey" = "8:_79EB60172C944AF98822A1D62F57245E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_7DFF89C5ACDA4A318394C0679280ED75"
+        "MsmKey" = "8:_7DB295B0C3ED4B52A7E8AC62035BDAE2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -171,37 +153,61 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_8073D384B5BA4C97A6E209A54104ED64"
+        "MsmKey" = "8:_7EE1AE6DC5754FD7A92EF3DAE1AAF223"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_90454EE2420F48FC8CA013EC5B96ED32"
+        "MsmKey" = "8:_85E6A28A2B3E4EC7AEE7434717E14D2C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_93E21373081A408B896C77AABE3B96E9"
+        "MsmKey" = "8:_866119CAAA234C649A0993B9D775E5E9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_94AD83AF032044CABF3D99C86998E229"
+        "MsmKey" = "8:_88096747FF8F433CB1F49C948438756C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_957274E321E64B8AA53E02D57FEAD37E"
+        "MsmKey" = "8:_91F87FC8C901476FA53BAB64B2BD2775"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_9DAACA93F5D140889F69060156A2D3E6"
+        "MsmKey" = "8:_94351FBCB15B48CFBD4AF92DB0C37CFA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9D4D977AB038490D8F869C874C245132"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A9A0D18D638B4B298088FD01E82B81E1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AFFA7C2404784D09953C49384D742226"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B3D4E0ED3B374348B6F2616665A8A72A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -213,13 +219,25 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_C33CE07940D341DA9D8954B43C1F2481"
+        "MsmKey" = "8:_B77E26ED926145BA8DE8CB783B02CF2E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_C9DB0728BBAF45DD8D3D9CF49B774632"
+        "MsmKey" = "8:_C05F13F0965C4ADCB31A2BC2FA901749"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CDC6C20C54F44BB391BAB3581ECD0E7D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_D5AEA0888479407994F4B37252853D49"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -231,19 +249,19 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_DC97AFF8C35B46BBB4C55DD6938477A0"
+        "MsmKey" = "8:_D7D05F2201594976A3A4C2EC350AD6F5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_DC9820A6D5E9441ABAB9FB35FDE0D669"
+        "MsmKey" = "8:_D8EA64838F384A9E9EA64F7AF2C8B255"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_E4FC4923B20642D8BAC0FCD68E53525A"
+        "MsmKey" = "8:_E69985479D3845F7B3CBF25371AC84C9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -255,37 +273,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_EE486B28568D47CC83BB9ED9E01017A3"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EE74568F60E04C7B804196FAEF59923B"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_F50A1D9513454EDFBC870DD393128283"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F619003F2AE54AA1B60510C15126F9A4"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F743461D99D54A7B80A78A333616FC15"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_FDD57636DF15429AA8AFBDC5426A198B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -381,46 +369,6 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_002A5B3BA43F437D8AFCA086E926A30B"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\pauseButtonBackgroundTexture.jpg"
-            "TargetName" = "8:pauseButtonBackgroundTexture.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_099B7BF39F25494798AA52B8AA111F00"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\menuButtonBackgroundTexture.png"
-            "TargetName" = "8:menuButtonBackgroundTexture.png"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_09D1628D3E7A40278CA40BE5892BE183"
             {
             "SourcePath" = "8:..\\..\\sfml-network-d-2.dll"
@@ -441,12 +389,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0CE07F44A48C4E23883B9A260356F443"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0DE21750A48845CD81972AD571887A54"
             {
-            "SourcePath" = "8:..\\..\\Textures\\playerTexture2HP.jpg"
-            "TargetName" = "8:playerTexture2HP.jpg"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\splittingBulletScopeTexture.png"
+            "TargetName" = "8:splittingBulletScopeTexture.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1688B23C34734834B4B102750BD7FA88"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\playerTexture3HP.jpg"
+            "TargetName" = "8:playerTexture3HP.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_678D27744DDD49298E2FCA30670EC55F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -481,12 +449,112 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1F8FA19D46B143FA88B89A54D224A989"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2B1163E835D440969DEDA9464D7759F1"
             {
-            "SourcePath" = "8:..\\..\\Textures\\ordinaryBulletScopeTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\Bullets\\rockBulletTexture.png"
+            "TargetName" = "8:rockBulletTexture.png"
+            "Tag" = "8:"
+            "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_31C109FAA16D4B60AE3079315E41973A"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\GUI\\pauseBox.jpg"
+            "TargetName" = "8:pauseBox.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_33406058D16546D3AA4AC42E308E132E"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\rayBulletScopeTexture2.png"
+            "TargetName" = "8:rayBulletScopeTexture2.png"
+            "Tag" = "8:"
+            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_33D59C3112BB402E95CE8F42001AE859"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\Bullets\\lightningTexture2.png"
+            "TargetName" = "8:lightningTexture2.png"
+            "Tag" = "8:"
+            "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_40325A7EA21C492BA44489BD487C1E52"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\grenadeBulletScopeTexture.png"
+            "TargetName" = "8:grenadeBulletScopeTexture.png"
+            "Tag" = "8:"
+            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4568B356AC424719A5F661360C2ECCC4"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\ordinaryBulletScopeTexture.png"
             "TargetName" = "8:ordinaryBulletScopeTexture.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -501,152 +569,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2132C05E923E4FC1BBEDBE6E043E77D3"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4A9A3AD606694C159C5C754EF3274CD7"
             {
-            "SourcePath" = "8:..\\..\\Textures\\grenadeBulletTexture.png"
-            "TargetName" = "8:grenadeBulletTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\Bullets\\electroLightningTexture1.png"
+            "TargetName" = "8:electroLightningTexture1.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_2A8485DF01E842AAA26560B1A1D3745B"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\menuBackgroundTexture.jpg"
-            "TargetName" = "8:menuBackgroundTexture.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_322C50D0AA194617B000FD4975D49360"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\pauseBoxTexture.jpg"
-            "TargetName" = "8:pauseBoxTexture.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_366FF85F2E634DBAA171A217E7CB7BE3"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\playerTexture1HP.jpg"
-            "TargetName" = "8:playerTexture1HP.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_375108539FAE410FB3A1969AFC28DF84"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\splittingBulletScopeTexture.png"
-            "TargetName" = "8:splittingBulletScopeTexture.png"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_37B695CAB8B44EA1ACF5E4CB73232637"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\rockEnemy.png"
-            "TargetName" = "8:rockEnemy.png"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3AE1115869A04C94B5B7CE1ED91E2E5E"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\grenadeFirstDamageArea.png"
-            "TargetName" = "8:grenadeFirstDamageArea.png"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3C06F3F7FDAB4CBC81D0C1B7FE40A533"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\backgroundBlurTexture.jpg"
-            "TargetName" = "8:backgroundBlurTexture.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -701,26 +629,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_65CF9ACE19B8475DBB7F47E8256C60AD"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\grenadeThirdDamageArea.png"
-            "TargetName" = "8:grenadeThirdDamageArea.png"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_66A723AAA343475F9E466113C3D14252"
             {
             "SourcePath" = "8:..\\..\\sfml-window-2.dll"
@@ -761,12 +669,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F0DDF727F0848B098950D32AC4CAFCF"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6E2B7E98DD62466C84B59AA035B103B6"
             {
-            "SourcePath" = "8:..\\..\\Textures\\HPtexture.png"
-            "TargetName" = "8:HPtexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\rayBulletScopeTexture.png"
+            "TargetName" = "8:rayBulletScopeTexture.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -781,12 +689,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6F18B0CC051D454AB57777B70FA3C387"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_743CAB747AED4C22A1A39A0214A15172"
             {
-            "SourcePath" = "8:..\\..\\Textures\\rayBulletTexture.png"
-            "TargetName" = "8:rayBulletTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeBullet.png"
+            "TargetName" = "8:grenadeBullet.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_759BB18CA6054D02B78DB96CDE88072C"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\playerTexture1HP.jpg"
+            "TargetName" = "8:playerTexture1HP.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_678D27744DDD49298E2FCA30670EC55F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -821,12 +749,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_796204318B1C45B9B6DFDDF6ECBFEA05"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_79EB60172C944AF98822A1D62F57245E"
             {
-            "SourcePath" = "8:..\\..\\Textures\\healerEnemyTexture.png"
-            "TargetName" = "8:healerEnemyTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\Bullets\\romaBulletTexture.jpg"
+            "TargetName" = "8:romaBulletTexture.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -841,12 +769,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DFF89C5ACDA4A318394C0679280ED75"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DB295B0C3ED4B52A7E8AC62035BDAE2"
             {
-            "SourcePath" = "8:..\\..\\Textures\\rayBulletScopeTexture.png"
-            "TargetName" = "8:rayBulletScopeTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeFirstDamageArea.png"
+            "TargetName" = "8:grenadeFirstDamageArea.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -881,12 +809,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8073D384B5BA4C97A6E209A54104ED64"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7EE1AE6DC5754FD7A92EF3DAE1AAF223"
             {
-            "SourcePath" = "8:..\\..\\Textures\\lightningTexture1.png"
-            "TargetName" = "8:lightningTexture1.png"
+            "SourcePath" = "8:..\\..\\Textures\\GUI\\pauseButtonBackground.jpg"
+            "TargetName" = "8:pauseButtonBackground.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -901,12 +829,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_90454EE2420F48FC8CA013EC5B96ED32"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_85E6A28A2B3E4EC7AEE7434717E14D2C"
             {
-            "SourcePath" = "8:..\\..\\Textures\\grenadeScopeTexture.png"
-            "TargetName" = "8:grenadeScopeTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\GUI\\gameBackgroundBlur.jpg"
+            "TargetName" = "8:gameBackgroundBlur.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -921,12 +849,72 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_93E21373081A408B896C77AABE3B96E9"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_866119CAAA234C649A0993B9D775E5E9"
             {
-            "SourcePath" = "8:..\\..\\Textures\\healerRayTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeSecondDamageArea.png"
+            "TargetName" = "8:grenadeSecondDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_88096747FF8F433CB1F49C948438756C"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\GUI\\gameBackground.jpg"
+            "TargetName" = "8:gameBackground.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_91F87FC8C901476FA53BAB64B2BD2775"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeThirdDamageArea.png"
+            "TargetName" = "8:grenadeThirdDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94351FBCB15B48CFBD4AF92DB0C37CFA"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\Bullets\\healerRayTexture.png"
             "TargetName" = "8:healerRayTexture.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -941,12 +929,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_94AD83AF032044CABF3D99C86998E229"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9D4D977AB038490D8F869C874C245132"
             {
-            "SourcePath" = "8:..\\..\\Textures\\playerTexture3HP.jpg"
-            "TargetName" = "8:playerTexture3HP.jpg"
+            "SourcePath" = "8:..\\..\\Textures\\GUI\\menuButtonBackground.png"
+            "TargetName" = "8:menuButtonBackground.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -961,12 +949,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_957274E321E64B8AA53E02D57FEAD37E"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A9A0D18D638B4B298088FD01E82B81E1"
             {
-            "SourcePath" = "8:..\\..\\Textures\\pchel.jpg"
-            "TargetName" = "8:pchel.jpg"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\playerTexture2HP.jpg"
+            "TargetName" = "8:playerTexture2HP.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_678D27744DDD49298E2FCA30670EC55F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -981,12 +969,32 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9DAACA93F5D140889F69060156A2D3E6"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AFFA7C2404784D09953C49384D742226"
             {
-            "SourcePath" = "8:..\\..\\Textures\\lightningTexture2.png"
-            "TargetName" = "8:lightningTexture2.png"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\splittingBullet.png"
+            "TargetName" = "8:splittingBullet.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B3D4E0ED3B374348B6F2616665A8A72A"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\RomaEnemy.jpg"
+            "TargetName" = "8:RomaEnemy.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1021,12 +1029,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C33CE07940D341DA9D8954B43C1F2481"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B77E26ED926145BA8DE8CB783B02CF2E"
             {
-            "SourcePath" = "8:..\\..\\Textures\\romaBulletTexture.jpg"
-            "TargetName" = "8:romaBulletTexture.jpg"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\rayBullet.png"
+            "TargetName" = "8:rayBullet.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1041,12 +1049,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C9DB0728BBAF45DD8D3D9CF49B774632"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C05F13F0965C4ADCB31A2BC2FA901749"
             {
-            "SourcePath" = "8:..\\..\\Textures\\rayBulletScopeTexture2.png"
-            "TargetName" = "8:rayBulletScopeTexture2.png"
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\ElectroEnemy.jpg"
+            "TargetName" = "8:ElectroEnemy.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CDC6C20C54F44BB391BAB3581ECD0E7D"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\healerEnemyTexture.png"
+            "TargetName" = "8:healerEnemyTexture.png"
+            "Tag" = "8:"
+            "Folder" = "8:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D5AEA0888479407994F4B37252853D49"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\ordinaryBullet.jpg"
+            "TargetName" = "8:ordinaryBullet.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1081,12 +1129,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DC97AFF8C35B46BBB4C55DD6938477A0"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D7D05F2201594976A3A4C2EC350AD6F5"
             {
-            "SourcePath" = "8:..\\..\\Textures\\healerActionAreaTexture.png"
-            "TargetName" = "8:healerActionAreaTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\rockEnemy.png"
+            "TargetName" = "8:rockEnemy.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1101,12 +1149,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DC9820A6D5E9441ABAB9FB35FDE0D669"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D8EA64838F384A9E9EA64F7AF2C8B255"
             {
-            "SourcePath" = "8:..\\..\\Textures\\rockEnemyBulletTexture.png"
-            "TargetName" = "8:rockEnemyBulletTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\Enemies\\healerArea.png"
+            "TargetName" = "8:healerArea.png"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1121,12 +1169,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4FC4923B20642D8BAC0FCD68E53525A"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E69985479D3845F7B3CBF25371AC84C9"
             {
-            "SourcePath" = "8:..\\..\\Textures\\splittingBulletTexture.png"
-            "TargetName" = "8:splittingBulletTexture.png"
+            "SourcePath" = "8:..\\..\\Textures\\GUI\\menuBackground.jpg"
+            "TargetName" = "8:menuBackground.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+            "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1161,112 +1209,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE486B28568D47CC83BB9ED9E01017A3"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\background.jpg"
-            "TargetName" = "8:background.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EE74568F60E04C7B804196FAEF59923B"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\ElectroEnemy.jpg"
-            "TargetName" = "8:ElectroEnemy.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F50A1D9513454EDFBC870DD393128283"
             {
             "SourcePath" = "8:..\\..\\sfml-graphics-d-2.dll"
             "TargetName" = "8:sfml-graphics-d-2.dll"
             "Tag" = "8:"
             "Folder" = "8:_E173579CC8834D25B736B14E847681F0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F619003F2AE54AA1B60510C15126F9A4"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\grenadeSecondDamageArea.png"
-            "TargetName" = "8:grenadeSecondDamageArea.png"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F743461D99D54A7B80A78A333616FC15"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\RomaEnemy.jpg"
-            "TargetName" = "8:RomaEnemy.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FDD57636DF15429AA8AFBDC5426A198B"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\hi.jpg"
-            "TargetName" = "8:hi.jpg"
-            "Tag" = "8:"
-            "Folder" = "8:_C6C5A9697BB245BDBCC6F536F0D06E7B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1341,15 +1289,81 @@
                         {
                         }
                     }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_C6C5A9697BB245BDBCC6F536F0D06E7B"
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_BD26B4C896274228B17D5996520203D8"
                     {
                     "Name" = "8:Textures"
                     "AlwaysCreate" = "11:FALSE"
                     "Condition" = "8:"
                     "Transitive" = "11:FALSE"
-                    "Property" = "8:_D8594371C45C44DB840549594430E915"
+                    "Property" = "8:_C37FB1C2A3F8470FBF22822D20A8B366"
                         "Folders"
                         {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
+                            {
+                            "Name" = "8:Enemies"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_F7AC8309CC22434D9F20374E54AAE5C9"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_EDA68370EA38461BBFF71F3C23830407"
+                                    {
+                                    "Name" = "8:Bullets"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_420DA566B44544B2A0772E133F0FF570"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_678D27744DDD49298E2FCA30670EC55F"
+                            {
+                            "Name" = "8:Player"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_7F08406E23E44BDD9D5D487FE43B75F2"
+                                "Folders"
+                                {
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_08EF09C3D4C74A03857062E6EFEC1489"
+                                    {
+                                    "Name" = "8:Bullets"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_04079BFE3AE64B1BA22BC02D4D422FAE"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                    "{9EF0B969-E518-4E46-987F-47570745A589}:_26CAD81227AA49C6A872D363789DD0C2"
+                                    {
+                                    "Name" = "8:Scopes"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "Property" = "8:_890DDA13A8514348A4E8297096AD15A3"
+                                        "Folders"
+                                        {
+                                        }
+                                    }
+                                }
+                            }
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_F03B91DC9138417B9097F806B57C27F4"
+                            {
+                            "Name" = "8:GUI"
+                            "AlwaysCreate" = "11:FALSE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_B0F42C6EA66D4B83B9391DF3E4F54F32"
+                                "Folders"
+                                {
+                                }
+                            }
                         }
                     }
                 }
