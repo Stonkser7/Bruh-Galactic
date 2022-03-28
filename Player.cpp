@@ -246,13 +246,13 @@ void Player::splitBullet(SplittingBullet* splittingBullet) {
 
 
 	splittedBullet.shape.setRotation(splittingBullet->shape.getRotation());
-	splittedBullet.shape.rotate(-7);
+	splittedBullet.shape.rotate(-9);
 	splittedBullet.speed.x = splittedBullet.acceleration * cos((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 	splittedBullet.speed.y = splittedBullet.acceleration * sin((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 	ammo.splittedBullets.push_back(splittedBullet);
 
 	splittedBullet.shape.setRotation(splittingBullet->shape.getRotation());
-	splittedBullet.shape.rotate(7);
+	splittedBullet.shape.rotate(9);
 	splittedBullet.speed.x = splittedBullet.acceleration * cos((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 	splittedBullet.speed.y = splittedBullet.acceleration * sin((splittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 	ammo.splittedBullets.push_back(splittedBullet);
@@ -269,13 +269,13 @@ void Player::splitBullet(SplittedBullet* splittedBullet) {
 
 
 		twiceSplittedBullet.shape.setRotation(splittedBullet->shape.getRotation());
-		twiceSplittedBullet.shape.rotate(-10);
+		twiceSplittedBullet.shape.rotate(-13);
 		twiceSplittedBullet.speed.x = twiceSplittedBullet.acceleration * cos((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 		twiceSplittedBullet.speed.y = twiceSplittedBullet.acceleration * sin((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 		ammo.splittedBullets.push_back(twiceSplittedBullet);
 
 		twiceSplittedBullet.shape.setRotation(splittedBullet->shape.getRotation());
-		twiceSplittedBullet.shape.rotate(10);
+		twiceSplittedBullet.shape.rotate(13);
 		twiceSplittedBullet.speed.x = twiceSplittedBullet.acceleration * cos((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 		twiceSplittedBullet.speed.y = twiceSplittedBullet.acceleration * sin((twiceSplittedBullet.shape.getRotation() - 90) * 3.14 / 180);
 		ammo.splittedBullets.push_back(twiceSplittedBullet);

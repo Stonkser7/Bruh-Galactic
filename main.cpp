@@ -78,7 +78,7 @@ public:
 		gameWindow.y = 1080;
 		gameWindow.title = "BRUH GALACTIC";
 		gameWindow.window.create(VideoMode(gameWindow.x, gameWindow.y), gameWindow.title, Style::Fullscreen);
-		gameWindow.window.setFramerateLimit(240);
+		gameWindow.window.setFramerateLimit(60);
 	}
 
 	void initGameBackground() {
@@ -163,24 +163,53 @@ public:
 	
 	void continueGame() {
 		gameState = GS_PLAY;
+		//player
 		player.ammoData.ordinaryBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		player.ammoData.splittingBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		player.ammoData.rayBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		player.ammoData.grenadeBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.getDeltaTime();
+
+		//player's bullets
+		for (int i = 0; i < player.ammo.ordinaryBullets.size(); i++) {
+			player.ammo.ordinaryBullets[i].getDeltaTime();
+		}
+		for (int i = 0; i < player.ammo.splittingBullets.size(); i++) {
+			player.ammo.splittingBullets[i].getDeltaTime();
+		}
+		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
+			player.ammo.splittedBullets[i].getDeltaTime();
+		}
+		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
+			player.ammo.grenadeBullets[i].getDeltaTime();
+		}
+
+		//enemies
 		for (int i = 0; i < romaEnemies.size(); i++) {
 			romaEnemies[i].excessFireTime = romaEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+			romaEnemies[i].getDeltaTime();
 		}
 		for (int i = 0; i < rockEnemies.size(); i++) {
 			rockEnemies[i].excessFireTime = rockEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+			rockEnemies[i].getDeltaTime();
 		}
 		for (int i = 0; i < electroEnemies.size(); i++) {
 			electroEnemies[i].excessFireTime = electroEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
 			electroEnemies[i].excessVisibleTime = electroEnemies[i].excessVisibleClock.getElapsedTime().asMilliseconds();
+			electroEnemies[i].getDeltaTime();
 		}
 		for (int i = 0; i < healerEnemies.size(); i++) {
 			healerEnemies[i].excessFireTime = healerEnemies[i].excessFireClock.getElapsedTime().asMilliseconds();
+			healerEnemies[i].getDeltaTime();
 		}
 
+		//enemie's bullets
+		for (int i = 0; i < romaBullets.size(); i++) {
+			romaBullets[i].getDeltaTime();
+		}
+		for (int i = 0; i < rockBullets.size(); i++) {
+			rockBullets[i].getDeltaTime();
+		}
 		for (int i = 0; i < electroLightnings.size(); i++) {
 			electroLightnings[i].excessVisible_lightningTime = electroLightnings[i].excessVisible_lightningClock.getElapsedTime().asMilliseconds();
 		}
