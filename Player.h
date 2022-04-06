@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "GameWindow.h"
+
 #include "OrdinaryBullet.h"
 #include "SplittingBullet.h"
 #include "SplittedBullet.h"
@@ -68,6 +69,7 @@ public:
 
 	void initPlayer(GameWindow* gwindow);
 	void initAmmunition();
+
 	void setHPAmount(int requiredAmount = 3);
 	int getHPAmount();
 	BULLETTYPE getSelectedBulletType();
@@ -80,4 +82,10 @@ public:
 	void splitBullet(SplittedBullet* splittedBullet);
 	void deleteBullet(BULLETTYPE bulletType, int index);
 	void checkForBulletSwap();
+
+	void updateOrdinaryBullets(GameWindow *gwindow);
+	void updateSplittingBullets(GameWindow *gwindow);
+	void updateSplittedBullets(GameWindow *gwindow);
+	void updateRayBullets();
+	void updateGrenadeBullets();
 };

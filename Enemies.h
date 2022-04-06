@@ -6,7 +6,9 @@ using namespace sf;
 using namespace std;
 
 enum ENEMYSTATE { ES_MOVING, ES_SPAWN_ANIM, ES_STANDING };
-enum ENEMYSIDE { S_UP, S_DOWN };
+enum ROMAENEMYSIDE { ROMAS_LEFT, ROMAS_RIGHT };
+enum ROCKENEMYSIDE { ROCKS_UP, ROCKS_DOWN };
+enum HEALERENEMYSIDE { HEALERS_UP, HEALERS_DOWN };
 
 //////////////
 //ENEMIES DATA
@@ -54,7 +56,7 @@ public:
 	RectangleShape shape;
 	Vector2f speed;
 	void move();
-	bool isOutOfScreen();
+	bool isOutOfScreen(GameWindow *gwindow);
 	float getDeltaTime();
 };
 struct RockEnemyBullet {
@@ -105,9 +107,12 @@ namespace Enemy {
 	};
 	class RomaEnemy : public CircleEnemy {
 	public:
-		float spawnCoordX;
-		int destinationCoordY;
+		ROMAENEMYSIDE side;
+		int spawn_coord_x;
+		Vector2f speed;
+		int destination_coord_y;
 		Texture* bulletTxtrPtr;
+		int bullet_acceleration;
 
 		void generateDestinationY(GameWindow* gwindow);
 		void move(GameWindow* gwindow);
@@ -117,10 +122,11 @@ namespace Enemy {
 	};
 	class RockEnemy : public CircleEnemy {
 	public:
-		ENEMYSIDE side;
-		float destinationCoordY;					//defining when spawnRockEnemy() invoking
+		ROCKENEMYSIDE side;
+		float destinationCoordY;	//defining when spawnRockEnemy() invoking
+		Vector2f speed;
 		Texture* bulletTxtrPtr;
-		float bulletAcceleration;
+		int bullet_acceleration;
 
 		bool isNeedToFire();
 		RockEnemyBullet fire();
@@ -147,10 +153,10 @@ namespace Enemy {
 	class HealerEnemy : public CircleEnemy {
 	public:
 		CircleShape healArea;
-		bool isHealAreaActive;
-		ENEMYSIDE side;
+		bool is_heal_enabled;
+		HEALERENEMYSIDE side;
 		Texture* rayTxtrPtr;
-		int spawnCoordY;
+		int spawn_coord_y;
 		Vector2i destinationCoords;
 		Vector2f speed;
 

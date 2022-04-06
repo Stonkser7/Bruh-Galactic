@@ -25,10 +25,10 @@ void Player::initPlayer(GameWindow* gwindow) {
 	grenadeBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\grenadeBulletScopeTexture.png");
 	sizeX = 90;
 	sizeY = 50;
-	speed = { 0, 500 };
+	speed = { 450, 450 };
 	playerShape.setSize(Vector2f(sizeX, sizeY));
 	playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
-	playerShape.setPosition(Vector2f(gwindow->x / 100 * 5, gwindow->y / 2));
+	playerShape.setPosition(Vector2f(gwindow->x / 2, gwindow->y / 2));
 	setHPAmount();
 	scope.setSize(Vector2f(70, 26));
 	scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
@@ -120,10 +120,16 @@ void Player::controlPlayer(GameWindow* gwindow) {
 		fire();
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Key::W) && playerShape.getPosition().y - sizeX / 2 > 0) {
-		move({ speed.x * deltaT, -speed.y * deltaT });
+		move({ 0, -speed.y * deltaT });
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Key::S) && playerShape.getPosition().y + sizeX / 2 < gwindow->y) {
-		move({ speed.x * deltaT, speed.y * deltaT });
+		move({ 0, speed.y * deltaT });
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Key::A) && playerShape.getPosition().x - sizeY / 2 > 0) {
+		move({ -speed.x * deltaT, 0 });
+	}
+	if (Keyboard::isKeyPressed(Keyboard::Key::D) && playerShape.getPosition().x + sizeY / 2 < gwindow->x) {
+		move({ speed.x * deltaT, 0 });
 	}
 }
 void Player::updateAdditionalScopePart() {
@@ -341,5 +347,76 @@ void Player::checkForBulletSwap() {
 		scope.setTextureRect(IntRect(0, 0, 70, 24));
 		scope.setTexture(&grenadeBulletScopeTexture);
 		additionalScope.isActive = false;
+	}
+}
+
+void Player::updateOrdinaryBullets(GameWindow *gwindow) {
+	for (int i = 0; i < ammo.ordinaryBullets.size(); i++) {
+		if (ammo.ordinaryBullets[i].isOutOfScreen(gwindow)) {
+			deleteBullet(BULT_ORDINARY, i);
+			i--;
+		}
+		else {
+			ammo.ordinaryBullets[i].move();
+		}
+	}
+}
+void Player::updateSplittingBullets(GameWindow *gwindow) {
+	for (int i = 0; i < ammo.splittingBullets.size(); i++) {
+		if (ammo.splittingBullets[i].isOutOfScreen(gwindow)) {
+			deleteBullet(BULT_SPLITTING, i);
+			i--;
+		}
+		else {
+			ammo.splittingBullets[i].move();
+		}
+	}
+}
+void Player::updateSplittedBullets(GameWindow *gwindow) {
+	for (int i = 0; i < ammo.splittedBullets.size(); i++) {
+		if (ammo.splittedBullets[i].isOutOfScreen(gwindow)) {
+			deleteBullet(BULT_SPLITTED, i);
+			i--;
+		}
+		else {
+			ammo.splittedBullets[i].move();
+		}
+	}
+}
+void Player::updateRayBullets() {
+	for (int i = 0; i < ammo.rayBullets.size(); i++) {
+		switch (ammo.rayBullets[i].state) {
+		case RBS_FIRING:
+			ammo.rayBullets[i].fire();
+			break;
+		case RBS_DISAPPEARING:
+			if (ammo.rayBullets[i].delayBeforeDissapear.getElapsedTime().asMilliseconds() > ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds) {
+				ammo.rayBullets[i].dissapear();
+			}
+			break;
+		case RBS_DELETE:
+			deleteBullet(BULT_RAY, i);
+			i--;
+			break;
+		}
+	}
+}
+void Player::updateGrenadeBullets() {
+	for (int i = 0; i < ammo.grenadeBullets.size(); i++) {
+		switch (ammo.grenadeBullets[i].state) {
+		case GBS_EXPLOSIONANIM:
+			ammo.grenadeBullets[i].explosionAnimation();
+			break;
+		case GBS_EXPLOSING:
+			ammo.grenadeBullets[i].state = GBS_EXPLOSIONANIM;
+			break;
+		case GBS_MOVE:
+			ammo.grenadeBullets[i].move();
+			break;
+		case GBS_DELETE:
+			deleteBullet(BULT_GRENADE, i);
+			i--;
+			break;
+		}
 	}
 }

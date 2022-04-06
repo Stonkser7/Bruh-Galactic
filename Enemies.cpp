@@ -5,8 +5,8 @@ void RomaEnemyBullet::move() {
 	float deltaT = getDeltaTime();
 	shape.move(speed * deltaT);
 }
-bool RomaEnemyBullet::isOutOfScreen() {
-	return shape.getPosition().x + shape.getSize().x < 0;
+bool RomaEnemyBullet::isOutOfScreen(GameWindow *gwindow) {
+	return shape.getPosition().x + shape.getSize().x < 0 || shape.getPosition().x > gwindow->x;
 }
 float RomaEnemyBullet::getDeltaTime() {
 	return deltaTime.restart().asSeconds();
@@ -68,18 +68,17 @@ float Enemy::CircleEnemy::getDeltaTime() {
 
 //ROMA ENEMY
 void Enemy::RomaEnemy::generateDestinationY(GameWindow* gwindow) {
-	destinationCoordY = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
+	destination_coord_y = rand() % static_cast<int>((gwindow->y - shape.getRadius() * 2)) + shape.getRadius();
 	setState("ES_MOVING");
-	getDeltaTime();	//just restart the delta timer
 }
 void Enemy::RomaEnemy::move(GameWindow* gwindow) {
 	float deltaT = getDeltaTime();
-	if (abs(destinationCoordY - static_cast<int>(shape.getPosition().y)) > 230 * deltaT) {
-		if (shape.getPosition().y < destinationCoordY) {
-			shape.move(0, 230 * deltaT);
+	if (abs(destination_coord_y - static_cast<int>(shape.getPosition().y)) > 230 * deltaT) {
+		if (shape.getPosition().y < destination_coord_y) {
+			shape.move(speed.x * deltaT, speed.y * deltaT);
 		}
 		else {
-			shape.move(0, -230 * deltaT);
+			shape.move(speed.x * deltaT, -speed.y * deltaT);
 		}
 	}
 	else {
@@ -94,17 +93,19 @@ RomaEnemyBullet Enemy::RomaEnemy::fire() {
 	bullet.shape.setTexture(bulletTxtrPtr);
 	bullet.shape.setSize(Vector2f(45, 25));
 	bullet.shape.setPosition(Vector2f(shape.getPosition()));
-	bullet.speed = { -900, 0 };
+	bullet.speed.x = bullet_acceleration * cos(shape.getRotation() * 3.14 / 180);
+	bullet.speed.y = bullet_acceleration * sin(shape.getRotation() * 3.14 / 180);
 	fireClock.restart();
 	excessFireTime = 0;
 	return bullet;
 }
 void Enemy::RomaEnemy::spawnAnimation() {
 	float deltaT = getDeltaTime();
-	if (shape.getPosition().x > spawnCoordX) {
-		shape.move(-200 * deltaT, 0);
+	if (abs(spawn_coord_x - static_cast<int>(shape.getPosition().x)) > abs(speed.x) * deltaT) {
+		shape.move(speed.x * deltaT, speed.y * deltaT);
 	}
 	else {
+		speed = { 0, 230 };
 		setState("ES_STANDING");
 		fireClock.restart();
 	}
@@ -120,8 +121,8 @@ RockEnemyBullet Enemy::RockEnemy::fire() {
 	bullet.shape.setRadius(15);
 	bullet.shape.setPosition(Vector2f(shape.getPosition()));
 	bullet.shape.setOrigin(bullet.shape.getRadius(), bullet.shape.getRadius());
-	bullet.speed.x = bulletAcceleration * -cos(shape.getRotation() * 3.14 / 180);
-	bullet.speed.y = bulletAcceleration * -sin(shape.getRotation() * 3.14 / 180);
+	bullet.speed.x = bullet_acceleration * -cos(shape.getRotation() * 3.14 / 180);
+	bullet.speed.y = bullet_acceleration * -sin(shape.getRotation() * 3.14 / 180);
 	fireClock.restart();
 	excessFireTime = 0;
 	return bullet;
@@ -131,27 +132,13 @@ void Enemy::RockEnemy::takeTarget(Vector2f coords) {
 }
 void Enemy::RockEnemy::move() {
 	float deltaT = getDeltaTime();
-	switch (side) {
-	case S_UP:
-		if (shape.getPosition().y < destinationCoordY) {
-			shape.move(-70 * deltaT, 300 * deltaT);
-		}
-		else {
-			setState("ES_STANDING");
-			fireDelayAsMilliseconds = 3300;
-			fireClock.restart();
-		}
-		break;
-	case S_DOWN:
-		if (shape.getPosition().y > destinationCoordY) {
-			shape.move(-70 * deltaT, -300 * deltaT);
-		}
-		else {
-			setState("ES_STANDING");
-			fireDelayAsMilliseconds = 3300;
-			fireClock.restart();
-		}
-		break;
+	if (abs(destinationCoordY - static_cast<int>(shape.getPosition().y)) > speed.y * deltaT) {
+		shape.move(speed.x * deltaT, speed.y * deltaT);
+	}
+	else {
+		setState("ES_STANDING");
+		fireDelayAsMilliseconds = 3300;
+		fireClock.restart();
 	}
 }
 
@@ -203,27 +190,13 @@ void Enemy::ElectroEnemy::move() {
 //HEALER ENEMY
 void Enemy::HealerEnemy::spawnAnimation() {
 	float deltaT = getDeltaTime();
-	switch (side) {
-	case S_UP:
-		if (static_cast<int>(shape.getPosition().y) < spawnCoordY) {
-			shape.move(0, 700 * deltaT);
-			healArea.move(0, 700 * deltaT);
-		}
-		else {
-			isHealAreaActive = true;
-			setState("ES_STANDING");
-		}
-		break;
-	case S_DOWN:
-		if (static_cast<int>(shape.getPosition().y) > spawnCoordY) {
-			shape.move(0, -700 * deltaT);
-			healArea.move(0, -700 * deltaT);
-		}
-		else {
-			isHealAreaActive = true;
-			setState("ES_STANDING");
-		}
-		break;
+	if (abs(spawn_coord_y - static_cast<int>(shape.getPosition().y)) > speed.y) {
+		shape.move(speed.x * deltaT, speed.y * deltaT);
+		healArea.move(speed.x * deltaT, speed.y * deltaT);
+	}
+	else {
+		is_heal_enabled = true;
+		setState("ES_STANDING");
 	}
 }
 void Enemy::HealerEnemy::move() {
