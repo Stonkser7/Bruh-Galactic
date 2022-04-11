@@ -6,8 +6,11 @@ using namespace sf;
 using namespace std;
 
 enum ENEMYSTATE { ES_MOVING, ES_SPAWN_ANIM, ES_STANDING };
+
 enum ROMAENEMYSIDE { ROMAS_LEFT, ROMAS_RIGHT };
-enum ROCKENEMYSIDE { ROCKS_UP, ROCKS_DOWN };
+
+enum ROCKENEMYSIDE { ROCKS_UPLEFT, ROCKS_UPRIGHT, ROCKS_DOWNLEFT, ROCKS_DOWNRIGHT };
+
 enum HEALERENEMYSIDE { HEALERS_UP, HEALERS_DOWN };
 
 //////////////
@@ -122,8 +125,7 @@ namespace Enemy {
 	};
 	class RockEnemy : public CircleEnemy {
 	public:
-		ROCKENEMYSIDE side;
-		float destinationCoordY;	//defining when spawnRockEnemy() invoking
+		ROCKENEMYSIDE spawn_side;
 		Vector2f speed;
 		Texture* bulletTxtrPtr;
 		int bullet_acceleration;
@@ -131,7 +133,9 @@ namespace Enemy {
 		bool isNeedToFire();
 		RockEnemyBullet fire();
 		void takeTarget(Vector2f coords);
+		void spawnAnimation(GameWindow* gwindow);
 		void move();
+		void checkForRebound(GameWindow *gwindow);
 	};
 	class ElectroEnemy : public CircleEnemy {
 	public:

@@ -7,24 +7,24 @@
 #include "SplittingBullet.h"
 #include "SplittedBullet.h"
 #include "RayBullet.h"
-#include "GrenadeBullet.h"
+#include "RocketBullet.h"
 using namespace sf;
 using namespace std;
 
-enum BULLETTYPE { BULT_ORDINARY, BULT_SPLITTING, BULT_SPLITTED, BULT_RAY, BULT_GRENADE };
+enum BULLETTYPE { BULT_ORDINARY, BULT_SPLITTING, BULT_SPLITTED, BULT_RAY, BULT_ROCKET };
 
 struct Ammunition {
 	vector <OrdinaryBullet> ordinaryBullets;
 	vector <SplittingBullet> splittingBullets;
 	vector <SplittedBullet> splittedBullets;
 	vector <RayBullet> rayBullets;
-	vector <GrenadeBullet> grenadeBullets;
+	vector <RocketBullet> rocketBullets;
 };
 struct AmmoData {
 	OrdinaryBulletData ordinaryBulletData;
 	SplittingBulletData splittingBulletData;
 	RayBulletData rayBulletData;
-	GrenadeBulletData grenadeBulletData;
+	RocketBulletData rocketBulletData;
 };
 
 
@@ -53,10 +53,14 @@ private:
 	Texture splittingBulletScopeTexture;
 	Texture rayBulletScopeTexture;
 	Texture rayBulletAdditionalScopeTexture;
-	Texture grenadeBulletScopeTexture;
+	Texture rocketBulletScopeTexture;
 
 	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 
+
+	void updatePlayerTexture();
+	BULLETTYPE getSelectedBulletType();
+	void move(Vector2f offset);
 public:
 	RectangleShape playerShape;
 	RectangleShape scope;
@@ -65,27 +69,31 @@ public:
 	AmmoData ammoData;
 	Clock excessFireClock;
 
-	float getDeltaTime();
+
 
 	void initPlayer(GameWindow* gwindow);
 	void initAmmunition();
 
-	void setHPAmount(int requiredAmount = 3);
-	int getHPAmount();
-	BULLETTYPE getSelectedBulletType();
-	void rotateToMouse(Vector2f coords);
+	float getDeltaTime();
+
+	void takeDamage();
+	void rotateTo(Vector2f coords);
 	void controlPlayer(GameWindow* gwindow);
 	void updateAdditionalScopePart();
-	void move(Vector2f offset);
 	void fire();
-	void splitBullet(SplittingBullet* splittingBullet);
-	void splitBullet(SplittedBullet* splittedBullet);
-	void deleteBullet(BULLETTYPE bulletType, int index);
+
+	void splitBullet(SplittingBullet* splittingBullet);		//It shouldn't be here, put it to splittingBullet/splittedBullet
+	void splitBullet(SplittedBullet* splittedBullet);		////////////////////////////////////////////////////////////////
+	void deleteBullet(BULLETTYPE bulletType, int index);	//maaaaaan what are doing here
 	void checkForBulletSwap();
+
+	bool isAlive();
 
 	void updateOrdinaryBullets(GameWindow *gwindow);
 	void updateSplittingBullets(GameWindow *gwindow);
 	void updateSplittedBullets(GameWindow *gwindow);
 	void updateRayBullets();
 	void updateGrenadeBullets();
+
+	void updateFrame(GameWindow *gwindow);
 };

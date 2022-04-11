@@ -3,7 +3,7 @@
 
 using namespace sf;
 
-enum RAYBULLETSTATE { RBS_FIRING, RBS_DISAPPEARING, RBS_DELETE };
+enum RAYBULLETSTATE { RAY_FIRING, RAY_DISAPPEARING, RAY_DELETE };
 
 struct RayBulletData {
 	int damage;

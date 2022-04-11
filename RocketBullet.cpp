@@ -1,11 +1,11 @@
-#include "GrenadeBullet.h"
+#include "RocketBullet.h"
 
-void GrenadeBullet::move() {
+void RocketBullet::move() {
 	float deltaT = getDeltaTime();
-	if (abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) * deltaT && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y) * deltaT) {
-		state = GBS_EXPLOSING;
-		explosionWave.setRadius(shape.getRadius());
-		explosionWave.setOrigin(shape.getRadius(), shape.getRadius());
+	if (isDestinationReached(deltaT)) {
+		state = ROCKET_EXPLOSING;
+		explosionWave.setRadius(shape.getSize().y / 2);
+		explosionWave.setOrigin(explosionWave.getRadius(), explosionWave.getRadius());
 		explosionWave.setPosition(shape.getPosition());
 		explosionWave.setFillColor(Color(139, 0, 0, 10));
 		explosionWave.setOutlineColor(Color(255, 69, 0));
@@ -29,16 +29,21 @@ void GrenadeBullet::move() {
 	}
 }
 
-void GrenadeBullet::explosionAnimation() {
+bool RocketBullet::isDestinationReached(float deltaT)
+{
+	return abs(destinationCoords.x - static_cast<int>(shape.getPosition().x)) < abs(speed.x) * deltaT && abs(destinationCoords.y - static_cast<int>(shape.getPosition().y)) < abs(speed.y) * deltaT;
+}
+
+void RocketBullet::explosionAnimation() {
 	if (explosionWave.getRadius() < thirdDamageArea.getRadius()) {
 		explosionWave.setRadius(explosionWave.getRadius() + 12);
 		explosionWave.setOrigin(explosionWave.getRadius(), explosionWave.getRadius());
 	}
 	else {
-		state = GBS_DELETE;
+		state = ROCKET_DELETE;
 	}
 }
 
-float GrenadeBullet::getDeltaTime() {
+float RocketBullet::getDeltaTime() {
 	return deltaTime.restart().asSeconds();
 }

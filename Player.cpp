@@ -18,18 +18,19 @@ void Player::initPlayer(GameWindow* gwindow) {
 	Collision::CreateTextureAndBitmask(playertexture1HP, "Textures\\Player\\playerTexture1HP.jpg");
 	Collision::CreateTextureAndBitmask(playertexture2HP, "Textures\\Player\\playerTexture2HP.jpg");
 	Collision::CreateTextureAndBitmask(playertexture3HP, "Textures\\Player\\playerTexture3HP.jpg");
+	HPAmount = 3;
+	updatePlayerTexture();
 	ordinaryBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\ordinaryBulletScopeTexture.png");
 	splittingBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\splittingBulletScopeTexture.png");
 	rayBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\rayBulletScopeTexture.png");
 	rayBulletAdditionalScopeTexture.loadFromFile("Textures\\Player\\Scopes\\rayBulletScopeTexture2.png");
-	grenadeBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\grenadeBulletScopeTexture.png");
+	rocketBulletScopeTexture.loadFromFile("Textures\\Player\\Scopes\\rocketBulletScopeTexture.png");
 	sizeX = 90;
 	sizeY = 50;
 	speed = { 450, 450 };
 	playerShape.setSize(Vector2f(sizeX, sizeY));
 	playerShape.setOrigin(Vector2f(sizeX / 2, sizeY / 2));
 	playerShape.setPosition(Vector2f(gwindow->x / 2, gwindow->y / 2));
-	setHPAmount();
 	scope.setSize(Vector2f(70, 26));
 	scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 	scope.setPosition(Vector2f(playerShape.getPosition().x, playerShape.getPosition().y));
@@ -60,37 +61,36 @@ void Player::initAmmunition() {
 	ammoData.rayBulletData.fireDelayAsMilliseconds = 1400;
 	ammoData.rayBulletData.excessFireDelay = 0;
 
-	//GRENADE BULLET
-	ammoData.grenadeBulletData.texture.loadFromFile("Textures\\Player\\Bullets\\grenadeBullet.png");
-	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.firstAreaTexture, "Textures\\Player\\Bullets\\grenadeFirstDamageArea.png");
-	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.secondAreaTexture, "Textures\\Player\\Bullets\\grenadeSecondDamageArea.png");
-	Collision::CreateTextureAndBitmask(ammoData.grenadeBulletData.thirdAreaTexture, "Textures\\Player\\Bullets\\grenadeThirdDamageArea.png");
-	ammoData.grenadeBulletData.firstAreaTexture.setSmooth(true);
-	ammoData.grenadeBulletData.secondAreaTexture.setSmooth(true);
-	ammoData.grenadeBulletData.thirdAreaTexture.setSmooth(true);
+	//ROCKET BULLET
+	ammoData.rocketBulletData.texture.loadFromFile("Textures\\Player\\Bullets\\rocketBullet.png");
+	Collision::CreateTextureAndBitmask(ammoData.rocketBulletData.firstAreaTexture, "Textures\\Player\\Bullets\\rocketFirstDamageArea.png");
+	Collision::CreateTextureAndBitmask(ammoData.rocketBulletData.secondAreaTexture, "Textures\\Player\\Bullets\\rocketSecondDamageArea.png");
+	Collision::CreateTextureAndBitmask(ammoData.rocketBulletData.thirdAreaTexture, "Textures\\Player\\Bullets\\rocketThirdDamageArea.png");
+	ammoData.rocketBulletData.firstAreaTexture.setSmooth(true);
+	ammoData.rocketBulletData.secondAreaTexture.setSmooth(true);
+	ammoData.rocketBulletData.thirdAreaTexture.setSmooth(true);
 
-	ammoData.grenadeBulletData.fireDelayAsMilliseconds = 1200;
+	ammoData.rocketBulletData.fireDelayAsMilliseconds = 1200;
 
-	ammoData.grenadeBulletData.firstLevelDamage = 70;
-	ammoData.grenadeBulletData.secondLevelDamage = 30;
-	ammoData.grenadeBulletData.thirdLevelDamage = 15;
+	ammoData.rocketBulletData.firstLevelDamage = 70;
+	ammoData.rocketBulletData.secondLevelDamage = 30;
+	ammoData.rocketBulletData.thirdLevelDamage = 15;
 
-	ammoData.grenadeBulletData.defaultRadius = 30;
+	ammoData.rocketBulletData.size = { 30, 90 };
 
-	ammoData.grenadeBulletData.firstAreaRaduis = 100;
-	ammoData.grenadeBulletData.secondAreaRaduis = 200;
-	ammoData.grenadeBulletData.thirdAreaRaduis = 350;
+	ammoData.rocketBulletData.firstAreaRaduis = 100;
+	ammoData.rocketBulletData.secondAreaRaduis = 200;
+	ammoData.rocketBulletData.thirdAreaRaduis = 350;
 
-	ammoData.grenadeBulletData.excessFireDelay = 0;
+	ammoData.rocketBulletData.excessFireDelay = 0;
 
 	ammo.ordinaryBullets.clear();
 	ammo.splittingBullets.clear();
 	ammo.splittedBullets.clear();
 	ammo.rayBullets.clear();
-	ammo.grenadeBullets.clear();
+	ammo.rocketBullets.clear();
 }
-void Player::setHPAmount(int requiredAmount) {
-	HPAmount = requiredAmount;
+void Player::updatePlayerTexture() {
 	switch (HPAmount) {
 	case 3:
 		playerShape.setTexture(&playertexture3HP);
@@ -103,13 +103,14 @@ void Player::setHPAmount(int requiredAmount) {
 		break;
 	}
 }
-int Player::getHPAmount() {
-	return HPAmount;
+void Player::takeDamage() {
+	HPAmount--;
+	updatePlayerTexture();
 }
 BULLETTYPE Player::getSelectedBulletType() {
 	return selectedBullet;
 }
-void Player::rotateToMouse(Vector2f coords) {
+void Player::rotateTo(Vector2f coords) {
 	playerShape.setRotation((atan2(playerShape.getPosition().y - coords.y, playerShape.getPosition().x - coords.x)) * 180 / 3.14159265 - 90);
 	scope.setRotation(playerShape.getRotation() - 90);
 	additionalScope.shape.setRotation(playerShape.getRotation() - 90);
@@ -196,7 +197,7 @@ void Player::fire() {
 			bullet.shape.setOrigin(Vector2f(0, bullet.shape.getSize().y / 2));
 			bullet.shape.setRotation(playerShape.getRotation() - 90);
 			bullet.shape.setPosition(Vector2f(playerShape.getPosition()));
-			bullet.state = RBS_FIRING;
+			bullet.state = RAY_FIRING;
 			additionalScope.toggleActive();
 			ammo.rayBullets.push_back(bullet);
 			ammoData.rayBulletData.fireTimer.restart();
@@ -204,24 +205,24 @@ void Player::fire() {
 			return;
 		}
 		break;
-	case BULT_GRENADE:
-		if (ammoData.grenadeBulletData.fireTimer.getElapsedTime().asMilliseconds() - ammoData.grenadeBulletData.excessFireDelay > ammoData.grenadeBulletData.fireDelayAsMilliseconds) {
-			GrenadeBullet bullet;
+	case BULT_ROCKET:
+		if (ammoData.rocketBulletData.fireTimer.getElapsedTime().asMilliseconds() - ammoData.rocketBulletData.excessFireDelay > ammoData.rocketBulletData.fireDelayAsMilliseconds) {
+			RocketBullet bullet;
 			//setting raduis
-			bullet.shape.setRadius(ammoData.grenadeBulletData.defaultRadius);
-			bullet.firstDamageArea.setRadius(ammoData.grenadeBulletData.firstAreaRaduis);
-			bullet.secondDamageArea.setRadius(ammoData.grenadeBulletData.secondAreaRaduis);
-			bullet.thirdDamageArea.setRadius(ammoData.grenadeBulletData.thirdAreaRaduis);
+			bullet.shape.setSize(ammoData.rocketBulletData.size);
+			bullet.firstDamageArea.setRadius(ammoData.rocketBulletData.firstAreaRaduis);
+			bullet.secondDamageArea.setRadius(ammoData.rocketBulletData.secondAreaRaduis);
+			bullet.thirdDamageArea.setRadius(ammoData.rocketBulletData.thirdAreaRaduis);
 			//setting textures
-			bullet.shape.setTexture(&ammoData.grenadeBulletData.texture);
-			bullet.firstDamageArea.setTexture(&ammoData.grenadeBulletData.firstAreaTexture);
-			bullet.secondDamageArea.setTexture(&ammoData.grenadeBulletData.secondAreaTexture);
-			bullet.thirdDamageArea.setTexture(&ammoData.grenadeBulletData.thirdAreaTexture);
+			bullet.shape.setTexture(&ammoData.rocketBulletData.texture);
+			bullet.firstDamageArea.setTexture(&ammoData.rocketBulletData.firstAreaTexture);
+			bullet.secondDamageArea.setTexture(&ammoData.rocketBulletData.secondAreaTexture);
+			bullet.thirdDamageArea.setTexture(&ammoData.rocketBulletData.thirdAreaTexture);
 			//setting origins
-			bullet.shape.setOrigin(ammoData.grenadeBulletData.defaultRadius, ammoData.grenadeBulletData.defaultRadius);
-			bullet.firstDamageArea.setOrigin(ammoData.grenadeBulletData.firstAreaRaduis, ammoData.grenadeBulletData.firstAreaRaduis);
-			bullet.secondDamageArea.setOrigin(ammoData.grenadeBulletData.secondAreaRaduis, ammoData.grenadeBulletData.secondAreaRaduis);
-			bullet.thirdDamageArea.setOrigin(ammoData.grenadeBulletData.thirdAreaRaduis, ammoData.grenadeBulletData.thirdAreaRaduis);
+			bullet.shape.setOrigin(ammoData.rocketBulletData.size.x / 2, ammoData.rocketBulletData.size.y / 2);
+			bullet.firstDamageArea.setOrigin(ammoData.rocketBulletData.firstAreaRaduis, ammoData.rocketBulletData.firstAreaRaduis);
+			bullet.secondDamageArea.setOrigin(ammoData.rocketBulletData.secondAreaRaduis, ammoData.rocketBulletData.secondAreaRaduis);
+			bullet.thirdDamageArea.setOrigin(ammoData.rocketBulletData.thirdAreaRaduis, ammoData.rocketBulletData.thirdAreaRaduis);
 			//setting rotation
 			bullet.shape.setRotation(playerShape.getRotation());
 			//setting position
@@ -233,10 +234,10 @@ void Player::fire() {
 			bullet.destinationCoords = Mouse::getPosition();
 			bullet.speed.x = (static_cast<float>(bullet.destinationCoords.x) - bullet.shape.getPosition().x);	//speed * deltaT == 1secs to destination
 			bullet.speed.y = (static_cast<float>(bullet.destinationCoords.y) - bullet.shape.getPosition().y);	////////////////////////////////////////////////
-			bullet.state = GBS_MOVE;
-			ammo.grenadeBullets.push_back(bullet);
-			ammoData.grenadeBulletData.fireTimer.restart();
-			ammoData.grenadeBulletData.excessFireDelay = 0;
+			bullet.state = ROCKET_MOVE;
+			ammo.rocketBullets.push_back(bullet);
+			ammoData.rocketBulletData.fireTimer.restart();
+			ammoData.rocketBulletData.excessFireDelay = 0;
 		}
 		break;
 	}
@@ -301,8 +302,8 @@ void Player::deleteBullet(BULLETTYPE bulletType, int index) {
 	case BULT_RAY:
 		ammo.rayBullets.erase(ammo.rayBullets.begin() + index);
 		break;
-	case BULT_GRENADE:
-		ammo.grenadeBullets.erase(ammo.grenadeBullets.begin() + index);
+	case BULT_ROCKET:
+		ammo.rocketBullets.erase(ammo.rocketBullets.begin() + index);
 		break;
 	}
 }
@@ -339,15 +340,18 @@ void Player::checkForBulletSwap() {
 		additionalScope.shape.setTexture(&rayBulletAdditionalScopeTexture);
 		additionalScope.isActive = false;
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Num4) && selectedBullet != BULT_GRENADE) {
-		selectedBullet = BULT_GRENADE;
+	if (Keyboard::isKeyPressed(Keyboard::Num4) && selectedBullet != BULT_ROCKET) {
+		selectedBullet = BULT_ROCKET;
 		scope.setSize(Vector2f(70, 24));
 		scope.setOrigin(Vector2f(0, scope.getSize().y / 2));
 		scope.setPosition(playerShape.getPosition());
 		scope.setTextureRect(IntRect(0, 0, 70, 24));
-		scope.setTexture(&grenadeBulletScopeTexture);
+		scope.setTexture(&rocketBulletScopeTexture);
 		additionalScope.isActive = false;
 	}
+}
+bool Player::isAlive() {
+	return HPAmount > 0;
 }
 
 void Player::updateOrdinaryBullets(GameWindow *gwindow) {
@@ -386,15 +390,15 @@ void Player::updateSplittedBullets(GameWindow *gwindow) {
 void Player::updateRayBullets() {
 	for (int i = 0; i < ammo.rayBullets.size(); i++) {
 		switch (ammo.rayBullets[i].state) {
-		case RBS_FIRING:
+		case RAY_FIRING:
 			ammo.rayBullets[i].fire();
 			break;
-		case RBS_DISAPPEARING:
+		case RAY_DISAPPEARING:
 			if (ammo.rayBullets[i].delayBeforeDissapear.getElapsedTime().asMilliseconds() > ammoData.rayBulletData.delayBeforeDissapearAsMilliseconds) {
 				ammo.rayBullets[i].dissapear();
 			}
 			break;
-		case RBS_DELETE:
+		case RAY_DELETE:
 			deleteBullet(BULT_RAY, i);
 			i--;
 			break;
@@ -402,21 +406,29 @@ void Player::updateRayBullets() {
 	}
 }
 void Player::updateGrenadeBullets() {
-	for (int i = 0; i < ammo.grenadeBullets.size(); i++) {
-		switch (ammo.grenadeBullets[i].state) {
-		case GBS_EXPLOSIONANIM:
-			ammo.grenadeBullets[i].explosionAnimation();
+	for (int i = 0; i < ammo.rocketBullets.size(); i++) {
+		switch (ammo.rocketBullets[i].state) {
+		case ROCKET_EXPLOSIONANIM:
+			ammo.rocketBullets[i].explosionAnimation();
 			break;
-		case GBS_EXPLOSING:
-			ammo.grenadeBullets[i].state = GBS_EXPLOSIONANIM;
+		case ROCKET_EXPLOSING:
+			ammo.rocketBullets[i].state = ROCKET_EXPLOSIONANIM;
 			break;
-		case GBS_MOVE:
-			ammo.grenadeBullets[i].move();
+		case ROCKET_MOVE:
+			ammo.rocketBullets[i].move();
 			break;
-		case GBS_DELETE:
-			deleteBullet(BULT_GRENADE, i);
+		case ROCKET_DELETE:
+			deleteBullet(BULT_ROCKET, i);
 			i--;
 			break;
 		}
 	}
+}
+
+void Player::updateFrame(GameWindow* gwindow)
+{
+	controlPlayer(gwindow);
+	rotateTo(static_cast<Vector2f>(Mouse::getPosition(gwindow->window)));
+	checkForBulletSwap();
+	updateAdditionalScopePart();
 }

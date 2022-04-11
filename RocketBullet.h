@@ -3,9 +3,9 @@
 
 using namespace sf;
 
-enum GRENADEBULLETSTATE { GBS_MOVE, GBS_EXPLOSING, GBS_EXPLOSIONANIM, GBS_DELETE };
+enum ROCKETBULLETSTATE { ROCKET_MOVE, ROCKET_EXPLOSING, ROCKET_EXPLOSIONANIM, ROCKET_DELETE };
 
-struct GrenadeBulletData {
+struct RocketBulletData {
 	int firstLevelDamage;
 	int secondLevelDamage;
 	int thirdLevelDamage;
@@ -15,7 +15,7 @@ struct GrenadeBulletData {
 
 	int excessFireDelay;
 
-	int defaultRadius;
+	Vector2f size;
 	int firstAreaRaduis;
 	int secondAreaRaduis;
 	int thirdAreaRaduis;
@@ -27,11 +27,11 @@ struct GrenadeBulletData {
 };
 
 
-class GrenadeBullet {
+class RocketBullet {
 private:
 	Clock deltaTime;	//sets the dependency of player gameplay on time, not on fps
 public:
-	CircleShape shape;
+	RectangleShape shape;
 
 	CircleShape firstDamageArea;
 	CircleShape secondDamageArea;
@@ -39,12 +39,13 @@ public:
 
 	CircleShape explosionWave;
 
-	GRENADEBULLETSTATE state;
+	ROCKETBULLETSTATE state;
 
 	Vector2f speed;
 	Vector2i destinationCoords;
 
 	void move();
+	bool isDestinationReached(float deltaT);
 	void explosionAnimation();
 	float getDeltaTime();
 };

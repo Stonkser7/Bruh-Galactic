@@ -27,7 +27,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0FFF548E4F8A428AA86E47C4F5ED2CB2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1688B23C34734834B4B102750BD7FA88"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_191FA3F8B51841E48645C6C132C6D54D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -64,12 +76,6 @@
         "Entry"
         {
         "MsmKey" = "8:_33D59C3112BB402E95CE8F42001AE859"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_40325A7EA21C492BA44489BD487C1E52"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -117,13 +123,13 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_743CAB747AED4C22A1A39A0214A15172"
+        "MsmKey" = "8:_759BB18CA6054D02B78DB96CDE88072C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_759BB18CA6054D02B78DB96CDE88072C"
+        "MsmKey" = "8:_767896E732954AD3992A7F0B1AE0A4E0"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -136,12 +142,6 @@
         "Entry"
         {
         "MsmKey" = "8:_79EB60172C944AF98822A1D62F57245E"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_7DB295B0C3ED4B52A7E8AC62035BDAE2"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -165,19 +165,7 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_866119CAAA234C649A0993B9D775E5E9"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_88096747FF8F433CB1F49C948438756C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_91F87FC8C901476FA53BAB64B2BD2775"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -225,7 +213,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C04E218DB0DD435D905B16429BE0FB70"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C05F13F0965C4ADCB31A2BC2FA901749"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_CDBFB86782A54768A379D9D960405E43"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -409,12 +409,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0FFF548E4F8A428AA86E47C4F5ED2CB2"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\rocketSecondDamageArea.png"
+            "TargetName" = "8:rocketSecondDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1688B23C34734834B4B102750BD7FA88"
             {
             "SourcePath" = "8:..\\..\\Textures\\Player\\playerTexture3HP.jpg"
             "TargetName" = "8:playerTexture3HP.jpg"
             "Tag" = "8:"
             "Folder" = "8:_678D27744DDD49298E2FCA30670EC55F"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_191FA3F8B51841E48645C6C132C6D54D"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\rocketBullet.png"
+            "TargetName" = "8:rocketBullet.png"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -515,26 +555,6 @@
             "TargetName" = "8:lightningTexture2.png"
             "Tag" = "8:"
             "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_40325A7EA21C492BA44489BD487C1E52"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\grenadeBulletScopeTexture.png"
-            "TargetName" = "8:grenadeBulletScopeTexture.png"
-            "Tag" = "8:"
-            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -689,12 +709,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_743CAB747AED4C22A1A39A0214A15172"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_759BB18CA6054D02B78DB96CDE88072C"
             {
-            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeBullet.png"
-            "TargetName" = "8:grenadeBullet.png"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\playerTexture1HP.jpg"
+            "TargetName" = "8:playerTexture1HP.jpg"
             "Tag" = "8:"
-            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Folder" = "8:_678D27744DDD49298E2FCA30670EC55F"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -709,12 +729,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_759BB18CA6054D02B78DB96CDE88072C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_767896E732954AD3992A7F0B1AE0A4E0"
             {
-            "SourcePath" = "8:..\\..\\Textures\\Player\\playerTexture1HP.jpg"
-            "TargetName" = "8:playerTexture1HP.jpg"
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Scopes\\rocketBulletScopeTexture.png"
+            "TargetName" = "8:rocketBulletScopeTexture.png"
             "Tag" = "8:"
-            "Folder" = "8:_678D27744DDD49298E2FCA30670EC55F"
+            "Folder" = "8:_26CAD81227AA49C6A872D363789DD0C2"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -755,26 +775,6 @@
             "TargetName" = "8:romaBulletTexture.jpg"
             "Tag" = "8:"
             "Folder" = "8:_EDA68370EA38461BBFF71F3C23830407"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7DB295B0C3ED4B52A7E8AC62035BDAE2"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeFirstDamageArea.png"
-            "TargetName" = "8:grenadeFirstDamageArea.png"
-            "Tag" = "8:"
-            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -849,52 +849,12 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_866119CAAA234C649A0993B9D775E5E9"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeSecondDamageArea.png"
-            "TargetName" = "8:grenadeSecondDamageArea.png"
-            "Tag" = "8:"
-            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_88096747FF8F433CB1F49C948438756C"
             {
             "SourcePath" = "8:..\\..\\Textures\\GUI\\gameBackground.jpg"
             "TargetName" = "8:gameBackground.jpg"
             "Tag" = "8:"
             "Folder" = "8:_F03B91DC9138417B9097F806B57C27F4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_91F87FC8C901476FA53BAB64B2BD2775"
-            {
-            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\grenadeThirdDamageArea.png"
-            "TargetName" = "8:grenadeThirdDamageArea.png"
-            "Tag" = "8:"
-            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1049,12 +1009,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C04E218DB0DD435D905B16429BE0FB70"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\rocketThirdDamageArea.png"
+            "TargetName" = "8:rocketThirdDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C05F13F0965C4ADCB31A2BC2FA901749"
             {
             "SourcePath" = "8:..\\..\\Textures\\Enemies\\ElectroEnemy.jpg"
             "TargetName" = "8:ElectroEnemy.jpg"
             "Tag" = "8:"
             "Folder" = "8:_4BA9EB1F94794DDC91EAFA45D48AFFD4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_CDBFB86782A54768A379D9D960405E43"
+            {
+            "SourcePath" = "8:..\\..\\Textures\\Player\\Bullets\\rocketFirstDamageArea.png"
+            "TargetName" = "8:rocketFirstDamageArea.png"
+            "Tag" = "8:"
+            "Folder" = "8:_08EF09C3D4C74A03857062E6EFEC1489"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1934,7 +1934,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_286D283D9BCD490AAA1E7AD820023AEF"
             {
-            "SourcePath" = "8:..\\..\\x64\\Release\\Bruh Galactic.exe"
+            "SourcePath" = "8:..\\..\\x64\\Debug\\Bruh Galactic.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E173579CC8834D25B736B14E847681F0"

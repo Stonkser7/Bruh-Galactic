@@ -45,7 +45,7 @@
     <ClCompile Include="RayBullet.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GrenadeBullet.cpp">
+    <ClCompile Include="RocketBullet.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -65,9 +65,6 @@
     <ClInclude Include="Menu.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="Pause.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
@@ -83,7 +80,10 @@
     <ClInclude Include="RayBullet.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="GrenadeBullet.h">
+    <ClInclude Include="RocketBullet.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

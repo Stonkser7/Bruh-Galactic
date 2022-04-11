@@ -148,7 +148,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Enemies.cpp" />
-    <ClCompile Include="GrenadeBullet.cpp" />
+    <ClCompile Include="RocketBullet.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -164,7 +164,7 @@
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Enemies.h" />
     <ClInclude Include="GameWindow.h" />
-    <ClInclude Include="GrenadeBullet.h" />
+    <ClInclude Include="RocketBullet.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="OrdinaryBullet.h" />
     <ClInclude Include="Pause.h" />

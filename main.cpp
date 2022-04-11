@@ -67,11 +67,12 @@ public:
 		}*/
 		//cout << pause.getSelectedButton() << endl;
 		//cout << player.ammo.splittedBullets.size() + player.ammo.splittingBullets.size() << endl;
-		//if (!player.ammo.grenadeBullets.empty()) {
-		//	//cout << endl << player.ammo.grenadeBullets[0].explosionWave.getOrigin().x << "  " << player.ammo.grenadeBullets[0].explosionWave.getOrigin().y;
-		//	//cout << endl << "Wave : " << player.ammo.grenadeBullets[0].explosionWave.getPosition().x << " " << player.ammo.grenadeBullets[0].explosionWave.getPosition().x << "shape : " << player.ammo.grenadeBullets[0].shape.getPosition().x << " " << player.ammo.grenadeBullets[0].shape.getPosition().y;
+		//if (!player.ammo.rocketBullets.empty()) {
+		//	//cout << endl << player.ammo.rocketBullets[0].explosionWave.getOrigin().x << "  " << player.ammo.rocketBullets[0].explosionWave.getOrigin().y;
+		//	//cout << endl << "Wave : " << player.ammo.rocketBullets[0].explosionWave.getPosition().x << " " << player.ammo.rocketBullets[0].explosionWave.getPosition().x << "shape : " << player.ammo.rocketBullets[0].shape.getPosition().x << " " << player.ammo.rocketBullets[0].shape.getPosition().y;
 		//}
 		//cout << endl << romaBullets.size();
+		cout << endl << rockEnemies.size();
 	}
 
 	void initWindow() {
@@ -91,7 +92,7 @@ public:
 	void initEnemies() {
 		//INITIALIZATION ROMA ENEMY
 		romaData.areActive = true;
-		romaData.maxAmount = 20;
+		romaData.maxAmount = 15;
 		Collision::CreateTextureAndBitmask(romaData.enemyTexture, "Textures\\Enemies\\RomaEnemy.jpg");
 		Collision::CreateTextureAndBitmask(romaData.bulletTexture, "Textures\\Enemies\\Bullets\\romaBulletTexture.jpg");
 		romaData.spawnRadius = 45;
@@ -99,7 +100,7 @@ public:
 		romaBullets.clear();
 
 		//INITIALIZATION ROCK ENEMY
-		rockData.areActive = false;
+		rockData.areActive = true;
 		rockData.maxAmount = 10;
 		Collision::CreateTextureAndBitmask(rockData.enemyTexture, "Textures\\Enemies\\rockEnemy.png");
 		Collision::CreateTextureAndBitmask(rockData.bulletTexture, "Textures\\Enemies\\Bullets\\rockBulletTexture.png");
@@ -168,7 +169,7 @@ public:
 		player.ammoData.ordinaryBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		player.ammoData.splittingBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		player.ammoData.rayBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
-		player.ammoData.grenadeBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
+		player.ammoData.rocketBulletData.excessFireDelay = player.excessFireClock.getElapsedTime().asMilliseconds();
 		player.getDeltaTime();
 
 		//player's bullets
@@ -181,8 +182,8 @@ public:
 		for (int i = 0; i < player.ammo.splittedBullets.size(); i++) {
 			player.ammo.splittedBullets[i].getDeltaTime();
 		}
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			player.ammo.grenadeBullets[i].getDeltaTime();
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			player.ammo.rocketBullets[i].getDeltaTime();
 		}
 
 		//enemies
@@ -478,7 +479,7 @@ public:
 	void checkForRayBulletsCollision() {
 		//ROMA ENEMIES
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			if (player.ammo.rayBullets[i].state == RBS_FIRING) {
+			if (player.ammo.rayBullets[i].state == RAY_FIRING) {
 				for (int j = 0; j < romaEnemies.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, romaEnemies[j].shape)) {
 						romaEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
@@ -488,7 +489,7 @@ public:
 		}
 		//ROMA BULLETS
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			if (player.ammo.rayBullets[i].state == RBS_FIRING) {
+			if (player.ammo.rayBullets[i].state == RAY_FIRING) {
 				for (int j = 0; j < romaBullets.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, romaBullets[j].shape)) {
 						romaBullets.erase(romaBullets.begin() + j);
@@ -501,7 +502,7 @@ public:
 
 		//ROCK ENEMIES
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			if (player.ammo.rayBullets[i].state == RBS_FIRING) {
+			if (player.ammo.rayBullets[i].state == RAY_FIRING) {
 				for (int j = 0; j < rockEnemies.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, rockEnemies[j].shape)) {
 						rockEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
@@ -511,7 +512,7 @@ public:
 		}
 		//ROCK BULLETS
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			if (player.ammo.rayBullets[i].state == RBS_FIRING) {
+			if (player.ammo.rayBullets[i].state == RAY_FIRING) {
 				for (int j = 0; j < rockBullets.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, rockBullets[j].shape)) {
 						rockBullets.erase(rockBullets.begin() + j);
@@ -522,7 +523,7 @@ public:
 
 		//ELECTRO ENEMIES
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			if (player.ammo.rayBullets[i].state == RBS_FIRING) {
+			if (player.ammo.rayBullets[i].state == RAY_FIRING) {
 				for (int j = 0; j < electroEnemies.size(); j++) {
 					if (electroEnemies[j].visible) {
 						if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, electroEnemies[j].shape)) {
@@ -537,7 +538,7 @@ public:
 
 		//HEALER ENEMIES
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
-			if (player.ammo.rayBullets[i].state == RBS_FIRING) {
+			if (player.ammo.rayBullets[i].state == RAY_FIRING) {
 				for (int j = 0; j < healerEnemies.size(); j++) {
 					if (Collision::PixelPerfectTest(player.ammo.rayBullets[i].shape, healerEnemies[j].shape)) {
 						healerEnemies[j].takeDamage(player.ammoData.rayBulletData.damage);
@@ -548,36 +549,36 @@ public:
 	}
 	void checkForGrenadeBulletCollision() {
 		//ROMA ENEMIES
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			if (player.ammo.grenadeBullets[i].state == GBS_EXPLOSING) {
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			if (player.ammo.rocketBullets[i].state == ROCKET_EXPLOSING) {
 				for (int j = 0; j < romaEnemies.size(); j++) {
-					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, romaEnemies[j].shape)) {
-						romaEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+					if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].firstDamageArea, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.rocketBulletData.firstLevelDamage);
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, romaEnemies[j].shape)) {
-						romaEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].secondDamageArea, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.rocketBulletData.secondLevelDamage);
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, romaEnemies[j].shape)) {
-						romaEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].thirdDamageArea, romaEnemies[j].shape)) {
+						romaEnemies[j].takeDamage(player.ammoData.rocketBulletData.thirdLevelDamage);
 					}
 				}
 			}
 		}
 		//ROMA BULLETS
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			if (player.ammo.grenadeBullets[i].state == GBS_EXPLOSING) {
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			if (player.ammo.rocketBullets[i].state == ROCKET_EXPLOSING) {
 				for (int j = 0; j < romaBullets.size(); j++) {
-					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, romaBullets[j].shape)) {
+					if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].firstDamageArea, romaBullets[j].shape)) {
 						romaBullets.erase(romaBullets.begin() + j);
 						j--;
 						continue;
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, romaBullets[j].shape)) {
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].secondDamageArea, romaBullets[j].shape)) {
 						romaBullets.erase(romaBullets.begin() + j);
 						j--;
 						continue;
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, romaBullets[j].shape)) {
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].thirdDamageArea, romaBullets[j].shape)) {
 						romaBullets.erase(romaBullets.begin() + j);
 						j--;
 						continue;
@@ -589,36 +590,36 @@ public:
 
 
 		//ROCK ENEMIES
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			if (player.ammo.grenadeBullets[i].state == GBS_EXPLOSING) {
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			if (player.ammo.rocketBullets[i].state == ROCKET_EXPLOSING) {
 				for (int j = 0; j < rockEnemies.size(); j++) {
-					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, rockEnemies[j].shape)) {
-						rockEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+					if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].firstDamageArea, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.rocketBulletData.firstLevelDamage);
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, rockEnemies[j].shape)) {
-						rockEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].secondDamageArea, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.rocketBulletData.secondLevelDamage);
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, rockEnemies[j].shape)) {
-						rockEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].thirdDamageArea, rockEnemies[j].shape)) {
+						rockEnemies[j].takeDamage(player.ammoData.rocketBulletData.thirdLevelDamage);
 					}
 				}
 			}
 		}
 		//ROCK BULLETS
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			if (player.ammo.grenadeBullets[i].state == GBS_EXPLOSING) {
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			if (player.ammo.rocketBullets[i].state == ROCKET_EXPLOSING) {
 				for (int j = 0; j < rockBullets.size(); j++) {
-					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, rockBullets[j].shape)) {
+					if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].firstDamageArea, rockBullets[j].shape)) {
 						rockBullets.erase(rockBullets.begin() + j);
 						j--;
 						continue;
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, rockBullets[j].shape)) {
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].secondDamageArea, rockBullets[j].shape)) {
 						rockBullets.erase(rockBullets.begin() + j);
 						j--;
 						continue;
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, rockBullets[j].shape)) {
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].thirdDamageArea, rockBullets[j].shape)) {
 						rockBullets.erase(rockBullets.begin() + j);
 						j--;
 						continue;
@@ -630,18 +631,18 @@ public:
 
 
 		//ELECTRO ENEMIES
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			if (player.ammo.grenadeBullets[i].state == GBS_EXPLOSING) {
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			if (player.ammo.rocketBullets[i].state == ROCKET_EXPLOSING) {
 				for (int j = 0; j < electroEnemies.size(); j++) {
 					if (electroEnemies[j].visible) {
-						if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, electroEnemies[j].shape)) {
-							electroEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+						if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].firstDamageArea, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.rocketBulletData.firstLevelDamage);
 						}
-						else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, electroEnemies[j].shape)) {
-							electroEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+						else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].secondDamageArea, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.rocketBulletData.secondLevelDamage);
 						}
-						else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, electroEnemies[j].shape)) {
-							electroEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+						else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].thirdDamageArea, electroEnemies[j].shape)) {
+							electroEnemies[j].takeDamage(player.ammoData.rocketBulletData.thirdLevelDamage);
 						}
 					}
 				}
@@ -651,17 +652,17 @@ public:
 
 
 		//HEALER ENEMIES
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			if (player.ammo.grenadeBullets[i].state == GBS_EXPLOSING) {
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			if (player.ammo.rocketBullets[i].state == ROCKET_EXPLOSING) {
 				for (int j = 0; j < healerEnemies.size(); j++) {
-					if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].firstDamageArea, healerEnemies[j].shape)) {
-						healerEnemies[j].takeDamage(player.ammoData.grenadeBulletData.firstLevelDamage);
+					if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].firstDamageArea, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.rocketBulletData.firstLevelDamage);
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].secondDamageArea, healerEnemies[j].shape)) {
-						healerEnemies[j].takeDamage(player.ammoData.grenadeBulletData.secondLevelDamage);
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].secondDamageArea, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.rocketBulletData.secondLevelDamage);
 					}
-					else if (Collision::PixelPerfectTest(player.ammo.grenadeBullets[i].thirdDamageArea, healerEnemies[j].shape)) {
-						healerEnemies[j].takeDamage(player.ammoData.grenadeBulletData.thirdLevelDamage);
+					else if (Collision::PixelPerfectTest(player.ammo.rocketBullets[i].thirdDamageArea, healerEnemies[j].shape)) {
+						healerEnemies[j].takeDamage(player.ammoData.rocketBulletData.thirdLevelDamage);
 					}
 				}
 			}
@@ -672,14 +673,14 @@ public:
 		//ROMA BULLETS
 		for (int i = 0; i < romaBullets.size(); i++) {
 			if (player.playerShape.getGlobalBounds().intersects(romaBullets[i].shape.getGlobalBounds())) {
-				player.setHPAmount(player.getHPAmount() - 1);
+				player.takeDamage();
 				romaBullets.erase(romaBullets.begin() + i);
 			}
 		}
 		//ROCK BULLETS
 		for (int i = 0; i < rockBullets.size(); i++) {
 			if (player.playerShape.getGlobalBounds().intersects(rockBullets[i].shape.getGlobalBounds())) {
-				player.setHPAmount(player.getHPAmount() - 1);
+				player.takeDamage();
 				rockBullets.erase(rockBullets.begin() + i);
 			}
 		}
@@ -803,7 +804,7 @@ public:
 	}
 
 	bool isRockEnemyNeedToSpawn() {
-		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 1800 == 1);
+		return (rockData.areActive == true && rockEnemies.size() < rockData.maxAmount && rand() % 1200 == 1);
 	}
 
 	bool isElectroEnemyNeedToSpawn() {
@@ -818,7 +819,7 @@ public:
 		Enemy::RomaEnemy roma;
 		roma.shape.setTexture(&romaData.enemyTexture);
 		roma.bulletTxtrPtr = &romaData.bulletTexture;
-		roma.fireDelayAsMilliseconds = 2000;
+		roma.fireDelayAsMilliseconds = 1700;
 		roma.side = ROMAENEMYSIDE(rand() % 2);
 		switch (roma.side) {
 		case ROMAS_LEFT:
@@ -844,25 +845,32 @@ public:
 		Enemy::RockEnemy rock;
 		rock.shape.setTexture(&rockData.enemyTexture);
 		rock.bulletTxtrPtr = &rockData.bulletTexture;
-		rock.fireDelayAsMilliseconds = 900;
+		rock.fireDelayAsMilliseconds = 2200;
 		rock.bullet_acceleration = 700;
 		rock.shape.setRotation(0);
 		rock.shape.setRadius(rockData.spawnRadius);
 		rock.shape.setOrigin(rockData.spawnRadius, rockData.spawnRadius);
-		rock.side = ROCKENEMYSIDE(rand() % 2);
-		switch (rock.side) {
-		case ROCKS_UP:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, 0 - rockData.spawnRadius));
-			rock.destinationCoordY = gameWindow.y - rock.shape.getRadius();
-			rock.speed = { -70, 300 };
+		rock.setState("ES_SPAWNANIMATION");
+		rock.spawn_side = ROCKENEMYSIDE(rand() % 4);
+		switch (rock.spawn_side) {
+		case ROCKS_UPLEFT:
+			rock.shape.setPosition(Vector2f(0 - rock.shape.getRadius(), (rand() % static_cast<int>((gameWindow.y - rock.shape.getRadius() * 2)) + rock.shape.getRadius())));
+			rock.speed = { 300, 300 };
 			break;
-		case ROCKS_DOWN:
-			rock.shape.setPosition(Vector2f(rand() % (gameWindow.x / 2) + static_cast<float>(gameWindow.x) / 2, gameWindow.y + rockData.spawnRadius));
-			rock.destinationCoordY = 0 + rock.shape.getRadius();
-			rock.speed = { -70, -300 };
+		case ROCKS_UPRIGHT:
+			rock.shape.setPosition(Vector2f(gameWindow.x + rock.shape.getRadius(), (rand() % static_cast<int>((gameWindow.y - rock.shape.getRadius() * 2)) + rock.shape.getRadius())));
+			rock.speed = { -300, 300 };
+			break;
+		case ROCKS_DOWNLEFT:
+			rock.shape.setPosition(Vector2f(0 - rock.shape.getRadius(), (rand() % static_cast<int>((gameWindow.y - rock.shape.getRadius() * 2)) + rock.shape.getRadius())));
+			rock.speed = { 300, -300 };
+			break;
+		case ROCKS_DOWNRIGHT:
+			rock.shape.setPosition(Vector2f(gameWindow.x + rock.shape.getRadius(), (rand() % static_cast<int>((gameWindow.y - rock.shape.getRadius() * 2)) + rock.shape.getRadius())));
+			rock.speed = { -300, -300 };
 			break;
 		}
-		rock.setState("ES_MOVING");
+		rock.setState("ES_SPAWN_ANIM");
 		rockEnemies.push_back(rock);
 	}
 
@@ -924,13 +932,10 @@ public:
 	}
 
 	void updatePlayer() {
-		if (player.getHPAmount() <= 0) {
+		if (!player.isAlive()) {
 			gameState = GS_MENU;
 		}
-		player.controlPlayer(&gameWindow);
-		player.rotateToMouse(static_cast<Vector2f>(Mouse::getPosition(gameWindow.window)));
-		player.checkForBulletSwap();
-		player.updateAdditionalScopePart();
+		player.updateFrame(&gameWindow);
 	}
 	void updatePlayerBullets() {
 		player.updateOrdinaryBullets(&gameWindow);
@@ -946,11 +951,11 @@ public:
 			if (romaEnemies[i].isNeedToFire()) {
 				romaBullets.push_back(romaEnemies[i].fire());
 			}
-			if (romaEnemies[i].getState() == ES_SPAWN_ANIM) {
-				romaEnemies[i].spawnAnimation();
-			}
 			if (romaEnemies[i].getState() == ES_STANDING) {
 				romaEnemies[i].generateDestinationY(&gameWindow);
+			}
+			if (romaEnemies[i].getState() == ES_SPAWN_ANIM) {
+				romaEnemies[i].spawnAnimation();
 			}
 			if (romaEnemies[i].getState() == ES_MOVING) {
 				romaEnemies[i].move(&gameWindow);
@@ -967,6 +972,10 @@ public:
 			}
 			if (rockEnemies[i].getState() == ES_MOVING) {
 				rockEnemies[i].move();
+				rockEnemies[i].checkForRebound(&gameWindow);
+			}
+			if (rockEnemies[i].getState() == ES_SPAWN_ANIM) {
+				rockEnemies[i].spawnAnimation(&gameWindow);
 			}
 			rockEnemies[i].takeTarget(player.playerShape.getPosition());
 			if (!rockEnemies[i].isAlive()) {
@@ -978,7 +987,7 @@ public:
 		for (int i = 0; i < electroEnemies.size(); i++) {
 			if (electroEnemies[i].isNeedToFire()) {
 				electroLightnings.push_back(electroEnemies[i].fire(player.playerShape.getPosition()));
-				player.setHPAmount(player.getHPAmount() - 1);
+				player.takeDamage();
 			}
 			if (electroEnemies[i].getState() == ES_MOVING) {
 				electroEnemies[i].move();
@@ -1075,15 +1084,15 @@ public:
 		for (int i = 0; i < player.ammo.rayBullets.size(); i++) {
 			gameWindow.window.draw(player.ammo.rayBullets[i].shape);
 		}
-		for (int i = 0; i < player.ammo.grenadeBullets.size(); i++) {
-			//gameWindow.window.draw(player.ammo.grenadeBullets[i].thirdDamageArea);
-			//gameWindow.window.draw(player.ammo.grenadeBullets[i].secondDamageArea);
-			//gameWindow.window.draw(player.ammo.grenadeBullets[i].firstDamageArea);
-			if (player.ammo.grenadeBullets[i].state == GBS_MOVE) {
-				gameWindow.window.draw(player.ammo.grenadeBullets[i].shape);
+		for (int i = 0; i < player.ammo.rocketBullets.size(); i++) {
+			//gameWindow.window.draw(player.ammo.rocketBullets[i].thirdDamageArea);
+			//gameWindow.window.draw(player.ammo.rocketBullets[i].secondDamageArea);
+			//gameWindow.window.draw(player.ammo.rocketBullets[i].firstDamageArea);
+			if (player.ammo.rocketBullets[i].state == ROCKET_MOVE) {
+				gameWindow.window.draw(player.ammo.rocketBullets[i].shape);
 			}
 			else {
-				gameWindow.window.draw(player.ammo.grenadeBullets[i].explosionWave);
+				gameWindow.window.draw(player.ammo.rocketBullets[i].explosionWave);
 			}
 		}
 			 

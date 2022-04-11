@@ -20,7 +20,8 @@ void RockEnemyBullet::move() {
 bool RockEnemyBullet::isOutOfScreen(GameWindow *gwindow) {
 	return shape.getPosition().x + shape.getRadius() < 0 ||
 		shape.getPosition().y + shape.getRadius() < 0 ||
-		shape.getPosition().y + shape.getRadius() > gwindow->y;
+		shape.getPosition().x - shape.getRadius() > gwindow->x ||
+		shape.getPosition().y - shape.getRadius() > gwindow->y;
 }
 float RockEnemyBullet::getDeltaTime() {
 	return deltaTime.restart().asSeconds();
@@ -130,15 +131,27 @@ RockEnemyBullet Enemy::RockEnemy::fire() {
 void Enemy::RockEnemy::takeTarget(Vector2f coords) {
 	shape.setRotation((atan2(shape.getPosition().y - coords.y, shape.getPosition().x - coords.x)) * 180 / 3.14159265);
 }
-void Enemy::RockEnemy::move() {
+void Enemy::RockEnemy::spawnAnimation(GameWindow *gwindow)
+{
 	float deltaT = getDeltaTime();
-	if (abs(destinationCoordY - static_cast<int>(shape.getPosition().y)) > speed.y * deltaT) {
-		shape.move(speed.x * deltaT, speed.y * deltaT);
+	shape.move(speed.x * deltaT, 0 * deltaT);
+	if (shape.getPosition().x - shape.getRadius() > 0 && shape.getPosition().x + shape.getRadius() < gwindow->x) {
+		setState("ES_MOVING");
 	}
-	else {
-		setState("ES_STANDING");
-		fireDelayAsMilliseconds = 3300;
-		fireClock.restart();
+}
+void Enemy::RockEnemy::move()
+{
+	float deltaT = getDeltaTime();
+	shape.move(speed.x * deltaT, speed.y * deltaT);
+}
+
+void Enemy::RockEnemy::checkForRebound(GameWindow *gwindow)
+{
+	if (shape.getPosition().x - shape.getRadius() < 0 || shape.getPosition().x + shape.getRadius() > gwindow->x) {
+		speed.x = -speed.x;
+	}
+	if (shape.getPosition().y - shape.getRadius() < 0 || shape.getPosition().y + shape.getRadius() > gwindow->y) {
+		speed.y = -speed.y;
 	}
 }
 
