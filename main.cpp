@@ -72,12 +72,12 @@ public:
 		//	//cout << endl << "Wave : " << player.ammo.rocketBullets[0].explosionWave.getPosition().x << " " << player.ammo.rocketBullets[0].explosionWave.getPosition().x << "shape : " << player.ammo.rocketBullets[0].shape.getPosition().x << " " << player.ammo.rocketBullets[0].shape.getPosition().y;
 		//}
 		//cout << endl << romaBullets.size();
-		cout << endl << rockEnemies.size();
+		//cout << endl << rockEnemies.size();
 	}
 
 	void initWindow() {
-		gameWindow.x = 1920;
-		gameWindow.y = 1080;
+		gameWindow.x = 2160;
+		gameWindow.y = 1440;
 		gameWindow.title = "BRUH GALACTIC";
 		gameWindow.window.create(VideoMode(gameWindow.x, gameWindow.y), gameWindow.title, Style::Fullscreen);
 		gameWindow.window.setFramerateLimit(240);
@@ -109,7 +109,7 @@ public:
 		rockBullets.clear();
 
 		//INITIALIZATION ELECTRO ENEMY
-		electroData.areActive = false;
+		electroData.areActive = true;
 		electroData.maxAmount = 4;
 		Collision::CreateTextureAndBitmask(electroData.enemyTexture, "Textures\\Enemies\\ElectroEnemy.jpg");
 		electroData.lightningTexture.loadFromFile("Textures\\Enemies\\Bullets\\electroLightningTexture1.png");
@@ -120,7 +120,7 @@ public:
 		electroLightnings.clear();
 
 		//INITIALIZATION HEALER ENEMY
-		healerData.areActive = false;
+		healerData.areActive = true;
 		healerData.maxAmount = 3;
 		healerData.heal = 0.08;
 		healerData.spawnRadius = 24;
